@@ -5,11 +5,10 @@ tags:
  - Animation
  - Programming
 category: UE4
+description: This article tell you some issue you might encounter while doing animation development in UE4
 ---
 
 This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time. 
-
-< !-- more -->
 
 ### AnimNode not evaluating your data? 
 

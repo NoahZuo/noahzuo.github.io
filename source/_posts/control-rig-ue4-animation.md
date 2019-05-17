@@ -5,6 +5,7 @@ tags:
  - Animation
  - Control Rig
 category: UE4
+description: This article introduced some of my thoughts about control rig system in UE4
 ---
 
 
@@ -15,11 +16,6 @@ Control rig plugin has been in UE4 for quite a long time. But it did not arose m
 Since animation blueprint has a strong coupling with animation skeleton, and this makes it hard for users to control the skeleton bones using controllers outside skeleton. Compared with Unity animation playable pipeline, animation blueprint is not that convenient to control skeleton bones. 
 
 Control rig makes it possible for us to to drive skeleton bones outside animation blueprint. We can create customized controllers, and define our own constraints to control bones. It is just amazing!
-
-
-< !-- more -->
-
-
 
 ![Rig Image](image1.png)
 

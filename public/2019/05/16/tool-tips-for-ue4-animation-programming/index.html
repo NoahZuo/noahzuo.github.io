@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time.  &amp;lt;!-- more --&amp;gt; AnimNode not evalu">
+  <meta name="description" content="This article tell you some issue you might encounter while doing animation development in UE4">
 <meta name="keywords" content="UE4,Animation,Programming">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tool tips for ue4 animation programming">
 <meta property="og:url" content="http://yoursite.com/2019/05/16/tool-tips-for-ue4-animation-programming/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time.  &amp;lt;!-- more --&amp;gt; AnimNode not evalu">
+<meta property="og:description" content="This article tell you some issue you might encounter while doing animation development in UE4">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-05-17T04:26:34.000Z">
+<meta property="og:updated_time" content="2019-05-17T04:39:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tool tips for ue4 animation programming">
-<meta name="twitter:description" content="This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time.  &amp;lt;!-- more --&amp;gt; AnimNode not evalu">
+<meta name="twitter:description" content="This article tell you some issue you might encounter while doing animation development in UE4">
 
 
 
@@ -401,7 +401,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-05-17 12:26:34" itemprop="dateModified" datetime="2019-05-17T12:26:34+08:00">2019-05-17</time>
+                <time title="Modified: 2019-05-17 12:39:52" itemprop="dateModified" datetime="2019-05-17T12:39:52+08:00">2019-05-17</time>
               
             
           </span>
@@ -439,6 +439,8 @@
           
 
           
+            <div class="post-description">This article tell you some issue you might encounter while doing animation development in UE4</div>
+          
 
         </div>
       </header>
@@ -454,7 +456,6 @@
 
       
         <p>This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time. </p>
-<p><code>&lt;!-- more --&gt;</code></p>
 <h3 id="AnimNode-not-evaluating-your-data"><a href="#AnimNode-not-evaluating-your-data" class="headerlink" title="AnimNode not evaluating your data?"></a>AnimNode not evaluating your data?</h3><p>If you have your own Animation Node and find it not evaluate your input data? </p>
 <p>In your <code>Update_AnyThread</code> function, be sure to call: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GetEvaluateGraphExposedInputs().Execute(Context)</span><br></pre></td></tr></table></figure>

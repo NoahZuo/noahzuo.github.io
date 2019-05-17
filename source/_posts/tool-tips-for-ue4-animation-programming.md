@@ -7,6 +7,10 @@ tags:
 category: UE4
 ---
 
+This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time. 
+
+
+
 ### AnimNode not evaluating your data? 
 
 If you have your own Animation Node and find it not evaluate your input data? 

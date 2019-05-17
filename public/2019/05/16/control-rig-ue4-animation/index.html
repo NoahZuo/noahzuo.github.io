@@ -96,18 +96,20 @@
 
 
 
-  <meta name="description" content="Quick StartCreate a new post1$ hexo new &quot;My New Post&quot; More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$">
+  <meta name="description" content="What is Control Rig?Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched Wes Bunn’s session in GDC 2019. Actually I was about to build a control r">
 <meta name="keywords" content="UE4,Animation,Control Rig">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Control Rig in UE4 Animation">
 <meta property="og:url" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="Quick StartCreate a new post1$ hexo new &quot;My New Post&quot; More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$">
+<meta property="og:description" content="What is Control Rig?Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched Wes Bunn’s session in GDC 2019. Actually I was about to build a control r">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-05-16T05:24:02.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/image1.png">
+<meta property="og:updated_time" content="2019-05-16T14:30:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Control Rig in UE4 Animation">
-<meta name="twitter:description" content="Quick StartCreate a new post1$ hexo new &quot;My New Post&quot; More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$">
+<meta name="twitter:description" content="What is Control Rig?Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched Wes Bunn’s session in GDC 2019. Actually I was about to build a control r">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/image1.png">
 
 
 
@@ -384,7 +386,7 @@
                 
               
 
-              <time title="Created: 2019-05-16 11:01:36 / Modified: 13:24:02" itemprop="dateCreated datePublished" datetime="2019-05-16T11:01:36+08:00">2019-05-16</time>
+              <time title="Created: 2019-05-16 11:01:36 / Modified: 22:30:04" itemprop="dateCreated datePublished" datetime="2019-05-16T11:01:36+08:00">2019-05-16</time>
             
 
             
@@ -407,13 +409,6 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/Animation/" itemprop="url" rel="index"><span itemprop="name">Animation</span></a></span>
 
                 
                 
@@ -448,15 +443,13 @@
       
 
       
-        <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+        <h2 id="What-is-Control-Rig"><a href="#What-is-Control-Rig" class="headerlink" title="What is Control Rig?"></a>What is Control Rig?</h2><p>Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched <a href="https://www.youtube.com/watch?v=TYSdxW2WHcI" target="_blank" rel="noopener">Wes Bunn’s session in GDC 2019</a>. Actually I was about to build a control rig system and had already been working on it for several weeks. And the control rig system just came out… Complex feeling, huh? </p>
+<p>Since animation blueprint has a strong coupling with animation skeleton, and this makes it hard for users to control the skeleton bones using controllers outside skeleton. Compared with Unity animation playable pipeline, animation blueprint is not that convenient to control skeleton bones. </p>
+<p>Control rig makes it possible for us to to drive skeleton bones outside animation blueprint. We can create customized controllers, and define our own constraints to control bones. It is just amazing! </p>
+<p><img src="image1.png" alt="Rig Image"></p>
+<h3 id="Deeper-Thinking-about-Control-Rig"><a href="#Deeper-Thinking-about-Control-Rig" class="headerlink" title="Deeper Thinking about Control Rig"></a>Deeper Thinking about Control Rig</h3><p>So the ultimate problem, is that unlike Unity, which is compatible with different skeletons, animation blueprint in UE4 only works with the specific skeletons. If we want to add another bone to the skeleton, lots of work needs to be done. </p>
+<p>I’ll </p>
+<h3 id="Something-Still-Needs-to-be-Done"><a href="#Something-Still-Needs-to-be-Done" class="headerlink" title="Something Still Needs to be Done"></a>Something Still Needs to be Done</h3>
       
     </div>
 
@@ -496,15 +489,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/15/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/16/tool-tips-for-ue4-animation-programming/" rel="prev" title="Tool tips for ue4 animation programming">
+                Tool tips for ue4 animation programming <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -594,7 +587,7 @@
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">1</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>
@@ -617,7 +610,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -655,7 +650,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Control-Rig"><span class="nav-number">1.</span> <span class="nav-text">What is Control Rig?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deeper-Thinking-about-Control-Rig"><span class="nav-number">1.1.</span> <span class="nav-text">Deeper Thinking about Control Rig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Something-Still-Needs-to-be-Done"><span class="nav-number">1.2.</span> <span class="nav-text">Something Still Needs to be Done</span></a></li></ol></li></ol></div>
             
 
           </div>

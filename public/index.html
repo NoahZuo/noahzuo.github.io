@@ -382,12 +382,24 @@
                 
               
 
-              <time title="Created: 2019-05-16 14:50:35 / Modified: 16:22:06" itemprop="dateCreated datePublished" datetime="2019-05-16T14:50:35+08:00">2019-05-16</time>
+              <time title="Created: 2019-05-16 14:50:35" itemprop="dateCreated datePublished" datetime="2019-05-16T14:50:35+08:00">2019-05-16</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-05-17 12:26:34" itemprop="dateModified" datetime="2019-05-17T12:26:34+08:00">2019-05-17</time>
               
             
           </span>
@@ -442,6 +454,7 @@
         
           
             <p>This article mainly focus on some tool-tips you might encounter while doing some animation development. And I will keep updating this article from time to time. </p>
+<p><code>&lt;!-- more --&gt;</code></p>
 <h3 id="AnimNode-not-evaluating-your-data"><a href="#AnimNode-not-evaluating-your-data" class="headerlink" title="AnimNode not evaluating your data?"></a>AnimNode not evaluating your data?</h3><p>If you have your own Animation Node and find it not evaluate your input data? </p>
 <p>In your <code>Update_AnyThread</code> function, be sure to call: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GetEvaluateGraphExposedInputs().Execute(Context)</span><br></pre></td></tr></table></figure>
@@ -565,7 +578,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-05-17 12:22:08" itemprop="dateModified" datetime="2019-05-17T12:22:08+08:00">2019-05-17</time>
+                <time title="Modified: 2019-05-17 12:26:26" itemprop="dateModified" datetime="2019-05-17T12:26:26+08:00">2019-05-17</time>
               
             
           </span>
@@ -622,6 +635,7 @@
             <h2 id="What-is-Control-Rig"><a href="#What-is-Control-Rig" class="headerlink" title="What is Control Rig?"></a>What is Control Rig?</h2><p>Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched <a href="https://www.youtube.com/watch?v=TYSdxW2WHcI" target="_blank" rel="noopener">Wes Bunn’s session in GDC 2019</a>. Actually I was about to build a control rig system and had already been working on it for several weeks. And the control rig system just came out… Complex feeling, huh? </p>
 <p>Since animation blueprint has a strong coupling with animation skeleton, and this makes it hard for users to control the skeleton bones using controllers outside skeleton. Compared with Unity animation playable pipeline, animation blueprint is not that convenient to control skeleton bones. </p>
 <p>Control rig makes it possible for us to to drive skeleton bones outside animation blueprint. We can create customized controllers, and define our own constraints to control bones. It is just amazing! </p>
+<p><code>&lt;!-- more --&gt;</code></p>
 <p><img src="image1.png" alt="Rig Image"></p>
 <h3 id="Deeper-Thinking-about-Control-Rig"><a href="#Deeper-Thinking-about-Control-Rig" class="headerlink" title="Deeper Thinking about Control Rig"></a>Deeper Thinking about Control Rig</h3><h4 id="The-Ultimate-Problem"><a href="#The-Ultimate-Problem" class="headerlink" title="The Ultimate Problem"></a>The Ultimate Problem</h4><p>So the ultimate problem, is that unlike Unity, which is compatible with different skeletons, animation blueprint in UE4 only works with the specific skeletons. If we want to add another bone to the skeleton, lots of work needs to be done. </p>
 <p>I’ll get into this problem with the issue that Wes mentioned in his session. </p>
@@ -747,8 +761,6 @@
                     
                   
                     
-                    
-                      
                     
                       
                     

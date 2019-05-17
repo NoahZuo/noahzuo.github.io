@@ -16,6 +16,8 @@ Since animation blueprint has a strong coupling with animation skeleton, and thi
 
 Control rig makes it possible for us to to drive skeleton bones outside animation blueprint. We can create customized controllers, and define our own constraints to control bones. It is just amazing! 
 
+`<!-- more -->`
+
 ![Rig Image](image1.png)
 
 ### Deeper Thinking about Control Rig

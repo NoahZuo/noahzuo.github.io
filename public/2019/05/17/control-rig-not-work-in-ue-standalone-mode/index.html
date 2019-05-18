@@ -108,7 +108,9 @@
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/Index_None.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/blueprintProperty.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/AnimClass.png">
-<meta property="og:updated_time" content="2019-05-17T14:09:54.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/placeInDeveloper.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/csFile.png">
+<meta property="og:updated_time" content="2019-05-18T07:26:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Control Rig not Work in UE Standalone Mode">
 <meta name="twitter:description" content="It seemes that Control Rig animation node does not work in UE standalone mode. How should I solve that?">
@@ -389,12 +391,24 @@
                 
               
 
-              <time title="Created: 2019-05-17 16:03:25 / Modified: 22:09:54" itemprop="dateCreated datePublished" datetime="2019-05-17T16:03:25+08:00">2019-05-17</time>
+              <time title="Created: 2019-05-17 16:03:25" itemprop="dateCreated datePublished" datetime="2019-05-17T16:03:25+08:00">2019-05-17</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-05-18 15:26:12" itemprop="dateModified" datetime="2019-05-18T15:26:12+08:00">2019-05-18</time>
               
             
           </span>
@@ -456,7 +470,13 @@
 <p>Actually we have managed to change the <code>LinkID</code> when we click the compile button. But things just get strange when we play in standalone mode. </p>
 <p>Let’s check the animation blueprint stuff, it seems there exists only one node in the compiled animation blueprint:<br><img src="blueprintProperty.png" alt="Blueprint Property"></p>
 <p>So it is time for us to check <code>AnimNodeProperties</code> variable: </p>
-<p>Now we need to go through <code>USkeletalMeshComponent::InitAnim</code> function. It seems that <code>AnimScriptInstance</code> variable is already wrong, which means that <code>AnimClass</code> variable is not right(see <code>USkeletalMeshComponent::InitializeAnimScriptInstance</code> function).<br><img src="AnimClass.png" alt="Anim Class"><br>Strange… Still need to work on it. </p>
+<p>Now we need to go through <code>USkeletalMeshComponent::InitAnim</code> function. It seems that <code>AnimScriptInstance</code> variable is already wrong, which means that <code>AnimClass</code> variable is not right(see <code>USkeletalMeshComponent::InitializeAnimScriptInstance</code> function).<br><img src="AnimClass.png" alt="Anim Class"></p>
+<p>It seems that there is something wrong with module. </p>
+<hr>
+<p>Let’s try to put the control rig graph node in develop module. Hmmmm… And it worked! </p>
+<p>Just place file <code>AnimGraphNode_Control.cpp</code> and <code>AnimGraphNode_Control.h</code> in the folder<code>ControlRigDeveloper/Private</code>: </p>
+<p><img src="placeInDeveloper.png" alt="Develop Folder"></p>
+<p>And just add <code>&quot;AnimGraph&quot;</code>to the PrivateDependencyModuleNames in file <code>ControlRigDeveloper.Build.cs</code><br><img src="csFile.png" alt="CS File"><br>And it worked! </p>
 
       
     </div>

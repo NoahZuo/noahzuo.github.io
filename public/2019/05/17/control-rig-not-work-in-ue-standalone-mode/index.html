@@ -104,10 +104,15 @@
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
 <meta property="og:description" content="It seemes that Control Rig animation node does not work in UE standalone mode. How should I solve that?">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-05-17T14:06:50.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/control%20rig%20system.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/Index_None.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/blueprintProperty.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/AnimClass.png">
+<meta property="og:updated_time" content="2019-05-17T14:09:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Control Rig not Work in UE Standalone Mode">
 <meta name="twitter:description" content="It seemes that Control Rig animation node does not work in UE standalone mode. How should I solve that?">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/control%20rig%20system.png">
 
 
 
@@ -384,7 +389,7 @@
                 
               
 
-              <time title="Created: 2019-05-17 16:03:25 / Modified: 22:06:50" itemprop="dateCreated datePublished" datetime="2019-05-17T16:03:25+08:00">2019-05-17</time>
+              <time title="Created: 2019-05-17 16:03:25 / Modified: 22:09:54" itemprop="dateCreated datePublished" datetime="2019-05-17T16:03:25+08:00">2019-05-17</time>
             
 
             
@@ -444,14 +449,14 @@
 
       
         <p>We currently customized our own control rig system, and it works fine in editor, but it does not work in standalone mode. </p>
-<p><a href="control rig system.png">control rig system</a></p>
-<p>That is strange, and it turned out that the <code>LinkID</code> is set to <code>INDEX_NONE</code> for <code>Control Rig</code> node.<br><a href="Index_None.png">LinkID</a></p>
+<p><img src="control rig system.png" alt="control rig system"></p>
+<p>That is strange, and it turned out that the <code>LinkID</code> is set to <code>INDEX_NONE</code> for <code>Control Rig</code> node.<br><img src="Index_None.png" alt="LinkID"></p>
 <p>And why would that happen??? </p>
-<p>So… We need to find where ue4 set up the <code>LinkID</code>. After some boring debug, we’ve found that the ue4 set the value in <code>FPoseLinkMappingRecord::PatchLinkIndex</code> function when the animation blueprint is compiled: :<br>[LinkID Call Stack][linkID.png]</p>
+<p>So… We need to find where ue4 set up the <code>LinkID</code>. After some boring debug, we’ve found that the ue4 set the value in <code>FPoseLinkMappingRecord::PatchLinkIndex</code> function when the animation blueprint is compiled: :<br>![LinkID Call Stack][linkID.png]</p>
 <p>Actually we have managed to change the <code>LinkID</code> when we click the compile button. But things just get strange when we play in standalone mode. </p>
-<p>Let’s check the animation blueprint stuff, it seems there exists only one node in the compiled animation blueprint:<br><a href="blueprintProperty.png">Blueprint Property</a></p>
+<p>Let’s check the animation blueprint stuff, it seems there exists only one node in the compiled animation blueprint:<br><img src="blueprintProperty.png" alt="Blueprint Property"></p>
 <p>So it is time for us to check <code>AnimNodeProperties</code> variable: </p>
-<p>Now we need to go through <code>USkeletalMeshComponent::InitAnim</code> function. It seems that <code>AnimScriptInstance</code> variable is already wrong, which means that <code>AnimClass</code> variable is not right(see <code>USkeletalMeshComponent::InitializeAnimScriptInstance</code> function).<br><a href="AnimClass.png">Anim Class</a><br>Strange… Still working on it. </p>
+<p>Now we need to go through <code>USkeletalMeshComponent::InitAnim</code> function. It seems that <code>AnimScriptInstance</code> variable is already wrong, which means that <code>AnimClass</code> variable is not right(see <code>USkeletalMeshComponent::InitializeAnimScriptInstance</code> function).<br><img src="AnimClass.png" alt="Anim Class"><br>Strange… Still need to work on it. </p>
 
       
     </div>

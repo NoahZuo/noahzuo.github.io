@@ -29,6 +29,17 @@ So it is time for us to check `AnimNodeProperties` variable:
 
 Now we need to go through `USkeletalMeshComponent::InitAnim` function. It seems that `AnimScriptInstance` variable is already wrong, which means that `AnimClass` variable is not right(see `USkeletalMeshComponent::InitializeAnimScriptInstance` function). 
 ![Anim Class](AnimClass.png)
-Strange... Still need to work on it. 
 
+It seems that there is something wrong with module. 
 
+---
+
+Let's try to put the control rig graph node in develop module. Hmmmm... And it worked! 
+
+Just place file `AnimGraphNode_Control.cpp` and `AnimGraphNode_Control.h` in the folder`ControlRigDeveloper/Private`: 
+
+![Develop Folder](placeInDeveloper.png)
+
+And just add `"AnimGraph"`to the PrivateDependencyModuleNames in file `ControlRigDeveloper.Build.cs`
+![CS File](csFile.png)
+And it worked! 

@@ -1,5 +1,5 @@
 ---
-title: Crash When Open Control Rig File in UE4
+title: Crash When Opening a Control Rig File in UE4
 tags: 
  - UE4
  - Animation

@@ -106,11 +106,12 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/control%20rig%20system.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/Index_None.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/linkID.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/blueprintProperty.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/AnimClass.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/placeInDeveloper.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/17/control-rig-not-work-in-ue-standalone-mode/csFile.png">
-<meta property="og:updated_time" content="2019-05-18T07:26:12.000Z">
+<meta property="og:updated_time" content="2019-05-21T07:00:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Control Rig not Work in UE Standalone Mode">
 <meta name="twitter:description" content="It seemes that Control Rig animation node does not work in UE standalone mode. How should I solve that?">
@@ -408,7 +409,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-05-18 15:26:12" itemprop="dateModified" datetime="2019-05-18T15:26:12+08:00">2019-05-18</time>
+                <time title="Modified: 2019-05-21 15:00:18" itemprop="dateModified" datetime="2019-05-21T15:00:18+08:00">2019-05-21</time>
               
             
           </span>
@@ -462,11 +463,13 @@
       
 
       
-        <p>We currently customized our own control rig system, and it works fine in editor, but it does not work in standalone mode. </p>
+        <p>We are currently developing our own control rig system, and it works fine in editor, but it does not work in standalone mode. </p>
 <p><img src="control rig system.png" alt="control rig system"></p>
-<p>That is strange, and it turned out that the <code>LinkID</code> is set to <code>INDEX_NONE</code> for <code>Control Rig</code> node.<br><img src="Index_None.png" alt="LinkID"></p>
+<p>That is strange, and it turned out that the <code>LinkID</code> is set to <code>INDEX_NONE</code> for <code>Control Rig</code> node. </p>
+<p><img src="Index_None.png" alt="LinkID"></p>
 <p>And why would that happen??? </p>
-<p>So… We need to find where ue4 set up the <code>LinkID</code>. After some boring debug, we’ve found that the ue4 set the value in <code>FPoseLinkMappingRecord::PatchLinkIndex</code> function when the animation blueprint is compiled: :<br>![LinkID Call Stack][linkID.png]</p>
+<p>So… We need to find where ue4 set up the <code>LinkID</code>. After some boring debug, we’ve found that the ue4 set the value in <code>FPoseLinkMappingRecord::PatchLinkIndex</code> function when the animation blueprint is compiled: </p>
+<p><img src="linkID.png" alt="LinkID Call Stack"></p>
 <p>Actually we have managed to change the <code>LinkID</code> when we click the compile button. But things just get strange when we play in standalone mode. </p>
 <p>Let’s check the animation blueprint stuff, it seems there exists only one node in the compiled animation blueprint:<br><img src="blueprintProperty.png" alt="Blueprint Property"></p>
 <p>So it is time for us to check <code>AnimNodeProperties</code> variable: </p>
@@ -476,7 +479,7 @@
 <p>Let’s try to put the control rig graph node in develop module. Hmmmm… And it worked! </p>
 <p>Just place file <code>AnimGraphNode_Control.cpp</code> and <code>AnimGraphNode_Control.h</code> in the folder<code>ControlRigDeveloper/Private</code>: </p>
 <p><img src="placeInDeveloper.png" alt="Develop Folder"></p>
-<p>And just add <code>&quot;AnimGraph&quot;</code>to the PrivateDependencyModuleNames in file <code>ControlRigDeveloper.Build.cs</code><br><img src="csFile.png" alt="CS File"><br>And it worked! </p>
+<p>And just add <code>&quot;AnimGraph&quot;</code>to the PrivateDependencyModuleNames in file <code>ControlRigDeveloper.Build.cs</code><br><img src="csFile.png" alt="CS File"></p>
 
       
     </div>
@@ -524,6 +527,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/21/crash-when-open-control-rig-file-in-ue4/" rel="prev" title="Crash When Open Control Rig File in UE4">
+                Crash When Open Control Rig File in UE4 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -583,7 +590,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

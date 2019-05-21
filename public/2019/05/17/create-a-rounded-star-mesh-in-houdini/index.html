@@ -104,10 +104,15 @@
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
 <meta property="og:description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-05-17T08:03:20.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/circle%20Node.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/groupbyrange.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/transform.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/divide.png">
+<meta property="og:updated_time" content="2019-05-18T07:52:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Create a Rounded Star Mesh in Houdini">
 <meta name="twitter:description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/circle%20Node.png">
 
 
 
@@ -384,12 +389,24 @@
                 
               
 
-              <time title="Created: 2019-05-17 15:49:51 / Modified: 16:03:20" itemprop="dateCreated datePublished" datetime="2019-05-17T15:49:51+08:00">2019-05-17</time>
+              <time title="Created: 2019-05-17 15:49:51" itemprop="dateCreated datePublished" datetime="2019-05-17T15:49:51+08:00">2019-05-17</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-05-18 15:52:58" itemprop="dateModified" datetime="2019-05-18T15:52:58+08:00">2019-05-18</time>
               
             
           </span>
@@ -444,6 +461,13 @@
 
       
         <p>So… How to create a rounded star mesh in Houdini? </p>
+<ol>
+<li>Add a <code>geometry</code> node, delete original <code>file</code> node. </li>
+<li>create a <code>circle</code> node, Change <code>primitive type</code> to <code>polygon</code>:<br><img src="circle Node.png" alt="Circle Node"></li>
+<li>Add a <code>group range</code> node and wire the <code>circle</code> node into it, set the <code>group</code> to <code>even</code>, <code>group type</code> to <code>Points</code>, <code>Range filter</code> to <code>Select 1 of 2</code>:<br><img src="groupbyrange.png" alt="Group by range"></li>
+<li>Add a <code>Transform</code> node and wire the <code>group range</code> node into it, set the <code>Group</code> to <code>even</code> and set the <code>Uniform scale</code> to <code>0.5</code>:<br><img src="transform.png" alt="Transform"></li>
+<li>Add a <code>Divide</code> node and wire the <code>Transform</code> node into it. Now we have a final rounded star mesh and are ready to export it as a .fbx file:<br><img src="divide.png" alt="Divide"></li>
+</ol>
 
       
     </div>
@@ -554,7 +578,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

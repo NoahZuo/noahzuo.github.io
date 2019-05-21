@@ -96,22 +96,25 @@
 
 
 
-  <meta name="description" content="This article introduced some of my thoughts about control rig system in UE4">
+  <meta name="description" content="This article introduced how I solve a crash problem when open control rig file in Unreal Engine 4.">
 <meta name="keywords" content="UE4,Control Rig,Animation">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Control Rig in UE4 Animation">
-<meta property="og:url" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/index.html">
+<meta property="og:title" content="Crash When Open Control Rig File in UE4">
+<meta property="og:url" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article introduced some of my thoughts about control rig system in UE4">
+<meta property="og:description" content="This article introduced how I solve a crash problem when open control rig file in Unreal Engine 4.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/image1.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/image2.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/image3.png">
-<meta property="og:updated_time" content="2019-05-17T04:37:52.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/crash.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/crash%20call%20stack.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/control%20rig%20editor.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/add%20guard.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/open%20file.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/geteditmode.png">
+<meta property="og:updated_time" content="2019-05-21T12:55:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Control Rig in UE4 Animation">
-<meta name="twitter:description" content="This article introduced some of my thoughts about control rig system in UE4">
-<meta name="twitter:image" content="http://yoursite.com/2019/05/16/control-rig-ue4-animation/image1.png">
+<meta name="twitter:title" content="Crash When Open Control Rig File in UE4">
+<meta name="twitter:description" content="This article introduced how I solve a crash problem when open control rig file in Unreal Engine 4.">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/crash.png">
 
 
 
@@ -119,7 +122,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/05/16/control-rig-ue4-animation/">
+  <link rel="canonical" href="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/">
 
 
 
@@ -129,7 +132,7 @@
   };
 </script>
 
-  <title>Control Rig in UE4 Animation | Noah Zuo's Blog</title>
+  <title>Crash When Open Control Rig File in UE4 | Noah Zuo's Blog</title>
   
 
 
@@ -345,7 +348,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/16/control-rig-ue4-animation/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/21/crash-when-open-control-rig-file-in-ue4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -362,7 +365,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Control Rig in UE4 Animation
+          <h1 class="post-title" itemprop="name headline">Crash When Open Control Rig File in UE4
 
               
             
@@ -388,24 +391,12 @@
                 
               
 
-              <time title="Created: 2019-05-16 11:01:36" itemprop="dateCreated datePublished" datetime="2019-05-16T11:01:36+08:00">2019-05-16</time>
+              <time title="Created: 2019-05-21 10:30:26 / Modified: 20:55:16" itemprop="dateCreated datePublished" datetime="2019-05-21T10:30:26+08:00">2019-05-21</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-05-17 12:37:52" itemprop="dateModified" datetime="2019-05-17T12:37:52+08:00">2019-05-17</time>
               
             
           </span>
@@ -443,7 +434,7 @@
           
 
           
-            <div class="post-description">This article introduced some of my thoughts about control rig system in UE4</div>
+            <div class="post-description">This article introduced how I solve a crash problem when open control rig file in Unreal Engine 4.</div>
           
 
         </div>
@@ -459,35 +450,26 @@
       
 
       
-        <h2 id="What-is-Control-Rig"><a href="#What-is-Control-Rig" class="headerlink" title="What is Control Rig?"></a>What is Control Rig?</h2><p>Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched <a href="https://www.youtube.com/watch?v=TYSdxW2WHcI" target="_blank" rel="noopener">Wes Bunn’s session in GDC 2019</a>. Actually I was about to build a control rig system and had already been working on it for several weeks. And the control rig system just came out… Complex feeling, huh? </p>
-<p>Since animation blueprint has a strong coupling with animation skeleton, and this makes it hard for users to control the skeleton bones using controllers outside skeleton. Compared with Unity animation playable pipeline, animation blueprint is not that convenient to control skeleton bones. </p>
-<p>Control rig makes it possible for us to to drive skeleton bones outside animation blueprint. We can create customized controllers, and define our own constraints to control bones. It is just amazing!</p>
-<p><img src="image1.png" alt="Rig Image"></p>
-<h3 id="Deeper-Thinking-about-Control-Rig"><a href="#Deeper-Thinking-about-Control-Rig" class="headerlink" title="Deeper Thinking about Control Rig"></a>Deeper Thinking about Control Rig</h3><h4 id="The-Ultimate-Problem"><a href="#The-Ultimate-Problem" class="headerlink" title="The Ultimate Problem"></a>The Ultimate Problem</h4><p>So the ultimate problem, is that unlike Unity, which is compatible with different skeletons, animation blueprint in UE4 only works with the specific skeletons. If we want to add another bone to the skeleton, lots of work needs to be done. </p>
-<p>I’ll get into this problem with the issue that Wes mentioned in his session. </p>
-<p>Consider a character with a bare hand: </p>
-<p><img src="image2.png" alt="Character  Image"></p>
-<p>We are very sure that in the very beginning of the development of fortnite, no one would think about adding some extra bones under the character’s hand for her claw, like this: </p>
-<p><img src="image3.png" alt="Claw Image"></p>
-<p>Every one was happy with the skeleton, and has created lots of animations using this skeleton. But some day, a designer came and tell the programmer: We are gonna add a claw to the character! </p>
-<p>Boom!!! </p>
-<p>If every animation needs to be re-created, that means so much work, and it is the answer that no one wants to hear. </p>
-<p>But why don’t we drive the claw bones using the character’s finger bones? </p>
-<p>And this is how Control Rig works! </p>
-<p>This article would only show the problem of original animation pipeline. Would like to explain how to build a control rig to solve this problem. </p>
-<p>Anyway, we can use control rig to drive skeleton bones outside animation blueprint. And this is just amazing! </p>
-<h4 id="A-Boon-for-Riggers"><a href="#A-Boon-for-Riggers" class="headerlink" title="A Boon for Riggers"></a>A Boon for Riggers</h4><p>Our old animation pipeline is like: Riggers setup character constraints inside Maya, and animators use this rigged character to produce raw animation, and finally animation programmers use these raw animation materials to build a new animation pipeline inside UE4! </p>
-<p>But the problem is, animation programmers are not professional when dealing with character animation! It is a rigger that knows exactly what drives a bone to a location he desired. </p>
-<p>Riggers and animators always play with constraints and controllers. It would be a huge waste if their work are limited inside DCC tools. In my opinion, it would be a great idea for animators&amp;riggers to setup constraints in UE4. </p>
-<h3 id="Something-Still-Needs-to-be-Done"><a href="#Something-Still-Needs-to-be-Done" class="headerlink" title="Something Still Needs to be Done"></a>Something Still Needs to be Done</h3><p>Currently I use UE4.22.1 and more than a lot improvement on Control Rig needs to be done. And here is what I care most: </p>
-<ul>
-<li><p>How to drive controllers<br>Wes use bone transform evaluated from animation blueprint to drive controller transform. But sometimes we need to drive controller transform directly. I modified the plugin code to make it possible to drive controllers, but still not convenient, though. </p>
-</li>
-<li><p>Control Rig event graph does not work<br>We can setup event graph in Control Rig already, but still cannot call events or interface functions in Control Rig. That is terrible… </p>
-</li>
-<li><p>Nodes are not powerful enough<br>I have used control rig for quite a few days. And I have to create some customized nodes for my purposes. It might be someday to make it open-source… </p>
-</li>
-</ul>
+        <p>If by any chance that you encounter a crash when open a control rig file, this article might help you. </p>
+<hr>
+<h2 id="How-I-met-this-problem"><a href="#How-I-met-this-problem" class="headerlink" title="How I met this problem?"></a>How I met this problem?</h2><p>Actually… I do have no idea in the very beginning. Since I am doing some customization and have made lots of modification to the plugin code. Actually it worked fine and crash occurred in the next day. </p>
+<p>And the crash is like this: </p>
+<p><img src="crash.png" alt="Crash"></p>
+<p><img src="crash call stack.png" alt="Call Stack"></p>
+<h2 id="What-is-this-problem"><a href="#What-is-this-problem" class="headerlink" title="What is this problem?"></a>What is this problem?</h2><p>It seems that <code>FControlRigEitor::GetAssetEditorModeManager()</code> function returns a nullptr? Which means there is something wrong with the editor. </p>
+<p>Now let’s see where function <code>SetAssetEditorModeManager</code> is called. According to the code comments, control rig editor is much the same as Animation Blueprint Editor, so I’ll check anim bp editor source code. </p>
+<p>I finally found call stack like this: </p>
+<p><img src="control rig editor.png" alt="Anim BP Call Stack"></p>
+<p>So… Yes! This should be something wrong about <code>persona</code> viewport. </p>
+<h2 id="How-to-solve-this-problem"><a href="#How-to-solve-this-problem" class="headerlink" title="How to solve this problem?"></a>How to solve this problem?</h2><p>Firstly, I’ll add an <code>if... else</code> condition to check if function <code>GetAssetEditorModeManager()</code> returns null to avoid crash. </p>
+<p><img src="add guard.png" alt="Add a guard"></p>
+<p>And control rig file was opened successfully. Only with viewport closed. </p>
+<p><img src="open file.png" alt="Open file"></p>
+<p>Oh… I see! The problem is that I closed the viewport before exit UE4, and this result in function <code>GetAssetEditorModeManager()</code> returning null. </p>
+<p>To prove this, I re-opened the viewport, and exit UE4, then revert my modification, compile, yep!!! It worked! </p>
+<h2 id="Final-result"><a href="#Final-result" class="headerlink" title="Final result"></a>Final result</h2><p>So the final result, is to add a guard to function <code>GetAssetEditorModeManager()</code> to avoid crash. </p>
+<p>And remember to add a guard to <code>GetEditMode()</code> because this function would call function <code>GetAssetEditorModeManager()</code> without check.<br><img src="geteditmode.png" alt="GetEditMode"></p>
+<p>Hope this article could help you… </p>
 
       
     </div>
@@ -528,15 +510,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/05/17/control-rig-not-work-in-ue-standalone-mode/" rel="next" title="Control Rig not Work in UE Standalone Mode">
+                <i class="fa fa-chevron-left"></i> Control Rig not Work in UE Standalone Mode
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/16/tool-tips-for-ue4-animation-programming/" rel="prev" title="Tool tips for ue4 animation programming">
-                Tool tips for ue4 animation programming <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -693,7 +675,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Control-Rig"><span class="nav-number">1.</span> <span class="nav-text">What is Control Rig?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deeper-Thinking-about-Control-Rig"><span class="nav-number">1.1.</span> <span class="nav-text">Deeper Thinking about Control Rig</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#The-Ultimate-Problem"><span class="nav-number">1.1.1.</span> <span class="nav-text">The Ultimate Problem</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A-Boon-for-Riggers"><span class="nav-number">1.1.2.</span> <span class="nav-text">A Boon for Riggers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Something-Still-Needs-to-be-Done"><span class="nav-number">1.2.</span> <span class="nav-text">Something Still Needs to be Done</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#How-I-met-this-problem"><span class="nav-number">1.</span> <span class="nav-text">How I met this problem?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-this-problem"><span class="nav-number">2.</span> <span class="nav-text">What is this problem?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-solve-this-problem"><span class="nav-number">3.</span> <span class="nav-text">How to solve this problem?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Final-result"><span class="nav-number">4.</span> <span class="nav-text">Final result</span></a></li></ol></div>
             
 
           </div>

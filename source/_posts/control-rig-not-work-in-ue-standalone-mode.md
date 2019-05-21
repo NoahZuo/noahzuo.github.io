@@ -8,7 +8,7 @@ description: It seemes that Control Rig animation node does not work in UE stand
 
 ---
 
-We currently customized our own control rig system, and it works fine in editor, but it does not work in standalone mode. 
+We are currently developing our own control rig system, and it works fine in editor, but it does not work in standalone mode. 
 
 ![control rig system](control rig system.png)
 
@@ -42,4 +42,3 @@ Just place file `AnimGraphNode_Control.cpp` and `AnimGraphNode_Control.h` in the
 
 And just add `"AnimGraph"`to the PrivateDependencyModuleNames in file `ControlRigDeveloper.Build.cs`
 ![CS File](csFile.png)
-And it worked! 

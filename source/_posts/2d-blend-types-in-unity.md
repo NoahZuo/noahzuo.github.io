@@ -35,7 +35,7 @@ Let's take a look at how Unity tell us about Simple Directional:
 
 __A motion position in (0, 0) makes a huge difference. __
 
-If your blend position is _(0, 0)_, and there is a motion at position _(0, 0)_. Then this motion would be full-weight. 
+If your blend position is _(0, 0)_, and there is a motion field at position _(0, 0)_. Then this motion field would be full-weight. 
 
 ![Simple Directional](simple directional.png)
 
@@ -49,17 +49,21 @@ __Also... Do not place more than 1 motion in position _(0, 0)_, function would d
 
 ### If the blend position is not _(0, 0)_
 
-If the blend position is not _(0, 0)_, all motion field would be traversed. The most clockwise-closer and anti-clockwise-closer motion field(A and B) would be found. And a triangle with points (A, B and origin point) would be formed, weight of each point would be calculated through [Barycentric Coordinate System](https://en.wikipedia.org/wiki/Barycentric_coordinate_system). 
+If the blend position is not _(0, 0)_, all motion field would be traversed. The clockwise-closest and anti-clockwise-closest motion field(A and B) would be found. 
+
+![Simple directional 5](simple directional5.png)
+
+And a triangle with points (A, B and origin point) would be formed, weight of each point would be calculated through [Barycentric Coordinate System](https://en.wikipedia.org/wiki/Barycentric_coordinate_system). 
 
 #### If there is a motion field in position _(0, 0)_
 
-This would be a normal result. Barycentric coordinate of triangle points would be the weights of these three motion fields. 
+This would be the common case. Barycentric coordinate of triangle points would be the weights of these three motion fields. 
 
 ![Simple Directional 3](simple directional3.png)
 
 #### If there is not a motion field in position _(0, 0)_
 
-If there is not a motion field in position _(0, 0)_. Weight of point A and B would be kept, and the weight of the original point would be given to every point. 
+If there is not a motion field in position _(0, 0)_. Weight of point _A_ and _B_ would be kept, and the weight of the point _O_ would be given to every point. 
 
 That means, a shared weight would be add to every motion field (including point A and B). 
 
@@ -75,13 +79,13 @@ Unity has its complicate algorithm about weight&neighborhood calculation. And I 
 
 ![Freeform Directional](Freeform Directional.png)
 
-In general, the final result heavily depends on not only the angel between vectors, but also the magnitude of each vector. As a result, this blend type allows multiple existences of motion field in the same direction: 
+In general, the final result heavily depends on not only the angle between vectors, but also the magnitude of each vector. As a result, this blend type allows multiple existences of motion field in the same direction: 
 
 ![Freeform Directional 2](Freeform Directional2.png)
 
 ## Freeform Cartesian
 
-Freeform Cartesian blend type also has neighbor list stuff. But Unity does not care about angel with this blend type. Instead, only positions are concerned. 
+Freeform Cartesian blend type also has neighbor list stuff. But Unity does not care about angle with this blend type. Instead, only positions are concerned. 
 
 This is much the same as 2D Blend Space in Unreal Engine 4. And it is the most frequently-used blend type in our Unity project. 
 

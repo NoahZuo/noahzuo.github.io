@@ -106,11 +106,12 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/simple%20directional.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/simple%20directional2.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/simple%20directional5.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/simple%20directional3.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/simple%20directional4.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/Freeform%20Directional.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/21/2d-blend-types-in-unity/Freeform%20Directional2.png">
-<meta property="og:updated_time" content="2019-05-23T13:45:04.000Z">
+<meta property="og:updated_time" content="2019-05-24T13:09:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2D Blend Types in Unity">
 <meta name="twitter:description" content="This article give details about 2D blend types in Unity animation blend tree node.">
@@ -408,7 +409,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-05-23 21:45:04" itemprop="dateModified" datetime="2019-05-23T21:45:04+08:00">2019-05-23</time>
+                <time title="Modified: 2019-05-24 21:09:38" itemprop="dateModified" datetime="2019-05-24T21:09:38+08:00">2019-05-24</time>
               
             
           </span>
@@ -472,25 +473,27 @@
 <p><strong>2D Simple Directional</strong>: Best used when your motions represent different directions, such as<br>“walk forward”, “walk backward”, “walk left”, and “walk right”, or “aim<br>up”, “aim down”, “aim left”, and “aim right”. Optionally a single motion<br>at position (0, 0) can be included, such as “idle” or “aim straight”.<br>In the Simple Directional type there should <em>not</em> be multiple motions in the same direction, such as “walk forward” and “run forward”.</p>
 </blockquote>
 <h3 id="If-the-blend-position-is-0-0"><a href="#If-the-blend-position-is-0-0" class="headerlink" title="If the blend position is (0, 0)"></a>If the blend position is <em>(0, 0)</em></h3><p><strong>A motion position in (0, 0) makes a huge difference. </strong></p>
-<p>If your blend position is <em>(0, 0)</em>, and there is a motion at position <em>(0, 0)</em>. Then this motion would be full-weight. </p>
+<p>If your blend position is <em>(0, 0)</em>, and there is a motion field at position <em>(0, 0)</em>. Then this motion field would be full-weight. </p>
 <p><img src="simple directional.png" alt="Simple Directional"></p>
 <p>If there is not a motion at position <em>(0, 0)</em>. Then all motion would have an averaged weight. No matter what the motion position is. </p>
 <p><img src="simple directional2.png" alt="Simple Directional 2"></p>
 <p>Surprised, huh? Some developers might believe that a motion closer to the origin point would have a larger weight, but actually… it’s not. </p>
 <p><strong>Also… Do not place more than 1 motion in position <em>(0, 0)</em>, function would directly return and all weight would be 0.</strong> </p>
-<h3 id="If-the-blend-position-is-not-0-0"><a href="#If-the-blend-position-is-not-0-0" class="headerlink" title="If the blend position is not (0, 0)"></a>If the blend position is not <em>(0, 0)</em></h3><p>If the blend position is not <em>(0, 0)</em>, all motion field would be traversed. The most clockwise-closer and anti-clockwise-closer motion field(A and B) would be found. And a triangle with points (A, B and origin point) would be formed, weight of each point would be calculated through <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">Barycentric Coordinate System</a>. </p>
-<h4 id="If-there-is-a-motion-field-in-position-0-0"><a href="#If-there-is-a-motion-field-in-position-0-0" class="headerlink" title="If there is a motion field in position (0, 0)"></a>If there is a motion field in position <em>(0, 0)</em></h4><p>This would be a normal result. Barycentric coordinate of triangle points would be the weights of these three motion fields. </p>
+<h3 id="If-the-blend-position-is-not-0-0"><a href="#If-the-blend-position-is-not-0-0" class="headerlink" title="If the blend position is not (0, 0)"></a>If the blend position is not <em>(0, 0)</em></h3><p>If the blend position is not <em>(0, 0)</em>, all motion field would be traversed. The clockwise-closest and anti-clockwise-closest motion field(A and B) would be found. </p>
+<p><img src="simple directional5.png" alt="Simple directional 5"></p>
+<p>And a triangle with points (A, B and origin point) would be formed, weight of each point would be calculated through <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">Barycentric Coordinate System</a>. </p>
+<h4 id="If-there-is-a-motion-field-in-position-0-0"><a href="#If-there-is-a-motion-field-in-position-0-0" class="headerlink" title="If there is a motion field in position (0, 0)"></a>If there is a motion field in position <em>(0, 0)</em></h4><p>This would be the common case. Barycentric coordinate of triangle points would be the weights of these three motion fields. </p>
 <p><img src="simple directional3.png" alt="Simple Directional 3"></p>
-<h4 id="If-there-is-not-a-motion-field-in-position-0-0"><a href="#If-there-is-not-a-motion-field-in-position-0-0" class="headerlink" title="If there is not a motion field in position (0, 0)"></a>If there is not a motion field in position <em>(0, 0)</em></h4><p>If there is not a motion field in position <em>(0, 0)</em>. Weight of point A and B would be kept, and the weight of the original point would be given to every point. </p>
+<h4 id="If-there-is-not-a-motion-field-in-position-0-0"><a href="#If-there-is-not-a-motion-field-in-position-0-0" class="headerlink" title="If there is not a motion field in position (0, 0)"></a>If there is not a motion field in position <em>(0, 0)</em></h4><p>If there is not a motion field in position <em>(0, 0)</em>. Weight of point _A_ and _B_ would be kept, and the weight of the point _O_ would be given to every point. </p>
 <p>That means, a shared weight would be add to every motion field (including point A and B). </p>
 <p><img src="simple directional4.png" alt="Simple Directional 4"></p>
 <h2 id="Freeform-Directional"><a href="#Freeform-Directional" class="headerlink" title="Freeform Directional"></a>Freeform Directional</h2><p>The Freeform stuff is much more complicated. And frankly speaking, it is too complicate to describe the whole algorithm in this article. </p>
 <p>Well… In short, every motion field has a neighbor list which contains what is so called <em>neighborhoods</em> of each  motion field. </p>
 <p>Unity has its complicate algorithm about weight&amp;neighborhood calculation. And I am not sure whether I am allowed to write it down in an article. Let’s make vector from the origin to the blend position _v0_, and make vectors from the origin to the motion fields _v1_, _v2_, _v3_ and _v4_ like this: </p>
 <p><img src="Freeform Directional.png" alt="Freeform Directional"></p>
-<p>In general, the final result heavily depends on not only the angel between vectors, but also the magnitude of each vector. As a result, this blend type allows multiple existences of motion field in the same direction: </p>
+<p>In general, the final result heavily depends on not only the angle between vectors, but also the magnitude of each vector. As a result, this blend type allows multiple existences of motion field in the same direction: </p>
 <p><img src="Freeform Directional2.png" alt="Freeform Directional 2"></p>
-<h2 id="Freeform-Cartesian"><a href="#Freeform-Cartesian" class="headerlink" title="Freeform Cartesian"></a>Freeform Cartesian</h2><p>Freeform Cartesian blend type also has neighbor list stuff. But Unity does not care about angel with this blend type. Instead, only positions are concerned. </p>
+<h2 id="Freeform-Cartesian"><a href="#Freeform-Cartesian" class="headerlink" title="Freeform Cartesian"></a>Freeform Cartesian</h2><p>Freeform Cartesian blend type also has neighbor list stuff. But Unity does not care about angle with this blend type. Instead, only positions are concerned. </p>
 <p>This is much the same as 2D Blend Space in Unreal Engine 4. And it is the most frequently-used blend type in our Unity project. </p>
 <h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><p>As for performance, the <code>simple directional</code> should be the cheapest and the <code>freeform directional</code> should be the most expensive. You can choose what you need most to achieve what you want. </p>
 

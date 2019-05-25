@@ -96,23 +96,28 @@
 
 
 
-  <meta name="description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
-<meta name="keywords" content="Houdini,PCG">
+  <meta name="description" content="This article gives a underlying implementation of animation blend space of UE4.">
+<meta name="keywords" content="Animation,UE4,Programming">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Create a Rounded Star Mesh in Houdini">
-<meta property="og:url" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/index.html">
+<meta property="og:title" content="Deep Understanding of Blend Space in UE4">
+<meta property="og:url" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
+<meta property="og:description" content="This article gives a underlying implementation of animation blend space of UE4.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/circle%20Node.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/groupbyrange.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/transform.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/divide.png">
-<meta property="og:updated_time" content="2019-05-18T07:52:58.000Z">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/GridOptionsImage.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/TriangulationList.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/Delaunay%20Triangulation.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/Grid%20Info.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/Grid%20Info2.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/Samples.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/Grid%20We%20Look%20For.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/axis%20interpolation.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/target%20weight%20interpolation.png">
+<meta property="og:updated_time" content="2019-05-25T15:04:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Create a Rounded Star Mesh in Houdini">
-<meta name="twitter:description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
-<meta name="twitter:image" content="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/circle%20Node.png">
+<meta name="twitter:title" content="Deep Understanding of Blend Space in UE4">
+<meta name="twitter:description" content="This article gives a underlying implementation of animation blend space of UE4.">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/GridOptionsImage.png">
 
 
 
@@ -120,7 +125,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/">
+  <link rel="canonical" href="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/">
 
 
 
@@ -130,7 +135,7 @@
   };
 </script>
 
-  <title>Create a Rounded Star Mesh in Houdini | Noah Zuo's Blog</title>
+  <title>Deep Understanding of Blend Space in UE4 | Noah Zuo's Blog</title>
   
 
 
@@ -346,7 +351,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/17/create-a-rounded-star-mesh-in-houdini/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/25/deep-understanding-of-blendspace-in-ue4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -363,7 +368,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Create a Rounded Star Mesh in Houdini
+          <h1 class="post-title" itemprop="name headline">Deep Understanding of Blend Space in UE4
 
               
             
@@ -389,24 +394,12 @@
                 
               
 
-              <time title="Created: 2019-05-17 15:49:51" itemprop="dateCreated datePublished" datetime="2019-05-17T15:49:51+08:00">2019-05-17</time>
+              <time title="Created: 2019-05-25 14:14:51 / Modified: 23:04:16" itemprop="dateCreated datePublished" datetime="2019-05-25T14:14:51+08:00">2019-05-25</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-05-18 15:52:58" itemprop="dateModified" datetime="2019-05-18T15:52:58+08:00">2019-05-18</time>
               
             
           </span>
@@ -423,7 +416,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Houdini/" itemprop="url" rel="index"><span itemprop="name">Houdini</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
 
                 
                 
@@ -444,7 +437,7 @@
           
 
           
-            <div class="post-description">This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.</div>
+            <div class="post-description">This article gives a underlying implementation of animation blend space of UE4.</div>
           
 
         </div>
@@ -460,14 +453,32 @@
       
 
       
-        <p>So… How to create a rounded star mesh in Houdini? </p>
-<ol>
-<li>Add a <code>geometry</code> node, delete original <code>file</code> node. </li>
-<li>create a <code>circle</code> node, Change <code>primitive type</code> to <code>polygon</code>:<br><img src="circle Node.png" alt="Circle Node"></li>
-<li>Add a <code>group range</code> node and wire the <code>circle</code> node into it, set the <code>group</code> to <code>even</code>, <code>group type</code> to <code>Points</code>, <code>Range filter</code> to <code>Select 1 of 2</code>:<br><img src="groupbyrange.png" alt="Group by range"></li>
-<li>Add a <code>Transform</code> node and wire the <code>group range</code> node into it, set the <code>Group</code> to <code>even</code> and set the <code>Uniform scale</code> to <code>0.5</code>:<br><img src="transform.png" alt="Transform"></li>
-<li>Add a <code>Divide</code> node and wire the <code>Transform</code> node into it. Now we have a final rounded star mesh and are ready to export it as a .fbx file:<br><img src="divide.png" alt="Divide"></li>
-</ol>
+        <p>Epic has already give <a href="https://docs.unrealengine.com/en-us/Engine/Animation/Blendspaces" target="_blank" rel="noopener">documentation about blend spaces in UE4</a>, though. It is necessary for me to get to know what is happening in low-level when we run a blend space in an animation blueprint. </p>
+<h2 id="What-is-Happening-in-Blend-Space-Editor"><a href="#What-is-Happening-in-Blend-Space-Editor" class="headerlink" title="What is Happening in Blend Space Editor?"></a>What is Happening in Blend Space Editor?</h2><p>When we are going to play with a blend space, we have to set up the horizontal&amp;vertical axis settings in Editor. And I assume you have basic knowledge about blend space editor, if not, please refer to the <a href="https://docs.unrealengine.com/en-US/engine/animation/blendspaces/editor" target="_blank" rel="noopener">official documentation</a>. </p>
+<p>In general, you can setup how final pose is interpolated between animations in the Grid Editor: </p>
+<p><img src="GridOptionsImage.png" alt="Grid Option"></p>
+<p>After you have done with <code>Axis Settings</code> and <code>Blend Samples</code>, or modify those settings, data would be re-sampled and grid elements would be re-generated. </p>
+<h3 id="Triangulation"><a href="#Triangulation" class="headerlink" title="Triangulation"></a>Triangulation</h3><p>If you hit the <code>Show Triangulation</code> button, you can see that all sample points forming a triangle list: </p>
+<p><img src="TriangulationList.png" alt="Triangulation List"></p>
+<p>UE4 use <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation" target="_blank" rel="noopener">Delaunay triangulation</a> for triangulation because we need to interpolate inside a triangle. And Delaunay triangulation tend to avoid sliver triangles. I will post an article about Delaunay triangulation some day. </p>
+<p><img src="Delaunay Triangulation.png" alt="Delaunay Triangulation"></p>
+<h3 id="Generate-Grid-Element-Information"><a href="#Generate-Grid-Element-Information" class="headerlink" title="Generate Grid Element Information"></a>Generate Grid Element Information</h3><p>We need to calculate additional information for each grid point after triangulation. In particular, index and weight of each vertice of the triangle that this grid point locates. </p>
+<p><img src="Grid Info.png" alt="Grid Info VS"></p>
+<p><img src="Grid Info2.png" alt="Grid Info Engine"></p>
+<p>As you can see in the image above, each grid point contains index and weight information. Such information would be stored along with asset. </p>
+<h2 id="How-are-Animations-Sampled"><a href="#How-are-Animations-Sampled" class="headerlink" title="How are Animations Sampled?"></a>How are Animations Sampled?</h2><p>We need a 2D coordinate to tell the blend space what we want. But how on earth are those animation sampled? How to get the weight of each animation? </p>
+<p><img src="Samples.png" alt="Sample Weights"></p>
+<p>The calculation is truly easy. Firstly we’ll determine which grid our blend position locate in: </p>
+<p><img src="Grid We Look For.png" alt="Grid we need"></p>
+<p>Then we can get each point’s information like what we explained above. Then we can easily bi-interpolate between these values, and get the final sample weights we need. </p>
+<h2 id="Blend-Space-Interpolation"><a href="#Blend-Space-Interpolation" class="headerlink" title="Blend Space Interpolation"></a>Blend Space Interpolation</h2><p>A lot of work has been done in UE4 to give a good blending effect between animations. </p>
+<h3 id="Axis-Interpolation"><a href="#Axis-Interpolation" class="headerlink" title="Axis Interpolation"></a>Axis Interpolation</h3><p>UE4 allows us to interpolate our axis parameter value. If Interpolation Time has inputs, the real blend position would be a interpolation between our old sample value and the new value. </p>
+<p><img src="axis interpolation.png" alt="Axis interpolation"></p>
+<h3 id="Target-Weight-Interpolation"><a href="#Target-Weight-Interpolation" class="headerlink" title="Target Weight Interpolation"></a>Target Weight Interpolation</h3><p>Target weight interpolation is a fantastic feature for locomotion. This allows us to directly interpolate between weights instead of parameters. </p>
+<p><img src="target weight interpolation.png" alt="Target Weight Interpolation"></p>
+<p>For example, if we interpolate input, when we move from left to right rapidly, we’ll interpolate through forward animation, and this might not be what we want. </p>
+<p>If we use target weight interpolation, forward animation would be skipped, and it will look much better! </p>
+<p>And actually this is what Unity need most. I have add this feature into our customized Unity Engine, and it works in <em>Call of Duty Mobile</em> and <em>Cross Fire Mobile</em>, it works great! </p>
 
       
     </div>
@@ -491,9 +502,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Houdini/" rel="tag"># Houdini</a>
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
           
-            <a href="/tags/PCG/" rel="tag"># PCG</a>
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+            <a href="/tags/Programming/" rel="tag"># Programming</a>
           
         </div>
       
@@ -506,8 +519,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/16/tool-tips-for-ue4-animation-programming/" rel="next" title="Tool tips for ue4 animation programming">
-                <i class="fa fa-chevron-left"></i> Tool tips for ue4 animation programming
+              <a href="/2019/05/21/2d-blend-types-in-unity/" rel="next" title="2D Blend Types in Unity">
+                <i class="fa fa-chevron-left"></i> 2D Blend Types in Unity
               </a>
             
           </div>
@@ -515,10 +528,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/17/control-rig-not-work-in-ue-standalone-mode/" rel="prev" title="Control Rig not Work in UE Standalone Mode">
-                Control Rig not Work in UE Standalone Mode <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -562,8 +571,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -659,6 +677,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Happening-in-Blend-Space-Editor"><span class="nav-number">1.</span> <span class="nav-text">What is Happening in Blend Space Editor?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Triangulation"><span class="nav-number">1.1.</span> <span class="nav-text">Triangulation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-Grid-Element-Information"><span class="nav-number">1.2.</span> <span class="nav-text">Generate Grid Element Information</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-are-Animations-Sampled"><span class="nav-number">2.</span> <span class="nav-text">How are Animations Sampled?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Blend-Space-Interpolation"><span class="nav-number">3.</span> <span class="nav-text">Blend Space Interpolation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Axis-Interpolation"><span class="nav-number">3.1.</span> <span class="nav-text">Axis Interpolation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Target-Weight-Interpolation"><span class="nav-number">3.2.</span> <span class="nav-text">Target Weight Interpolation</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       

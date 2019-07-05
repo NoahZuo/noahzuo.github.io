@@ -31,39 +31,39 @@ Let's take a look at how Unity tell us about Simple Directional:
 > at position (0, 0) can be included, such as “idle” or “aim straight”. 
 > In the Simple Directional type there should *not* be multiple motions in the same direction, such as “walk forward” and “run forward”.
 
-### If the blend position is _(0, 0)_
+### If the blend position is *(0, 0)*
 
-__A motion position in (0, 0) makes a huge difference. __
+**A motion position in (0, 0) makes a huge difference. **
 
-If your blend position is _(0, 0)_, and there is a motion field at position _(0, 0)_. Then this motion field would be full-weight. 
+If your blend position is *(0, 0)*, and there is a motion field at position *(0, 0)*. Then this motion field would be full-weight. 
 
 ![Simple Directional](simple directional.png)
 
-If there is not a motion at position _(0, 0)_. Then all motion would have an averaged weight. No matter what the motion position is. 
+If there is not a motion at position *(0, 0)*. Then all motion would have an averaged weight. No matter what the motion position is. 
 
 ![Simple Directional 2](simple directional2.png)
 
 Surprised, huh? Some developers might believe that a motion closer to the origin point would have a larger weight, but actually... it's not. 
 
-__Also... Do not place more than 1 motion in position _(0, 0)_, function would directly return and all weight would be 0.__ 
+**Also... Do not place more than 1 motion in position *(0, 0)*, function would directly return and all weight would be 0.** 
 
-### If the blend position is not _(0, 0)_
+### If the blend position is not *(0, 0)*
 
-If the blend position is not _(0, 0)_, all motion field would be traversed. The clockwise-closest and anti-clockwise-closest motion field(A and B) would be found. 
+If the blend position is not *(0, 0)*, all motion field would be traversed. The clockwise-closest and anti-clockwise-closest motion field(A and B) would be found. 
 
 ![Simple directional 5](simple directional5.png)
 
 And a triangle with points (A, B and origin point) would be formed, weight of each point would be calculated through [Barycentric Coordinate System](https://en.wikipedia.org/wiki/Barycentric_coordinate_system). 
 
-#### If there is a motion field in position _(0, 0)_
+#### If there is a motion field in position *(0, 0)*
 
 This would be the common case. Barycentric coordinate of triangle points would be the weights of these three motion fields. 
 
 ![Simple Directional 3](simple directional3.png)
 
-#### If there is not a motion field in position _(0, 0)_
+#### If there is not a motion field in position *(0, 0)*
 
-If there is not a motion field in position _(0, 0)_. Weight of point _A_ and _B_ would be kept, and the weight of the point _O_ would be given to every point. 
+If there is not a motion field in position *(0, 0)*. Weight of point *A* and *B* would be kept, and the weight of the point *O* would be given to every point. 
 
 That means, a shared weight would be add to every motion field (including point A and B). 
 
@@ -73,9 +73,9 @@ That means, a shared weight would be add to every motion field (including point 
 
 The Freeform stuff is much more complicated. And frankly speaking, it is too complicate to describe the whole algorithm in this article. 
 
-Well... In short, every motion field has a neighbor list which contains what is so called _neighborhoods_ of each  motion field. 
+Well... In short, every motion field has a neighbor list which contains what is so called *neighborhoods* of each  motion field. 
 
-Unity has its complicate algorithm about weight&neighborhood calculation. And I am not sure whether I am allowed to write it down in an article. Let's make vector from the origin to the blend position _v0_, and make vectors from the origin to the motion fields _v1_, _v2_, _v3_ and _v4_ like this: 
+Unity has its complicate algorithm about weight&neighborhood calculation. And I am not sure whether I am allowed to write it down in an article. Let's make vector from the origin to the blend position *v0*, and make vectors from the origin to the motion fields *v1*,*v2*, *v3* and *v4* like this: 
 
 ![Freeform Directional](Freeform Directional.png)
 

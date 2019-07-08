@@ -16,7 +16,7 @@ description: These are some learning notes about Smashing the Stack while taking
  - How a process is organized in memory? 
 
    Processes are divided into three regions: Text, Data and Stack. 
-   ![Process Memory Regions]("Process Memory Regions.png")	
+   ![Process Memory Regions](Process Memory Regions.png)	
 
 	- Text Region
 	
@@ -123,7 +123,4 @@ Eventually, `(*ret) += 8; `would skip `x = 1; ` statement in the main function.
 
 And this is really cool! We can influence code execution outside the current stack. 
 
-
-
-## Introduction to `execve` 
 

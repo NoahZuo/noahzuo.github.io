@@ -1,5 +1,5 @@
 ---
-title: GJK(Gilbert-Johnson-Keerthi) algorithm for collision detection 
+title: GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection 
 mathjax: true
 tags: 
  - Game Physics

@@ -28,3 +28,27 @@ Caution: This shall cost some performance!
 
 Bone hierarchy is an array-based tree. Thus if you want to convert all bone to local space, be sure to traverse from end to the beginning. 
 
+
+
+### Don't use `TMap` for your own `AnimNode`
+
+Well... at lease not in 4.20
+Using `TMap` causing crash when hitting compile button or save. 
+
+```cpp
+// FAnimBlueprintCompilerContext::CreateEvaluationHandlerStruct
+// Does it get serviced by this handler?
+		if (FAnimNodeSinglePropertyHandler* SourceInfo = Record.ServicedProperties.Find(PropertyName))
+		{
+			if (TargetPin->PinType.IsArray())
+			{
+				// ... 
+			}
+			else
+			{
+				// Causing crash here. 
+				check(!TargetPin->PinType.IsContainer())
+				// ...
+			}
+		}
+```

@@ -5,6 +5,7 @@ tags:
  - Animation
  - Programming
 category: UE4
+date: 2019-09-11 13:40:12
 description: This article introduces the animation framework in ue4, in a programmer's perspective. 
 ---
 

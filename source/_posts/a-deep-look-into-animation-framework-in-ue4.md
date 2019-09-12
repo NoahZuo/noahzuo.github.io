@@ -8,9 +8,14 @@ category: UE4
 description: This article introduces the animation framework in ue4, in a programmer's perspective. 
 ---
 
+
 It seems that Epic prefers telling developers how to use animation blueprint in Unreal Engine 4. But me, as a programmer, still needs to get to know what the animation system actually works underlying. 
 
-## ## Relevant Data Structure
+
+
+## Relevant Data Structure
+
+
 
 ### `USkeletalMeshComponent`
 

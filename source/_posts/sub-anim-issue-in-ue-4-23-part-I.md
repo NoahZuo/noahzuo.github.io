@@ -125,7 +125,7 @@ if(AnimClassInterface)
 
 
 
-### Method 2: Modify the modify resource 
+### Method 2: Modify the Resource 
 
 If you tend to keep consistent with the official engine, you need to follow these steps: 
 

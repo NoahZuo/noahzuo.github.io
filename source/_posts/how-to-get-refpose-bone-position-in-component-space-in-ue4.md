@@ -56,5 +56,5 @@ FTransform get_ref_pose_single_bone_comp_space_transform(FReferenceSkeleton inSk
 
 ## How to Get the Bone Position of the Current Pose? 
 
-We can use `USkeletalMeshComponent::GetPreviousComponentTransformsArray()` to get current bone position in component space. 
+We can use `USkeletalMeshComponent::GetComponentSpaceTransforms()` to get current bone position in component space. 
 

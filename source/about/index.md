@@ -8,7 +8,7 @@ Welcome to my blog!
 
 ## About Me
 
-I am Noah Zuo from China. Love coding , reading and my girlfriend... 
+A passionate coder, reader and a professional coffee drinker... 
 
 I already have some Chinese blog accounts in both CSDN and Jianshu. I'll set up my English blog here. 
 

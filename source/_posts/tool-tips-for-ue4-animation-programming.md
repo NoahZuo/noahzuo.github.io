@@ -52,3 +52,43 @@ Using `TMap` causing crash when hitting compile button or save.
 			}
 		}
 ```
+
+
+
+### Watch out out bone order in your `EvaluateSkeletalControl_AnyThread` function. 
+
+See `FCSPose<PoseType>::LocalBlendCSBoneTransforms` function. There is a *Parents before Children* order check in this function. 
+
+```cpp
+template<class PoseType>
+void FCSPose<PoseType>::LocalBlendCSBoneTransforms(const TArray<struct FBoneTransform>& BoneTransforms, float Alpha)
+{
+	SCOPE_CYCLE_COUNTER(STAT_LocalBlendCSBoneTransforms);
+
+	// if Alpha is small enough, skip
+	if (Alpha < ZERO_ANIMWEIGHT_THRESH)
+	{
+		return;
+	}
+
+#if DO_CHECK
+	if (BoneTransforms.Num() > 0)
+	{
+		FCompactPoseBoneIndex LastIndex(BoneTransforms[0].BoneIndex);
+		// Make sure bones are sorted in "Parents before Children" order.
+		for (int32 I = 1; I < BoneTransforms.Num(); ++I)
+		{
+			check(BoneTransforms[I].BoneIndex >= LastIndex);
+			LastIndex = BoneTransforms[I].BoneIndex;
+		}
+	}
+#endif
+    ...
+```
+
+As a result, do add following code to the end of your function: 
+
+```cpp
+OutBoneTransforms.Sort(FCompareBoneTransformIndex());
+```
+

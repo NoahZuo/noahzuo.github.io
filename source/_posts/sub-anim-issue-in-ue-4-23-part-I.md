@@ -4,6 +4,7 @@ mathjax: false
 tags: 
  - UE4
  - Animation
+date: 2019-09-17 17:40:12
 category: UE4
 description: This article briefly tells you some issues I discovered about sub anim input node in UE 4.23. 
 

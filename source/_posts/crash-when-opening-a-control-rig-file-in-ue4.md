@@ -5,6 +5,7 @@ tags:
  - Animation
  - Control Rig
 category: UE4
+date: 2019-05-21 21:29:29
 description: This article introduced how I solve a crash problem when open control rig file in Unreal Engine 4. 
 
 ---

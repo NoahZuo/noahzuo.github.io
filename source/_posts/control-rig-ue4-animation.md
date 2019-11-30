@@ -5,6 +5,7 @@ tags:
  - Animation
  - Control Rig
 category: UE4
+date: 2019-05-17 22:07:17
 description: This article introduced some of my thoughts about control rig system in UE4
 ---
 

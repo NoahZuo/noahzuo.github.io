@@ -4,6 +4,7 @@ tags:
  - Unity
  - Animation
 category: Unity
+date: 2019-05-23 21:45:12
 description: This article give details about 2D blend types in Unity animation blend tree node. 
 
 ---

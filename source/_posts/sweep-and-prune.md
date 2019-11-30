@@ -6,6 +6,7 @@ tags:
  - Programming
  - PhysX
 category: Unity
+date: 2019-8-8 22:19:12
 description: This article tells you something about SAP(sweep and prune) for scene collision detection.  
 
 

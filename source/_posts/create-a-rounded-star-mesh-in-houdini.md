@@ -4,6 +4,7 @@ tags:
  - Houdini
  - PCG
 category: Houdini
+date: 2019-05-18 15:53:17
 description: This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini. 
 ---
 

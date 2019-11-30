@@ -4,6 +4,7 @@ tags:
  - UE4
  - Control Rig
 category: UE4
+date: 2019-05-21 17:19:12
 description: It seemes that Control Rig animation node does not work in UE standalone mode. How should I solve that? 
 
 ---

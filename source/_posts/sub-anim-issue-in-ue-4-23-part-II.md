@@ -6,6 +6,7 @@ tags:
  - Animation
  - Programming
 category: UE4
+date: 2019-10-18 17:19:12
 description: This article briefly tells you some issues I discovered about sub anim input node in UE 4.23. This article would focus on the underlying logic that are causing this issue, compared with part I. 
 
 ---

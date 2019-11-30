@@ -5,6 +5,7 @@ tags:
  - Animation
  - Programming
 category: UE4
+date: 2019-05-11 13:40:12
 description: This article tell you some issue you might encounter while doing animation development in UE4
 ---
 

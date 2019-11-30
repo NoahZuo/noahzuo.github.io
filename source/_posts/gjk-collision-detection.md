@@ -5,6 +5,7 @@ tags:
  - Game Physics
  - Math
 category: Physics
+date: 2019-07-24 17:40:12
 description: This article tells you how GJK algorithm is applied for collision detection. 
 
 

@@ -46,7 +46,7 @@ void FIKChain::ReachTarget(const FVector& InTargetLocation, float InReachPrecisi
 }
 ```
 
-It is easy to tell that for a three-bone(thigh->leg->foot) leg, this node would drawback to a simple two-bone IK. 
+It is easy to tell that for a three-bone(thigh->leg->foot) leg, this solver would eventually fallback to a simple two-bone IK. 
 
 But as for a leg that has more than 3 bones(spider leg or octopus leg), it would perform a [FABRIK](http://www.andreasaristidou.com/FABRIK.html). Since I've already wrote a [blog about FABRIK on csdn](https://blog.csdn.net/noahzuo/article/details/80188366) and I am not going to rewrite it again. 
 

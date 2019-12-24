@@ -96,23 +96,24 @@
 
 
 
-  <meta name="description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
-<meta name="keywords" content="Houdini,PCG">
+  <meta name="description" content="This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.">
+<meta name="keywords" content="Animation,UE4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Create a Rounded Star Mesh in Houdini">
-<meta property="og:url" content="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/index.html">
+<meta property="og:title" content="Turning in Place in UE4">
+<meta property="og:url" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
+<meta property="og:description" content="This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/circle%20Node.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/groupbyrange.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/transform.png">
-<meta property="og:image" content="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/divide.png">
-<meta property="og:updated_time" content="2019-11-30T13:48:29.743Z">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-curve.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-curve.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/custom-curve.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-position.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/turn-anim.gif">
+<meta property="og:updated_time" content="2019-12-24T06:57:58.374Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Create a Rounded Star Mesh in Houdini">
-<meta name="twitter:description" content="This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.">
-<meta name="twitter:image" content="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/circle%20Node.png">
+<meta name="twitter:title" content="Turning in Place in UE4">
+<meta name="twitter:description" content="This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-curve.png">
 
 
 
@@ -120,7 +121,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/">
+  <link rel="canonical" href="http://yoursite.com/2019/12/21/turning-in-place-in-ue/">
 
 
 
@@ -130,7 +131,7 @@
   };
 </script>
 
-  <title>Create a Rounded Star Mesh in Houdini | Noah Zuo's Blog</title>
+  <title>Turning in Place in UE4 | Noah Zuo's Blog</title>
   
 
 
@@ -346,7 +347,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/create-a-rounded-star-mesh-in-houdini/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/21/turning-in-place-in-ue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -363,7 +364,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Create a Rounded Star Mesh in Houdini
+          <h1 class="post-title" itemprop="name headline">Turning in Place in UE4
 
               
             
@@ -389,7 +390,7 @@
                 
               
 
-              <time title="Created: 2019-05-18 15:53:17" itemprop="dateCreated datePublished" datetime="2019-05-18T15:53:17+08:00">2019-05-18</time>
+              <time title="Created: 2019-12-21 21:45:12" itemprop="dateCreated datePublished" datetime="2019-12-21T21:45:12+08:00">2019-12-21</time>
             
 
             
@@ -406,7 +407,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-11-30 21:48:29" itemprop="dateModified" datetime="2019-11-30T21:48:29+08:00">2019-11-30</time>
+                <time title="Modified: 2019-12-24 14:57:58" itemprop="dateModified" datetime="2019-12-24T14:57:58+08:00">2019-12-24</time>
               
             
           </span>
@@ -423,7 +424,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Houdini/" itemprop="url" rel="index"><span itemprop="name">Houdini</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
 
                 
                 
@@ -444,7 +445,7 @@
           
 
           
-            <div class="post-description">This article briefly introduce how to create a rounded star mesh, and export it as a fbx file in houdini.</div>
+            <div class="post-description">This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.</div>
           
 
         </div>
@@ -460,14 +461,36 @@
       
 
       
-        <p>So… How to create a rounded star mesh in Houdini? </p>
+        <p>It remains a huge challenge to turn a character in place for game animation development nowadays. Especially for shooting games with character aiming actions which might causing character turning in any angle. And network replication makes it even more complicated to handle server-client rotation synchronization. </p>
+<p>A good <del>and expensive</del> example is <a href="https://www.unrealengine.com/marketplace/en-US/product/advanced-locomotion-system-v1" target="_blank" rel="noopener">Advanced Locomotion</a> in unreal marketplace. I’ve learned a lot from this project. After breaking down everything in this project, I’ve managed to implement our own character turning system in a UE4 project.  </p>
+<p>There are lots of ways to implement a character turning system in UE4. You can choose to rotate the character directly without applying any animations to the leg. This method is easy to implement, but it might looks fine a decade ago, but it is totally not acceptable for nowadays game. </p>
+<p>A more acceptable method is to apply an animation to character legs. But still, we have several options for this. </p>
+<h2 id="Root-motion-vs-Custom-curve"><a href="#Root-motion-vs-Custom-curve" class="headerlink" title="Root-motion vs Custom curve"></a>Root-motion vs Custom curve</h2><h3 id="Root-motion-method"><a href="#Root-motion-method" class="headerlink" title="Root-motion method"></a>Root-motion method</h3><p>We can create multiple rotation animation with <code>rootmotion for everything</code> enabled for animation blueprint. Thus we can blend between multiple rotation animations to make it work for an arbitrary turning angle. </p>
+<p>Easy enough to implement though, it is not recommended to enable <code>root-motion for everything</code>. Performance would be an issue, but what the most important is that there exists too many bugs about <code>root-motion for everything</code>! </p>
+<p>On the other hand, animation blending between multiple good animation poses does not guarantee a good final pose. Footsteps and character rotation may not match that well. It might be a better option to make your character always turn fixed angles. </p>
+<h3 id="Custom-curve-method"><a href="#Custom-curve-method" class="headerlink" title="Custom curve method"></a>Custom curve method</h3><h4 id="Animation-Curve"><a href="#Animation-Curve" class="headerlink" title="Animation Curve"></a>Animation Curve</h4><p>It is an optional method to rotate character using a custom curve. I used to make it an animation curve like this: </p>
+<p><img src="anim-curve.png" alt="anim-curve"></p>
+<p>But it seems not to be a good choice, well, for a game that <strong>need to keep server-client  synchronization</strong>. The very reason is that <strong>animation curves are evaluated in animation post-evaluation stage, which means you need to have skeleton bones’ transform refreshed on the server.</strong> And this, as we all know, is totally not acceptable. </p>
+<p>You can find following code in <code>USkeletalMeshComponent::PostAnimEvaluation</code> function: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span> (EvaluationContext.bDoEvaluation || EvaluationContext.bDoInterpolation)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// clear morphtarget curve sets since we're going to apply new changes</span></span><br><span class="line">		ResetMorphTargetCurves();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(AnimScriptInstance)</span><br><span class="line">		&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> WITH_EDITOR</span></span><br><span class="line">			GetEditableAnimationCurves() = AnimCurves;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> </span></span><br><span class="line">			<span class="comment">// curve update happens first</span></span><br><span class="line">			AnimScriptInstance-&gt;UpdateCurvesPostEvaluation();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// this is same curves, and we don't have to process same for everything. </span></span><br><span class="line">			<span class="comment">// we just copy curves from main for the case where GetCurveValue works in that instance</span></span><br><span class="line">			<span class="keyword">for</span>(UAnimInstance* SubInstance : SubInstances)</span><br><span class="line">			&#123;</span><br><span class="line">				SubInstance-&gt;CopyCurveValues(*AnimScriptInstance);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+<p>Enable bone transforms on the server is truly not a good choice. </p>
+<p>But if you don’t need a server-client  synchronization, anim curve would be a great way! </p>
+<h4 id="Custom-curve-amp-Notify-state-method"><a href="#Custom-curve-amp-Notify-state-method" class="headerlink" title="Custom curve&amp;Notify state method"></a>Custom curve&amp;Notify state method</h4><p>I choose to use a notify state with a custom curve to accomplish my turning system. </p>
+<p>Firstly, I created a notify state that has a custom curve parameter that indicates turning weight between start and target rotator: </p>
+<p><img src="anim-curve.png" alt="anim-curve"></p>
+<p><img src="custom-curve.png" alt="custom-curve"></p>
+<p>We need to get the current position while playing this animation. There are two ways to get the result: </p>
 <ol>
-<li>Add a <code>geometry</code> node, delete original <code>file</code> node. </li>
-<li>create a <code>circle</code> node, Change <code>primitive type</code> to <code>polygon</code>:<br><img src="circle Node.png" alt="Circle Node"></li>
-<li>Add a <code>group range</code> node and wire the <code>circle</code> node into it, set the <code>group</code> to <code>even</code>, <code>group type</code> to <code>Points</code>, <code>Range filter</code> to <code>Select 1 of 2</code>:<br><img src="groupbyrange.png" alt="Group by range"></li>
-<li>Add a <code>Transform</code> node and wire the <code>group range</code> node into it, set the <code>Group</code> to <code>even</code> and set the <code>Uniform scale</code> to <code>0.5</code>:<br><img src="transform.png" alt="Transform"></li>
-<li>Add a <code>Divide</code> node and wire the <code>Transform</code> node into it. Now we have a final rounded star mesh and are ready to export it as a .fbx file:<br><img src="divide.png" alt="Divide"></li>
+<li>Add an <code>Elapse_Time</code> variable to this notify state, and calculate <code>Elapse_Time / Anim_Length</code> every tick to get the current position. But since <strong>a blueprint notify state can only implement const functions, you need to write this notify state in c++. </strong></li>
+<li>If you are lazy enough like me who don’t like writing c++ code, you can have a montage playing this animation. You need to only get current montage position by <code>AnimInstance-&gt;GetMontagePosition()</code>, then you can easily calculated the current anim position: </li>
 </ol>
+<p><img src="anim-position.png" alt="anim-position"></p>
+<p>In this way you can easily get the current turning weight, and calculate current character rotation value using lerp between rotators. </p>
+<p>As for the animation, we need a character animation that is facing front, but playing a rotation animation at the same time: </p>
+<p><img src="turn-anim.gif" alt="turn-anim"></p>
+<h2 id="Gameplay-Logic"><a href="#Gameplay-Logic" class="headerlink" title="Gameplay Logic"></a>Gameplay Logic</h2><p>We still needs some gameplay logic to make it work on a client-server mode. If you want the character to perform a turning action, you need to call a multi-cast function on the server, to play montage both on ds and client side. </p>
+<p>While playing a turning animation, the ds character rotation is set directly, and character rotation would be replicated to the clients. </p>
+<p>Of course you can also choose to set character rotation both on server and client side. And leave character rotation synchronization after montage has ended. </p>
 
       
     </div>
@@ -491,9 +514,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Houdini/" rel="tag"># Houdini</a>
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
           
-            <a href="/tags/PCG/" rel="tag"># PCG</a>
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
           
         </div>
       
@@ -506,8 +529,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/17/control-rig-ue4-animation/" rel="next" title="Control Rig in UE4 Animation">
-                <i class="fa fa-chevron-left"></i> Control Rig in UE4 Animation
+              <a href="/2019/11/28/leg-ik-in-ue4/" rel="next" title="Leg IK in UE4">
+                <i class="fa fa-chevron-left"></i> Leg IK in UE4
               </a>
             
           </div>
@@ -515,10 +538,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/21/control-rig-not-work-in-ue-standalone-mode/" rel="prev" title="Control Rig not Work in UE Standalone Mode">
-                Control Rig not Work in UE Standalone Mode <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -562,8 +581,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -717,6 +745,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Root-motion-vs-Custom-curve"><span class="nav-number">1.</span> <span class="nav-text">Root-motion vs Custom curve</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Root-motion-method"><span class="nav-number">1.1.</span> <span class="nav-text">Root-motion method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Custom-curve-method"><span class="nav-number">1.2.</span> <span class="nav-text">Custom curve method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Animation-Curve"><span class="nav-number">1.2.1.</span> <span class="nav-text">Animation Curve</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Custom-curve-amp-Notify-state-method"><span class="nav-number">1.2.2.</span> <span class="nav-text">Custom curve&amp;Notify state method</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gameplay-Logic"><span class="nav-number">2.</span> <span class="nav-text">Gameplay Logic</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       

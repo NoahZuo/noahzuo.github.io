@@ -48,3 +48,6 @@ After taking care of sync markers, we need to put those asset player node in a s
 
 
 
+And this is what looks like: 
+
+![final](sync-marker-final.gif)

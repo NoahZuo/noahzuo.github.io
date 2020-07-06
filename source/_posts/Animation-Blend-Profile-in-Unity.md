@@ -25,7 +25,7 @@ Firstly, there shall be a place for us to set blend speed of each bone. Thus, an
 
 ![Avatar Mask](avatarmask.png)
 
-It needs to be concerned that you are guaranteed to have `bone blend speed` larger than 1, otherwise there would be some problem with transition time. 
+It needs to be concerned that you are guaranteed to have `bone blend speed` non-less than 1, otherwise there would be some problem with transition time. 
 
 And then we can set this `blend profile AvatarMask` for each state transtition like this: 
 

@@ -1,6 +1,6 @@
 ---
 title: Animation Blend Profile in Unity
-date: 2020-07-03 17:42:56
+date: 2020-07-07 14:43:56
 tags:
  - Unity
  - Animation
@@ -34,4 +34,20 @@ And then we can set this `blend profile AvatarMask` for each state transtition l
 So it is easy to know that `joint2` would be blended faster than `joint3`: 
 
 ![Blend Profile](blend_profile.gif)
+
+
+
+# Use Animation Blend Profile in BlendTree
+
+Since I've implement a `Blend to Target` feature which allows interpolation of weight rather than blend tree parameters. This is pretty much the same as `Target weight interpolation Speed Per Sec`: 
+
+![Target Blending](Target-blending.png)
+
+Thus it makes it possible for us to add an `Blend Profile` for a `Blend Tree` that enables `Blend To Target`: 
+
+![image-20200707144653913](blend-to-target.png)
+
+This allows us to set blend speed for each bone inside a `Blend Tree`: 
+
+![blendtree-blendprofile](blendtree-blendprofile.gif)
 

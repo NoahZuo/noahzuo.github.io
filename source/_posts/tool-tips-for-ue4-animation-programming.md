@@ -93,3 +93,41 @@ As a result, do add following code to the end of your function:
 OutBoneTransforms.Sort(FCompareBoneTransformIndex());
 ```
 
+### How to get curve data in an `Anim Sequence`? 
+Before Version 4.22: 
+```c++
+	const auto& curveData = inAnimSeq->GetCurveData();
+
+	auto curveUID = inAnimSeq->GetSkeleton()->GetUIDByName(USkeleton::AnimCurveMappingName, inCurveName);
+
+	if (curveUID == SmartName::MaxUID)
+	{
+		success = false;
+		return errorResult;
+	}
+	const FFloatCurve* curve = (const FFloatCurve*)curveData.GetCurveData(curveUID, ERawCurveTrackTypes::RCT_Float);
+
+	success = true; 
+	float result = curve->Evaluate(inTime);
+	return result; 
+```
+
+
+
+After Version 4.22: 
+
+```c++
+	auto curveUID = inAnimSeq->GetSkeleton()->GetUIDByName(USkeleton::AnimCurveMappingName, inCurveName);
+
+	if (curveUID == SmartName::MaxUID)
+	{
+		success = false;
+		return errorResult;
+	}
+
+	return inAnimSeq->EvaluateCurveData(curveUID, inTime);
+
+```
+
+
+

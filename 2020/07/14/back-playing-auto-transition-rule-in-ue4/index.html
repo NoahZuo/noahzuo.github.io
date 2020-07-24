@@ -96,18 +96,22 @@
 
 
 
-  <meta name="description" content="This article briefly tells you some issues I discovered about sub anim input node in UE 4.23.">
+  <meta name="description" content="This article simply tells you how to implement automatic rule based transition for a back-playing animation, which is used in a state machine in UE4.">
 <meta name="keywords" content="Animation,UE4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sub Anim Input Issue in UE 4.23, part I">
-<meta property="og:url" content="http://yoursite.com/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/index.html">
+<meta property="og:title" content="Automatic Rule Based Transition For Back-playing Animation">
+<meta property="og:url" content="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article briefly tells you some issues I discovered about sub anim input node in UE 4.23.">
+<meta property="og:description" content="This article simply tells you how to implement automatic rule based transition for a back-playing animation, which is used in a state machine in UE4.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-30T13:45:34.950Z">
+<meta property="og:image" content="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/jump_land_to_idle.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/yet-another-method.png">
+<meta property="og:image" content="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/arbt.png">
+<meta property="og:updated_time" content="2020-07-24T06:28:26.332Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sub Anim Input Issue in UE 4.23, part I">
-<meta name="twitter:description" content="This article briefly tells you some issues I discovered about sub anim input node in UE 4.23.">
+<meta name="twitter:title" content="Automatic Rule Based Transition For Back-playing Animation">
+<meta name="twitter:description" content="This article simply tells you how to implement automatic rule based transition for a back-playing animation, which is used in a state machine in UE4.">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/jump_land_to_idle.png">
 
 
 
@@ -115,7 +119,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/">
+  <link rel="canonical" href="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/">
 
 
 
@@ -125,7 +129,7 @@
   };
 </script>
 
-  <title>Sub Anim Input Issue in UE 4.23, part I | Noah Zuo's Blog</title>
+  <title>Automatic Rule Based Transition For Back-playing Animation | Noah Zuo's Blog</title>
   
 
 
@@ -341,7 +345,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/14/back-playing-auto-transition-rule-in-ue4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -358,7 +362,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Sub Anim Input Issue in UE 4.23, part I
+          <h1 class="post-title" itemprop="name headline">Automatic Rule Based Transition For Back-playing Animation
 
               
             
@@ -384,7 +388,7 @@
                 
               
 
-              <time title="Created: 2019-09-17 17:40:12" itemprop="dateCreated datePublished" datetime="2019-09-17T17:40:12+08:00">2019-09-17</time>
+              <time title="Created: 2020-07-14 12:43:56" itemprop="dateCreated datePublished" datetime="2020-07-14T12:43:56+08:00">2020-07-14</time>
             
 
             
@@ -401,7 +405,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-11-30 21:45:34" itemprop="dateModified" datetime="2019-11-30T21:45:34+08:00">2019-11-30</time>
+                <time title="Modified: 2020-07-24 14:28:26" itemprop="dateModified" datetime="2020-07-24T14:28:26+08:00">2020-07-24</time>
               
             
           </span>
@@ -439,7 +443,7 @@
           
 
           
-            <div class="post-description">This article briefly tells you some issues I discovered about sub anim input node in UE 4.23.</div>
+            <div class="post-description">This article simply tells you how to implement automatic rule based transition for a back-playing animation, which is used in a state machine in UE4.</div>
           
 
         </div>
@@ -455,33 +459,25 @@
       
 
       
-        <p>Some issues about animation blueprint have just been discovered when I try to upgrade my 4.20 project to 4.23. And it turned out that those issues had caused some trouble to us. </p>
-<p>As a result, it took me several days to dig into this issue, and something seems should be recorded. Hope this could help you some day. </p>
-<h2 id="What-Is-This-Issue"><a href="#What-Is-This-Issue" class="headerlink" title="What Is This Issue?"></a>What Is This Issue?</h2><p>When you try to open an <code>Animation Blueprint</code> <strong>with a <code>Sub Anim Instance</code> node in it</strong>, you may notice that the engine is frozen. And while you check the editor log, you see lots of: </p>
-<blockquote>
-<p> FAnimNode_StateMachine: Bad machine ptr </p>
-</blockquote>
-<p>And you may notice that the engine takes much more time to compile the <code>Animation Blueprint</code> that have a <code>Sub Anim Instance</code> node in it. </p>
-<p>Now you may get the point: This issue is all about the <code>Sub Anim Instance</code> node. </p>
-<h2 id="If-You-Simply-Want-a-Solution"><a href="#If-You-Simply-Want-a-Solution" class="headerlink" title="If You Simply Want a Solution"></a>If You Simply Want a Solution</h2><h3 id="Method-1-Modify-the-engine-code"><a href="#Method-1-Modify-the-engine-code" class="headerlink" title="Method 1: Modify the engine code"></a>Method 1: Modify the engine code</h3><p>By modify the engine code, you can fix the issue once and for all. </p>
-<p>Modify the  <code>FAnimInstanceProxy::InitializeRootNode</code>  function in the <code>AnimInstanceProxy.cpp</code> file. </p>
-<p>You need to move </p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (UStructProperty* Property : AnimClassInterface-&gt;GetAnimNodeProperties())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (Property-&gt;Struct-&gt;IsChildOf(FAnimNode_StateMachine::StaticStruct()))</span><br><span class="line">    &#123;</span><br><span class="line">        FAnimNode_StateMachine* StateMachine = Property-&gt;ContainerPtrToValuePtr&lt;FAnimNode_StateMachine&gt;(AnimInstanceObject);</span><br><span class="line">        StateMachine-&gt;CacheMachineDescription(AnimClassInterface);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>to the top of the <code>if</code> block. </p>
-<p>The final code looks like: </p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(AnimClassInterface)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// cache any state machine descriptions we have</span></span><br><span class="line">        <span class="keyword">for</span> (UStructProperty* Property : AnimClassInterface-&gt;GetAnimNodeProperties())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (Property-&gt;Struct-&gt;IsChildOf(FAnimNode_StateMachine::StaticStruct()))</span><br><span class="line">            &#123;</span><br><span class="line">                FAnimNode_StateMachine* StateMachine = Property-&gt;ContainerPtrToValuePtr&lt;FAnimNode_StateMachine&gt;(AnimInstanceObject);</span><br><span class="line">                StateMachine-&gt;CacheMachineDescription(AnimClassInterface);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// cache any state machine descriptions we have</span></span><br><span class="line">        <span class="keyword">for</span> (UStructProperty* Property : AnimClassInterface-&gt;GetAnimNodeProperties())</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (Property-&gt;Struct-&gt;IsChildOf(FAnimNode_Base::StaticStruct()))</span><br><span class="line">            &#123;</span><br><span class="line">                FAnimNode_Base* AnimNode = Property-&gt;ContainerPtrToValuePtr&lt;FAnimNode_Base&gt;(AnimInstanceObject);</span><br><span class="line">                <span class="keyword">if</span> (AnimNode)</span><br><span class="line">                &#123;</span><br><span class="line">                    InitializeNode(AnimNode);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//if (Property-&gt;Struct-&gt;IsChildOf(FAnimNode_StateMachine::StaticStruct()))</span></span><br><span class="line">                    <span class="comment">//&#123;</span></span><br><span class="line">                    <span class="comment">//	FAnimNode_StateMachine* StateMachine = static_cast&lt;FAnimNode_StateMachine*&gt;(AnimNode);</span></span><br><span class="line">                    <span class="comment">//	StateMachine-&gt;CacheMachineDescription(AnimClassInterface);</span></span><br><span class="line">                    <span class="comment">//&#125;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Cache default sub-input </span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">const</span> FAnimBlueprintFunction&amp; AnimBlueprintFunction : AnimClassInterface-&gt;GetAnimBlueprintFunctions())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(AnimBlueprintFunction.Name == NAME_AnimGraph)</span><br><span class="line">            &#123;</span><br><span class="line">                check(AnimBlueprintFunction.InputPoseNames.Num() == AnimBlueprintFunction.InputPoseNodeProperties.Num());</span><br><span class="line">                <span class="keyword">for</span>(int32 InputIndex = <span class="number">0</span>; InputIndex &lt; AnimBlueprintFunction.InputPoseNames.Num(); ++InputIndex)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span>(AnimBlueprintFunction.InputPoseNames[InputIndex] == FAnimNode_SubInput::DefaultInputPoseName &amp;&amp; AnimBlueprintFunction.InputPoseNodeProperties[InputIndex] != <span class="literal">nullptr</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        DefaultSubInstanceInputNode = AnimBlueprintFunction.InputPoseNodeProperties[InputIndex]-&gt;ContainerPtrToValuePtr&lt;FAnimNode_SubInput&gt;(CastChecked&lt;UAnimInstance&gt;(GetAnimInstanceObject()));</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//We have a custom root node, so get the associated nodes and initialize them</span></span><br><span class="line">        TArray&lt;FAnimNode_Base*&gt; CustomNodes;</span><br><span class="line">        GetCustomNodes(CustomNodes);</span><br><span class="line">        <span class="keyword">for</span>(FAnimNode_Base* Node : CustomNodes)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(Node)</span><br><span class="line">            &#123;</span><br><span class="line">                InitializeNode(Node);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Method-2-Modify-the-Resource"><a href="#Method-2-Modify-the-Resource" class="headerlink" title="Method 2: Modify the Resource"></a>Method 2: Modify the Resource</h3><p>If you tend to keep consistent with the official engine, you need to follow these steps: </p>
-<ol>
-<li>Add following lines to your <code>DefaultEngine.ini</code> file. </li>
-</ol>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[Core.Log]</span></span><br><span class="line"><span class="attr">LogAnimation</span>=Error</span><br></pre></td></tr></table></figure>
-<p>This would prevent the engine from printing endless log to your console, which causing freeze. </p>
-<ol>
-<li>Open the Animation Blueprint, and locate the <code>Sub Anim Input</code> node. This might take some time… </li>
-<li>Create a new <code>Sub Anim Input</code> node and replace the old node with the new one. </li>
-<li>Revert those modifications from the <code>DefaultEngine.ini</code> file. </li>
-</ol>
-<p>So that’s how we should fix this issue. Another blog would be post to record how I dig into this issue. </p>
+        <h1 id="What-is-Automatic-Rule-Based-Transition"><a href="#What-is-Automatic-Rule-Based-Transition" class="headerlink" title="What is Automatic Rule Based Transition?"></a>What is <code>Automatic Rule Based Transition</code>?</h1><p><code>Automatic rule based transition</code> is used, in most cases, if you want an auto-transition from source state to target state when the source animation ends. </p>
+<p>For example, consider a state transition from State <code>Jump_Land</code> to <code>Idle</code>: </p>
+<p><img src="jump_land_to_idle.png" alt="jump_land_to_idle"></p>
+<p>An alternative way to implement state transition condition is to use <code>Get Relevant Time Remaining</code> node like this: </p>
+<p><img src="yet-another-method.png" alt="yet-another-method"></p>
+<p>But this is, to some extent, dirty and expensive. We cannot use <code>Animation</code> variable with it, even worse, <code>Fast Path</code> does not work with this way. </p>
+<hr>
+<p>The proper method in this case is to check <code>Automatic Rule Based on SequencePlayer in State</code> of this transition: </p>
+<p><img src="arbt.png" alt="arbt"></p>
+<p>Transition would start when there is 0.2 second left in the source state animation. This is clean and elegant. </p>
+<h1 id="Problem-With-Back-Playing-Sequence"><a href="#Problem-With-Back-Playing-Sequence" class="headerlink" title="Problem With Back-Playing Sequence"></a>Problem With Back-Playing Sequence</h1><p>For the official UE4 engine, <code>Automatic Rule Based Transition</code> does not work with a back-playing sequence. Because transition only cares about the accumulated time of an animation asset. </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (UAnimationAsset* AnimAsset = RelevantPlayer-&gt;GetAnimAsset())</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">float</span> AnimTimeRemaining = AnimAsset-&gt;GetMaxCurrentTime() - RelevantPlayer-&gt;GetAccumulatedTime();</span><br><span class="line">	<span class="keyword">const</span> FAnimationTransitionBetweenStates&amp; TransitionInfo = GetTransitionInfo(TransitionRule.TransitionIndex);</span><br><span class="line">	bCanEnterTransition = (AnimTimeRemaining &lt;= TransitionInfo.CrossfadeDuration);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>As a result, for a back-playing animation sequence, it does not work as expected. Hence some modifications are needed: </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FAnimNode_StateMachine::FindValidTransition</span></span><br><span class="line"><span class="keyword">if</span> (UAnimationAsset* AnimAsset = RelevantPlayer-&gt;GetAnimAsset())</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// Noah Zuo: Here we need to make it work with an asset player of minus play rate. </span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">bool</span> AnimReversePlay = RelevantPlayer-&gt;GetEffectivePlayRate() &lt; <span class="number">0.f</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">float</span> AnimTimeRemaining = AnimReversePlay ? RelevantPlayer-&gt;GetAccumulatedTime() : AnimAsset-&gt;GetMaxCurrentTime() - RelevantPlayer-&gt;GetAccumulatedTime();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> FAnimationTransitionBetweenStates&amp; TransitionInfo = GetTransitionInfo(TransitionRule.TransitionIndex);</span><br><span class="line">	<span class="comment">// For a back-running playing asset player, we need to flip condition. </span></span><br><span class="line">	bCanEnterTransition = (AnimTimeRemaining &lt;= TransitionInfo.CrossfadeDuration);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We need to add a function for each <code>FAnimNode_AssetPlayerBase</code> to get real play rate: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FAnimNode_AssetPlayerBase</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">float</span> <span class="title">GetEffectivePlayRate</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="number">1.f</span>; &#125;</span><br></pre></td></tr></table></figure>
+<p>And override this function in <code>FAnimNode_SequencePlayer</code>: </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> FAnimNode_SequencePlayer::GetEffectivePlayRate()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">float</span> SequencePlayRate = (Sequence ? Sequence-&gt;RateScale : <span class="number">1.f</span>);</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">float</span> AdjustedPlayRate = PlayRateScaleBiasClamp.ApplyTo(FMath::IsNearlyZero(PlayRateBasis) ? <span class="number">0.f</span> : (PlayRate / PlayRateBasis), <span class="number">0.f</span>);</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">float</span> EffectivePlayrate = SequencePlayRate * AdjustedPlayRate;</span><br><span class="line">	<span class="keyword">return</span> EffectivePlayrate; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>And that’s it! Enjoy this feature! </p>
 
       
     </div>
@@ -520,8 +516,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/13/digging-into-skeletal-mesh-in-ue4/" rel="next" title="Get Access to SkeletalMesh Vertices in UE4">
-                <i class="fa fa-chevron-left"></i> Get Access to SkeletalMesh Vertices in UE4
+              <a href="/2020/07/07/Animation-Blend-Profile-in-Unity/" rel="next" title="Animation Blend Profile in Unity">
+                <i class="fa fa-chevron-left"></i> Animation Blend Profile in Unity
               </a>
             
           </div>
@@ -529,10 +525,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/08/how-to-get-refpose-bone-position-in-component-space-in-ue4/" rel="prev" title="Get Ref Pose Bone Position in Component Space in UE4">
-                Get Ref Pose Bone Position in Component Space in UE4 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -757,7 +749,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-Is-This-Issue"><span class="nav-number">1.</span> <span class="nav-text">What Is This Issue?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#If-You-Simply-Want-a-Solution"><span class="nav-number">2.</span> <span class="nav-text">If You Simply Want a Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Method-1-Modify-the-engine-code"><span class="nav-number">2.1.</span> <span class="nav-text">Method 1: Modify the engine code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method-2-Modify-the-Resource"><span class="nav-number">2.2.</span> <span class="nav-text">Method 2: Modify the Resource</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-Automatic-Rule-Based-Transition"><span class="nav-number">1.</span> <span class="nav-text">What is Automatic Rule Based Transition?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-With-Back-Playing-Sequence"><span class="nav-number">2.</span> <span class="nav-text">Problem With Back-Playing Sequence</span></a></li></ol></div>
             
 
           </div>

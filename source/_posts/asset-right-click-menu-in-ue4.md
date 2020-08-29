@@ -11,7 +11,7 @@ description: This article tells you how to create asset right click menu in UE4.
 
 It would be wonderful if we can create our own asset menu to process assets. But it seems not that easy to achieve that. I always miss Unity when it comes to creation of a customized editor tool. 
 
-# # Prerequisites
+# Prerequisites
 First of all, it is recommended to  you are guranteed to have these menus setup in the `StartModule` function: 
 
 ```cpp
@@ -80,7 +80,7 @@ static void YourAssetExtenderFunc(FMenuBuilder& MenuBuilder, const TArray<FAsset
 
 We always need to add some menu to the specific asset. For example, `Find Skeleton` button would only appear in the right-click menu for a `Animation Sequence Base` asset: 
 
-![image-20200829164232753](asset-right-click-menu-in-ue4.assets/image-20200829164232753.png)
+![image-20200829164232753](image-20200829164232753.png)
 
 We can filter asset data type in `YourAssetExtenderFunc` like this: 
 

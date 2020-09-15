@@ -96,24 +96,18 @@
 
 
 
-  <meta name="description" content="This article tells you how GJK algorithm is applied for collision detection.">
-<meta name="keywords" content="Game Physics,Math">
+  <meta name="description" content="This article records a strange UE4.24 issue about Anim Notify that I encountered these days.">
+<meta name="keywords" content="Animation,UE4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection">
-<meta property="og:url" content="http://yoursite.com/2019/07/24/gjk-collision-detection/index.html">
+<meta property="og:title" content="Issues About Anim Notify On Server">
+<meta property="og:url" content="http://yoursite.com/2020/09/15/issues-about-anim-notify-on-server/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article tells you how GJK algorithm is applied for collision detection.">
+<meta property="og:description" content="This article records a strange UE4.24 issue about Anim Notify that I encountered these days.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/minkowski%20sum.png">
-<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/minkowski%20diff.png">
-<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/supporting%20point.png">
-<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/separation%20distance.png">
-<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/algorithm%20figure.png">
-<meta property="og:updated_time" content="2019-11-30T13:57:29.926Z">
+<meta property="og:updated_time" content="2020-09-15T14:59:48.004Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection">
-<meta name="twitter:description" content="This article tells you how GJK algorithm is applied for collision detection.">
-<meta name="twitter:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/minkowski%20sum.png">
+<meta name="twitter:title" content="Issues About Anim Notify On Server">
+<meta name="twitter:description" content="This article records a strange UE4.24 issue about Anim Notify that I encountered these days.">
 
 
 
@@ -121,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/07/24/gjk-collision-detection/">
+  <link rel="canonical" href="http://yoursite.com/2020/09/15/issues-about-anim-notify-on-server/">
 
 
 
@@ -131,7 +125,7 @@
   };
 </script>
 
-  <title>GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection | Noah Zuo's Blog</title>
+  <title>Issues About Anim Notify On Server | Noah Zuo's Blog</title>
   
 
 
@@ -347,7 +341,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/gjk-collision-detection/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/15/issues-about-anim-notify-on-server/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -364,7 +358,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection
+          <h1 class="post-title" itemprop="name headline">Issues About Anim Notify On Server
 
               
             
@@ -390,24 +384,12 @@
                 
               
 
-              <time title="Created: 2019-07-24 17:40:12" itemprop="dateCreated datePublished" datetime="2019-07-24T17:40:12+08:00">2019-07-24</time>
+              <time title="Created: 2020-09-15 17:46:12 / Modified: 22:59:48" itemprop="dateCreated datePublished" datetime="2020-09-15T17:46:12+08:00">2020-09-15</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-11-30 21:57:29" itemprop="dateModified" datetime="2019-11-30T21:57:29+08:00">2019-11-30</time>
               
             
           </span>
@@ -424,7 +406,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
 
                 
                 
@@ -445,7 +427,7 @@
           
 
           
-            <div class="post-description">This article tells you how GJK algorithm is applied for collision detection.</div>
+            <div class="post-description">This article records a strange UE4.24 issue about Anim Notify that I encountered these days.</div>
           
 
         </div>
@@ -461,55 +443,24 @@
       
 
       
-        <h2 id="What-is-GJK-Algorithm"><a href="#What-is-GJK-Algorithm" class="headerlink" title="What is GJK Algorithm?"></a>What is GJK Algorithm?</h2><p>GJK algorithm is proposed by Gilbert, Johnson and Keerthi for determining intersection between two polyhedra. It is one of the most effective methods. </p>
-<p>As originally described, GJK is a simplex-based descent algorithm that, given two sets of vertices as iputs, finds the Euclidean distance(and closest points) between the convex hulls of these sets. </p>
-<p>But actually the GJK algorithm can also be applied to arbitrary convex point sets, not just polyhedra. </p>
-<p>An important point is that the GJK algorithm does not actually operate on the two input objects per se, but on the Minkowski difference between the objects. In short, GJK algorithm searches the Minkowski difference object iteratively, a subvolume at a time, each such volume being a simplex. </p>
-<h2 id="Minkowski-Difference-and-Sum"><a href="#Minkowski-Difference-and-Sum" class="headerlink" title="Minkowski Difference and Sum"></a>Minkowski Difference and Sum</h2><h3 id="For-Point-Sets"><a href="#For-Point-Sets" class="headerlink" title="For Point Sets"></a>For Point Sets</h3><p>It is quite important to understand Minkowski sum and Minkowski difference of point sets for eventually understanding GJK algorithm. Let <code>A</code> and <code>B</code> be two point sets and let <code>a</code> and <code>b</code> be the position vectors corresponding to pairs of points in <code>A</code> and <code>B</code>. So the Minkowski sum, $A \oplus B$ is then defined as the set: </p>
-<script type="math/tex; mode=display">\begin{equation}
-\begin{aligned}
-A \oplus B =  \lbrace a + b : a \in A, b \in B  \rbrace
-\end{aligned}
-\end{equation}</script><p>In this equation, $a + b$ is the vector sum of the position vectors <code>a</code> and <code>b</code>. Visually the Minkowski sum can be seen as the region swept by <code>A</code> translated to every point in B(or vice versa). An illustration of the Minkowski sum is like this: </p>
-<p><img src="minkowski sum.png" alt="&quot;Minkowski Sum of a triangle and a Square&quot;"></p>
-<p>As for the Minkowski difference, it is defined analogously to the Minkowski sum: </p>
-<script type="math/tex; mode=display">\begin{equation}
-\begin{aligned}
-A \ominus B = \lbrace a - b : a \in A, b \in B  \rbrace
-\end{aligned}
-\end{equation}</script><p>To make it more understandable, the Minkowski difference is obtained by adding <code>A</code> to the reflection of <code>B</code> about the origin. $A \ominus B = A \oplus ( - B)$：</p>
-<p><img src="minkowski diff.png" alt="Minkowski Difference"></p>
-<h3 id="For-Convex-Polyhedra"><a href="#For-Convex-Polyhedra" class="headerlink" title="For Convex Polyhedra"></a>For Convex Polyhedra</h3><p>The Minkowski sum of two convex polyhedra $R = P \oplus Q$ has the property that <code>R</code> is a convex polygon and the vertices of <code>R</code> are sums of vertices of <code>P</code> and <code>Q</code>. </p>
-<p>Minkowski difference is important for collision detection. If they intersect with each other, the origin must be contained in their Minkowski difference. </p>
-<p>And in fact, it is possible to establish an even stronger result: computing the minimum distance between <code>A</code> and <code>B</code> is equivalent to computing the minimum distance between <code>C</code> and the origin: </p>
-<script type="math/tex; mode=display">\begin{equation}
-\begin{aligned}
-distance(A, B)  & =  min \lbrace \left\\| a - b \right\\| : a \in A, b \in B \rbrace \\\\
-\ & = min \lbrace  \left\\| c \right\\| : c \in A \ominus B \rbrace
-\end{aligned}
-\end{equation}</script><h2 id="Supporting-Point-of-a-Simplex"><a href="#Supporting-Point-of-a-Simplex" class="headerlink" title="Supporting Point of a Simplex"></a>Supporting Point of a Simplex</h2><p>Support point is very important for GJK-based collision detection. But what is the support point of a simplex? </p>
-<p>For a given direction $d$ and a general convex set $C$, the point $P$ that has the most distant along $d$ is called a supporting point of $C$. More specifically, $P$ is a supporting point of $C$ if $d \dot P = max \lbrace d \dot V : V \in C \rbrace$, that is $P$ is a point for which $d \dot P$ is maximal like this: </p>
-<p><img src="supporting point.png" alt="Supporting Point"></p>
-<p>And we also need to know something called <em>Support mapping</em>. It is a function, $S_C(d)$, that maps the direction $d$ into a supporting point of $C$ of the convex set $C$. </p>
-<p>We can have such mappings in a closed form for some simple shapes like boxes, spheres, cylinders and etc. For example, for a sphere $C$ centered at $O$ and with a radius of $r$, the support mapping is given by $S_C(d) = O + r \frac{d}{ \| d \d } $. And btw, this can lead to the <code>separate axis theorem</code>. </p>
-<p>But for a polytope of n vertices, a supporting vertex is trivially found in $O(n)$ times by searching over all vertices. For performance optimization, we can find the extreme vertex through a simple hill-climbing algorithm. Since we only care about a simplex, we could gain so many performance using this method. </p>
-<h2 id="Core-Algorithm"><a href="#Core-Algorithm" class="headerlink" title="Core Algorithm"></a>Core Algorithm</h2><p>Just as we mentioned, the GJK algorithm effectively determines intersection between polyhedra by computing the Euclidean distance between them. To be more specific, The separation distance between two polyhedra $A$ and $B$ is equivalent to the shortest distance between their Minkowski difference $C$, $C = A \ominus B$, and the origin. </p>
-<p><img src="separation distance.png" alt="Separation Distance"></p>
-<p>So, what we need to do is to find the point on C closest to origin. If we only want collision detection, we just need to determine whether the origin is located in the convex hull of $C$. </p>
-<p>It seems we don’t gain so much performance using this method. However, a key point of the GJK algorithm is that it does not explicitly compute the Minkowski difference C. It only samples the Minkowski difference point set using a support mapping of $C = A \ominus B$. In short, we can use $s<em>{A \ominus B} (d) = s</em>{A}(d) - s_{B}(-d)$. </p>
-<p>We still need to use <em>Carathéodory’s theorem</em>: For a convex body $H$ of $R^d$, each point of $H$ can be expressed as the convex combination of no more than $d + 1$ points from $H$. This means we only need to maintain a set up to $d + 1$ points. </p>
-<p>So the core algorithm is: </p>
-<ol>
-<li>Initialize the simplex set $Q$ to one or more points(up to $d + 1$ points, where $d$ is the dimension) from the Minkowski difference of $A$ and $B$. </li>
-<li>Compute the point $P$ of minimum norm in the convex hull of $Q$(let’s call it $CH(Q)$). </li>
-<li>If $P$ is already the origin, we can terminate the algorithm and return $A$ and $B$ as intersecting. </li>
-<li>If the point $P$ is not the origin, we need to remove those points from $Q$ that does not determine the subsimplex of $Q$ in which $P$ lies. </li>
-<li>And we need to move further to get the next point. Let $V = s<em>{A \ominus B}(-P) = s</em>{A}(-P) - s_{B}(P)$ be a supporting point in direction $-P$. </li>
-<li>If there is not more distant point along the direction $-P$ than $P$, we simply stop and return $A$ and $B$ as not intersecting. And the separation distance is the length of the vector from the origin to $P$. </li>
-<li>If there is such point $V$, add $V$ to $Q$ and go to stage 2. </li>
-</ol>
-<p>Just check out the algorithm figure: </p>
-<p><img src="algorithm figure.png" alt="Algorithm Figure"></p>
+        <h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><p>So… The story begins with linked instances of our <code>AnimInstance</code>.</p>
+<p>Everything works just fine when we have only one <code>AnimInstance</code> for our <code>Skeletal Mesh Component</code>, but it cames with the problem that only one guy can check out and edit this animation blueprint. This gradually became an issue as the team grows. </p>
+<p>Thus, we split our animation blueprint into several linked anim instances, which make it much easier for us to manage our anim instance. </p>
+<h1 id="The-Problem-Arose"><a href="#The-Problem-Arose" class="headerlink" title="The Problem Arose"></a>The Problem Arose</h1><p>It just so happens that the anim notify, which works fine when not placed in linked anim instances, are not triggered on server anymore. </p>
+<p>After digging into the codes, it seems that <code>UAnimInstance::PostUpdateAnimation()</code> animation is not correctly called. </p>
+<p>The callling stack starts from <code>UCharacterMovementComponent::MoveAutonomous</code>, which eventually leads to <code>USkeletalMeshComponent::TickAnimation</code>. </p>
+<h1 id="Linked-Instance-Not-Handled-Well"><a href="#Linked-Instance-Not-Handled-Well" class="headerlink" title="Linked Instance Not Handled Well"></a>Linked Instance Not Handled Well</h1><p>For the linked anim instance, their <code>PostUpdateAnimation</code> are called in <code>USkeletalMeshComponent::PostAnimEvaluation</code> function like this: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> USkeletalMeshComponent::PostAnimEvaluation(FAnimationEvaluationContext&amp; EvaluationContext)</span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> DO_CHECK</span></span><br><span class="line">	checkf(!bPostEvaluatingAnimation, TEXT(<span class="string">"PostAnimEvaluation already in progress, recursion detected for SkeletalMeshComponent [%s], AnimInstance [%s]"</span>), *GetNameSafe(<span class="keyword">this</span>), *GetNameSafe(EvaluationContext.AnimInstance));</span><br><span class="line"></span><br><span class="line">	FGuardValue_Bitfield(bPostEvaluatingAnimation, <span class="literal">true</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	SCOPE_CYCLE_COUNTER(STAT_PostAnimEvaluation);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (EvaluationContext.AnimInstance &amp;&amp; EvaluationContext.AnimInstance-&gt;NeedsUpdate())</span><br><span class="line">	&#123;</span><br><span class="line">		EvaluationContext.AnimInstance-&gt;PostUpdateAnimation();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (UAnimInstance* LinkedInstance : LinkedInstances)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (LinkedInstance &amp;&amp; LinkedInstance-&gt;NeedsUpdate())</span><br><span class="line">			LinkedInstance-&gt;PostUpdateAnimation();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>The skeletal mesh component on server, however, is always set to <code>Always Tick Pose</code>, which means that they never get evaluated. As a result, the <code>PostAnimEvaluation</code> are not called. </p>
+<p>We fix this issue by moving the <code>PostUpdateAnimation</code> function of linked instance into <code>UAnimInstance::PostUpdateAnimation()</code> function like this:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> UAnimInstance::PostUpdateAnimation()</span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> DO_CHECK</span></span><br><span class="line">	checkf(!bPostUpdatingAnimation, TEXT(<span class="string">"PostUpdateAnimation already in progress, recursion detected for SkeletalMeshComponent [%s], AnimInstance [%s]"</span>), *GetNameSafe(GetOwningComponent()), *GetName());</span><br><span class="line">	TGuardValue&lt;<span class="keyword">bool</span>&gt; CircularGuard(bPostUpdatingAnimation, <span class="literal">true</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	SCOPE_CYCLE_COUNTER(STAT_PostUpdateAnimation);</span><br><span class="line">	check(!IsRunningParallelEvaluation());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (GetSkelMeshComponent()-&gt;GetAnimInstance() == <span class="keyword">this</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (UAnimInstance* LinkedInstance : GetSkelMeshComponent()-&gt;GetLinkedAnimInstances())</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (LinkedInstance-&gt;NeedsUpdate())</span><br><span class="line">			&#123;</span><br><span class="line">				LinkedInstance-&gt;PostUpdateAnimation();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Early out here if we are not set to needing an update</span></span><br><span class="line">	<span class="keyword">if</span> (!bNeedsUpdate)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>And it worked! </p>
+<h1 id="Module-Type-Issue"><a href="#Module-Type-Issue" class="headerlink" title="Module Type Issue"></a>Module Type Issue</h1><p>After fixing the linked instance update issue, things are still not right. </p>
+<p>It works on a single process dedicated server started by editor, but not on a real server. </p>
+<p>It turned out that we put our customized anim nodes, <code>Cache Blend</code>, for instance, in our own plugin. And we put those <code>AnimGraphNodes</code> in an <code>Editor</code> module, which cause error like this: </p>
+<blockquote>
+<p>LogUObjectGlobals: Warning: Can’t find file for asset ‘/Script/xxxEditor’ while loading xxxxxx/AnimBP.uasset.</p>
+</blockquote>
+<p>We should use a <code>Developer</code> or a <code>UncookedOnly</code> type for the <code>AnimGraphNode</code> module. Actually, <code>UncookedOnly</code> is the preferred type since <code>Developer</code> is deprecated. </p>
 
       
     </div>
@@ -533,9 +484,9 @@ distance(A, B)  & =  min \lbrace \left\\| a - b \right\\| : a \in A, b \in B \rb
       
         <div class="post-tags">
           
-            <a href="/tags/Game-Physics/" rel="tag"># Game Physics</a>
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
           
-            <a href="/tags/Math/" rel="tag"># Math</a>
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
           
         </div>
       
@@ -548,8 +499,8 @@ distance(A, B)  & =  min \lbrace \left\\| a - b \right\\| : a \in A, b \in B \rb
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/17/physx-scratch-buffer-in-unity/" rel="next" title="PhysX Scratch Buffer in Unity">
-                <i class="fa fa-chevron-left"></i> PhysX Scratch Buffer in Unity
+              <a href="/2020/08/28/asset-right-click-menu-in-ue4/" rel="next" title="How to Create Asset Right Click Menu In UE4">
+                <i class="fa fa-chevron-left"></i> How to Create Asset Right Click Menu In UE4
               </a>
             
           </div>
@@ -557,10 +508,6 @@ distance(A, B)  & =  min \lbrace \left\\| a - b \right\\| : a \in A, b \in B \rb
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/08/sweep-and-prune/" rel="prev" title="Sweep and Prune for Scene Collision Detection">
-                Sweep and Prune for Scene Collision Detection <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -789,7 +736,7 @@ distance(A, B)  & =  min \lbrace \left\\| a - b \right\\| : a \in A, b \in B \rb
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-GJK-Algorithm"><span class="nav-number">1.</span> <span class="nav-text">What is GJK Algorithm?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Minkowski-Difference-and-Sum"><span class="nav-number">2.</span> <span class="nav-text">Minkowski Difference and Sum</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#For-Point-Sets"><span class="nav-number">2.1.</span> <span class="nav-text">For Point Sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#For-Convex-Polyhedra"><span class="nav-number">2.2.</span> <span class="nav-text">For Convex Polyhedra</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supporting-Point-of-a-Simplex"><span class="nav-number">3.</span> <span class="nav-text">Supporting Point of a Simplex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Algorithm"><span class="nav-number">4.</span> <span class="nav-text">Core Algorithm</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Problem-Arose"><span class="nav-number">2.</span> <span class="nav-text">The Problem Arose</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linked-Instance-Not-Handled-Well"><span class="nav-number">3.</span> <span class="nav-text">Linked Instance Not Handled Well</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Module-Type-Issue"><span class="nav-number">4.</span> <span class="nav-text">Module Type Issue</span></a></li></ol></div>
             
 
           </div>
@@ -961,46 +908,6 @@ distance(A, B)  & =  min \lbrace \left\\| a - b \right\\| : a \in A, b \in B \rb
   
   
 
-  
-    
-      <script type="text/x-mathjax-config">
-  
-
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-      
-      equationNumbers: {
-        autoNumber: 'AMS'
-      }
-    }
-  });
-  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
-    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
-      if (data.display) {
-        var next = data.script.nextSibling;
-        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
-        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
-      }
-    });
-  });
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for (i = 0; i < all.length; i += 1) {
-      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
-    }
-  });
-</script>
-<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-    
   
 
 

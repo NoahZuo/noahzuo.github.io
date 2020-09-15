@@ -481,7 +481,7 @@
 <li>Leg transforms would firstly be aligned with the ik target. Delta normal is calculated between <code>InitialDir(From Hip to FootFKLocation)</code> and <code>TargetDir(From Hip to FootIKLocation)</code>. </li>
 </ol>
 <p><img src="align-legs.png" alt="align-legs"></p>
-<ol start="2">
+<ol>
 <li>After being aligned with <code>IKFoot Bone</code>, try to reach for ik effector. Either <code>Two bone IK</code> or <code>FABRIK</code> is used for this purpose. For a <code>Two bone IK</code>, <code>Hinge Rotation Axis</code> is used for bending direction, and for a <code>FABRIK</code>, <code>Min Rotation Angle</code> is used for rotation limit, if enabled. </li>
 <li>Knee twist would be adjusted if <code>Enable Knee Twist Correction</code> is checked. You need to define the <code>Foot Bone Forward Axis</code> for this feature. This axis is used for determining how much angle the foot has been twisted. By <code>Bone Forward Axis</code> it means <strong>the axis pointing to the ground</strong>. </li>
 </ol>
@@ -504,11 +504,11 @@
 <li>First <code>childAxisYC&#39;&#39;</code> is calculated using  a cross product between <code>LinkAxisZ</code> and <code>childAxisXC&#39;&#39;</code>, which point from <code>C&#39;&#39;</code> to its child bone. </li>
 </ol>
 <p><img src="childAxisYC.png" alt="childAxisYC"></p>
-<ol start="2">
+<ol>
 <li>Then dot product between <code>parentAxisC&#39;&#39;</code>, which points from <code>C&#39;&#39;</code> to its parent bone, and <code>childAxisXC&#39;&#39;</code> and <code>childAxisYC&#39;&#39;</code> is calculated. By this we could get the <code>cos</code> and <code>sin</code> value of current angle.   We use this to determine whether current angle has already reached the limit. </li>
 </ol>
 <p><img src="angle-limit.png" alt="angle-limit"></p>
-<ol start="3">
+<ol>
 <li><p>If the  <code>sin</code> value if less than <code>0</code>(which means the the leg inner angle is larger than <code>pi</code> and the leg needs to be flipped), or the <code>cos</code> value is larger than the <code>cos(MinRotationAngleRadians)</code>(which means that the angle has already reached the angle limit), a rotation limitation should be performed. The current angle in the image above is <code>56.15</code> degrees, and our <code>MinRotationAngleRadians</code> is 60 degrees, which is larger than current degree. </p>
 </li>
 <li><p>As a result, we need to apply rotation limitation now. Since this is a <code>forward reach pass</code>, we need to adjust the parent bone location by code like this:</p>
@@ -655,7 +655,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-count">26</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

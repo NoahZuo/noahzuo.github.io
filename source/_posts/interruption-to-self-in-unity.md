@@ -88,7 +88,7 @@ So here comes the most important part, that what should we do to achieve our goa
 
 ## Transition time issue
 
-Because we want the transition to *go back*, which means that when the interruption begins, we need to set the transition time $t_new = 1.0 - t_old$. 
+Because we want the transition to *go back*, which means that when the interruption begins, we need to set the transition time $t_{new} = 1.0 - t_{old}$. 
 
 For example, we interrupt the transition when at 1s: 
 
@@ -104,6 +104,7 @@ When the transition begins, the current transition should be 3s:
 
 When a new state is started, Unity would reset its normalize time. Interruption to self, however, cannot let it happen. 
 
+As a result, we skipped `Start State` when `interruption to self` is detected. Moreover, the current playing time of both source and target state should be swapped as well. 
 
 
 ## Conflict with official interruption transition
@@ -121,12 +122,13 @@ After `interruption to self`, the node became:
 And this cause crash because Unity would try to evaluate `P` as a blend tree. 
 
 
-
 ## Conflict with `Animator.Play()` and `Animator.Crossfade()`
 
-Yes... This is called `DynamicTransition`. And we must handle it well. 
+These functions are widely used in our project. And this is called `DynamicTransition` in Unity. 
 
+A dynamic transition is actually a transition that goes to a specific state directly instead of following those transition rules we set up in an `Animator Controller`. But since a`Interruption to self` transition skips the `Start State` of the target state, which is necessary when a dynamic transition is considered `Interruption to self`. 
 
+This conflict must be solved, or else it would cause a crash. 
 
 # Result
 

@@ -115,7 +115,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/interruption_occurred.png">
 <meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/interruption_to_self_after_official_interruption.png">
 <meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/Interruption%20to%20self.gif">
-<meta property="og:updated_time" content="2020-10-21T14:37:47.419Z">
+<meta property="og:updated_time" content="2020-10-22T02:29:57.027Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Refactor Interruption Transition In Unity">
 <meta name="twitter:description" content="This article records how I refactored interruption transition, when transition is interrupted back to source state, in Unity.">
@@ -413,7 +413,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2020-10-21 22:37:47" itemprop="dateModified" datetime="2020-10-21T22:37:47+08:00">2020-10-21</time>
+                <time title="Modified: 2020-10-22 10:29:57" itemprop="dateModified" datetime="2020-10-22T10:29:57+08:00">2020-10-22</time>
               
             
           </span>
@@ -492,19 +492,22 @@
 <p>That is to say, we want the <code>State Machine Mixer Playable</code> looks like this when we found the state machine is about to interrupt back to self: </p>
 <p><img src="normal_transition_ends.png" alt="goal"></p>
 <h1 id="How-should-we-refactor"><a href="#How-should-we-refactor" class="headerlink" title="How should we refactor?"></a>How should we refactor?</h1><p>So here comes the most important part, that what should we do to achieve our goal. Well… to be honest, it is much much more complicated than what we used to suppose. And I am not allowed to give too much detail about it. Here is some important problems that I encounted and they just drove me crazy… </p>
-<h2 id="Transition-time-issue"><a href="#Transition-time-issue" class="headerlink" title="Transition time issue"></a>Transition time issue</h2><p>Because we want the transition to <em>go back</em>, which means that when the interruption begins, we need to set the transition time $t_new = 1.0 - t_old$. </p>
+<h2 id="Transition-time-issue"><a href="#Transition-time-issue" class="headerlink" title="Transition time issue"></a>Transition time issue</h2><p>Because we want the transition to <em>go back</em>, which means that when the interruption begins, we need to set the transition time $t_{new} = 1.0 - t_{old}$. </p>
 <p>For example, we interrupt the transition when at 1s: </p>
 <p><img src="transition time.png" alt="transition time.png"></p>
 <p>When the transition begins, the current transition should be 3s: </p>
 <p><img src="transition time interrupted.png" alt="transition time interrupted.png"></p>
 <h2 id="State-normalize-time-current-play-time"><a href="#State-normalize-time-current-play-time" class="headerlink" title="State normalize time(current play time)"></a>State normalize time(current play time)</h2><p>When a new state is started, Unity would reset its normalize time. Interruption to self, however, cannot let it happen. </p>
+<p>As a result, we skipped <code>Start State</code> when <code>interruption to self</code> is detected. Moreover, the current playing time of both source and target state should be swapped as well. </p>
 <h2 id="Conflict-with-official-interruption-transition"><a href="#Conflict-with-official-interruption-transition" class="headerlink" title="Conflict with official interruption transition"></a>Conflict with official interruption transition</h2><p>Our animators are using official interruption for quite a long time. So <code>Interruption to self</code> is supposed to work well along with official interruption transition. </p>
 <p>Consider <code>interruption to self</code> just so happens interrupts the current official interruption, before interruption to self, the <code>State Machine Mixer Playable</code> looks like this: </p>
 <p><img src="interruption_occurred.png" alt="interruption_occurred"></p>
 <p>After <code>interruption to self</code>, the node became: </p>
 <p><img src="interruption_to_self_after_official_interruption.png" alt="interruption_to_self_after_official_interruption"></p>
 <p>And this cause crash because Unity would try to evaluate <code>P</code> as a blend tree. </p>
-<h2 id="Conflict-with-Animator-Play-and-Animator-Crossfade"><a href="#Conflict-with-Animator-Play-and-Animator-Crossfade" class="headerlink" title="Conflict with Animator.Play() and Animator.Crossfade()"></a>Conflict with <code>Animator.Play()</code> and <code>Animator.Crossfade()</code></h2><p>Yes… This is called <code>DynamicTransition</code>. And we must handle it well. </p>
+<h2 id="Conflict-with-Animator-Play-and-Animator-Crossfade"><a href="#Conflict-with-Animator-Play-and-Animator-Crossfade" class="headerlink" title="Conflict with Animator.Play() and Animator.Crossfade()"></a>Conflict with <code>Animator.Play()</code> and <code>Animator.Crossfade()</code></h2><p>These functions are widely used in our project. And this is called <code>DynamicTransition</code> in Unity. </p>
+<p>A dynamic transition is actually a transition that goes to a specific state directly instead of following those transition rules we set up in an <code>Animator Controller</code>. But since a<code>Interruption to self</code> transition skips the <code>Start State</code> of the target state, which is necessary when a dynamic transition is considered <code>Interruption to self</code>. </p>
+<p>This conflict must be solved, or else it would cause a crash. </p>
 <h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="Interruption to self.gif" alt="Interruption to self"></p>
 
       

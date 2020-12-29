@@ -131,3 +131,5 @@ After Version 4.22:
 
 
 
+### AnimGraphNode Module
+Your `AnimGraphNode` should be placed in a `Developer` or `Uncooked` module. Otherwise it cause error in your dedicated server. 

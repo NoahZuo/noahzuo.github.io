@@ -469,7 +469,7 @@
 <p>This problem needs to be solved! </p>
 <h1 id="Development-issues-of-this-node"><a href="#Development-issues-of-this-node" class="headerlink" title="Development issues of this node"></a>Development issues of this node</h1><h2 id="Random-crash-after-caching-input-pose"><a href="#Random-crash-after-caching-input-pose" class="headerlink" title="Random crash after caching input pose"></a>Random crash after caching input pose</h2><p>In the very beginning, I use a <code>FCompactPose</code> class member to store input pose in the end of <code>Evaluate_AnyThread</code> function like this: </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SnapShotPose.CopyBonesFrom(Output.Pose);</span><br><span class="line">SnapShotCurve.CopyFrom(Output.Curve);</span><br></pre></td></tr></table></figure>
-<p>But the engine keeps crashing randomly – sometimes in render system, sometimes in slate viewer. It seems that the memory is broken. </p>
+<p>But the engine keeps crashing randomly — sometimes in render system, sometimes in slate viewer. It seems that the memory is broken. </p>
 <p>After digging into <code>FCompactPose</code> structure, it seems that <code>FCompactPose</code> is allocated with a stack mem marker: </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ENGINE_API</span> <span class="title">FCompactPose</span> :</span> <span class="keyword">public</span> FBaseCompactPose&lt;FAnimStackAllocator&gt;</span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>Thus it is fine to create a <code>FCompactPose</code> inside an evaluation function. But it is not okay to make it a class member. </p>
@@ -483,7 +483,7 @@
 <p><code>UIDToArrayIndexLUT</code> is a <code>TArray&lt;uint16&gt; const *</code> pointer, thus this function performs a shallow copy. </p>
 <p>Thus we cannot make our newly-created the first element, otherwise a pointer error would occur and drives you mad. </p>
 <h1 id="Yet-another-way"><a href="#Yet-another-way" class="headerlink" title="Yet another way"></a>Yet another way</h1><p>There is yet another way to solve this problem. We can directly modify <code>AssetPlayer Node</code> to perform cross-fade between old asset and new asset when the asset has been changed. In short, cache old asset value, and blend between old&amp;new asset with the same time accumulator. </p>
-<h2 id="Method-comparison"><a href="#Method-comparison" class="headerlink" title="Method comparison"></a>Method comparison</h2><h3 id="Multiple-Transition"><a href="#Multiple-Transition" class="headerlink" title="Multiple Transition"></a>Multiple Transition</h3><p><code>Cache Pose</code> can handle multiple transition since we always blend from current pose to target pose – No matter what the target pose is. </p>
+<h2 id="Method-comparison"><a href="#Method-comparison" class="headerlink" title="Method comparison"></a>Method comparison</h2><h3 id="Multiple-Transition"><a href="#Multiple-Transition" class="headerlink" title="Multiple Transition"></a>Multiple Transition</h3><p><code>Cache Pose</code> can handle multiple transition since we always blend from current pose to target pose — No matter what the target pose is. </p>
 <p><code>Cache Asset</code> cannot handle multiple transition, unless you store multiple asset, and evaluate&amp;blend between them, which cause performance issue. </p>
 <h3 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h3><p><code>Cache Pose</code> surely has better performance, since we do not need to evaluate old assets. </p>
 <h3 id="Maintainability"><a href="#Maintainability" class="headerlink" title="Maintainability"></a>Maintainability</h3><p><code>Cache Pose</code> has better maintainability, since it has been decoupled with any asset player node, whereas <code>Cache Asset</code> requires modification to official animation node. </p>
@@ -608,7 +608,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -789,7 +789,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

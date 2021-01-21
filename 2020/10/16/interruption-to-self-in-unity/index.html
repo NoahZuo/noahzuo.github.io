@@ -492,7 +492,7 @@
 <p>That is to say, we want the <code>State Machine Mixer Playable</code> looks like this when we found the state machine is about to interrupt back to self: </p>
 <p><img src="normal_transition_ends.png" alt="goal"></p>
 <h1 id="How-should-we-refactor"><a href="#How-should-we-refactor" class="headerlink" title="How should we refactor?"></a>How should we refactor?</h1><p>So here comes the most important part, that what should we do to achieve our goal. Well… to be honest, it is much much more complicated than what we used to suppose. And I am not allowed to give too much detail about it. Here is some important problems that I encounted and they just drove me crazy… </p>
-<h2 id="Transition-time-issue"><a href="#Transition-time-issue" class="headerlink" title="Transition time issue"></a>Transition time issue</h2><p>Because we want the transition to <em>go back</em>, which means that when the interruption begins, we need to set the transition time $t_{new} = 1.0 - t_{old}$. </p>
+<h2 id="Transition-time-issue"><a href="#Transition-time-issue" class="headerlink" title="Transition time issue"></a>Transition time issue</h2><p>Because we want the transition to <em>go back</em>, which means that when the interruption begins, we need to set the transition time $t<em>{new} = 1.0 - t</em>{old}$. </p>
 <p>For example, we interrupt the transition when at 1s: </p>
 <p><img src="transition time.png" alt="transition time.png"></p>
 <p>When the transition begins, the current transition should be 3s: </p>
@@ -556,6 +556,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/11/extending-two-bone-ik-for-left-hand-holding-guns/" rel="prev" title="Extending Two-bone IK for Left Hand Holding Guns">
+                Extending Two-bone IK for Left Hand Holding Guns <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -624,7 +628,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -805,7 +809,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

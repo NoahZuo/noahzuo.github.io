@@ -104,16 +104,16 @@
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
 <meta property="og:description" content="Let&apos;s take a deep look into Blend Space in UE4. Mainly focus on something that most developers does not know or notice.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/deep-dive-into-blendspace-in-ue4.assets/image-20201026212303435.png">
-<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/deep-dive-into-blendspace-in-ue4.assets/image-20201026213607777.png">
-<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/deep-dive-into-blendspace-in-ue4.assets/image-20201026214207321.png">
-<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/deep-dive-into-blendspace-in-ue4.assets/image-20201027212612568.png">
-<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/deep-dive-into-blendspace-in-ue4.assets/image-20201027213845268.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/image-20201026212303435.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/image-20201026213607777.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/image-20201026214207321.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/image-20201027212612568.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/image-20201027213845268.png">
 <meta property="og:updated_time" content="2020-10-16T07:27:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deep Dive into Blend Space in UE4">
 <meta name="twitter:description" content="Let&apos;s take a deep look into Blend Space in UE4. Mainly focus on something that most developers does not know or notice.">
-<meta name="twitter:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/deep-dive-into-blendspace-in-ue4.assets/image-20201026212303435.png">
+<meta name="twitter:image" content="http://yoursite.com/2020/10/13/deep-dive-into-blendspace-in-ue4/image-20201026212303435.png">
 
 
 
@@ -462,16 +462,16 @@
 
       
         <h1 id="Blend-Space-Sample-Weight"><a href="#Blend-Space-Sample-Weight" class="headerlink" title="Blend Space Sample Weight"></a>Blend Space Sample Weight</h1><p>Consider a blend space like this: </p>
-<p><img src="deep-dive-into-blendspace-in-ue4.assets/image-20201026212303435.png" alt="Blend Space"></p>
+<p><img src="image-20201026212303435.png" alt="Blend Space"></p>
 <p>Each grid point contains a sample weight calculated using <code>[Delaunay Triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation)</code>, and this is calculated offline. </p>
-<p><img src="deep-dive-into-blendspace-in-ue4.assets/image-20201026213607777.png" alt="Grid Point Weight"></p>
+<p><img src="image-20201026213607777.png" alt="Grid Point Weight"></p>
 <p>For a given (x, y) coordinate, its final weight is calculated using bi-linear interpolation in the rectangle this coordinate locates in: </p>
-<p><img src="deep-dive-into-blendspace-in-ue4.assets/image-20201026214207321.png" alt="Bi-Linear Interpolation"></p>
+<p><img src="image-20201026214207321.png" alt="Bi-Linear Interpolation"></p>
 <h1 id="Play-Length-amp-Play-Rate"><a href="#Play-Length-amp-Play-Rate" class="headerlink" title="Play Length&amp;Play Rate"></a>Play Length&amp;Play Rate</h1><p>You may see varying animatino length if you call <code>UBlendSpaceBase::GetAnimationLengthFromSampleData</code> because the <code>BlendSpace</code> node is synchronizing playback of the source animation clips within it. </p>
 <p>For example, if you have one animation clip that is 1.0 seconds in length being blended in a <code>BlendSpace</code> with another clip that is 0.5 in length, when the weight of the <code>BlendSpace</code> is 50% between the two source clips, the value returned from <code>GetAnimationLengthFromSampleData()</code> will be 0.75.  </p>
-<p><img src="deep-dive-into-blendspace-in-ue4.assets/image-20201027212612568.png" alt="image-20201027212612568"></p>
+<p><img src="image-20201027212612568.png" alt="image-20201027212612568"></p>
 <p>The playback rate of each animation clip is then scaled to match this weighting. Consider a <code>BlendSpace</code> like this: </p>
-<p><img src="deep-dive-into-blendspace-in-ue4.assets/image-20201027213845268.png" alt="image-20201027213845268"></p>
+<p><img src="image-20201027213845268.png" alt="image-20201027213845268"></p>
 <p>If the delta time of current frame is 0.25s. In order to synchronize all animations, the playback rate of each animation clip is scaled in accordance with the normalized delta time. </p>
 <p>Oh and by the way, each blend space holds the normalized time as when dealing with changing anim length, it would be possible to go backwards. As a result, the playback of each animation clip is set by: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CurrentSampleDataTime = SampleNormalizedCurrentTime * Sample.Animation-&gt;SequenceLength;</span><br></pre></td></tr></table></figure>

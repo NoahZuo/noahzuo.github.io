@@ -80,7 +80,7 @@ But the problem is that this method is not linear:
 
 ![plot](trinket_plot.png)
 
-As we can see, the weight grows fast in the beginning because the value `target - current` is large when the interpolation begins. Then the grow speed gradually decreases along with the value `target - current` . 
+As we can see, the weight grows fast in the beginning because the value `target - current` is somehow large when the interpolation begins. Then the grow speed gradually decreases along with the value `target - current` . 
 
 ### Linear Interpolation
 Of course what we, to be frankly, animators desire is linear interpolation. And it is not that difficult to implement, but it's not easy to handle multi target interpolation. 

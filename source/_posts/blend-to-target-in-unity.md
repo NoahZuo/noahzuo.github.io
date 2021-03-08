@@ -5,7 +5,7 @@ tags:
  - Animation
 category: Unity
 date: 2021-03-05 11:15:12
-updated: 2021-03-05 17:44:28
+updated: 2021-03-08 15:41:28
 description: This article introduces a feature that I implemented called `blend to target` in Unity Engine, which is widely used in `Cross File Mobile` and `Call of Duty Mobile`. 
 
 ---
@@ -60,8 +60,30 @@ Lerp between this sample weights would be performed to get the final result:
 
 And we can see the `Fwd` node is not affected now. 
 
+# Interpolation Speed
 
+What is worth mentioning is how we handle interpolation speed when a blend target is set. 
 
+## Current to Target Interpolation
 
+Personally I perfer the `Current to Target` method, which is also what UE4 adapts for their animation blend space. 
 
+This method has the virtue of simplicity. Because we only need to care about what the current&target  weight is, and interp from current to target. 
+
+Let `s` be our blend speed, in a frame of delta time `t`, the interpolation method is: 
+
+```cpp
+Weight_New = Lerp(Weight_Old, Weight_Target, Clamp01(t * s)); 
+```
+
+But the problem is that this method is not linear: 
+
+![plot](blend-to-target-in-unity.assets/trinket_plot.png)
+
+As we can see, the weight grows fast in the beginning because the value `target - current` is large when the interpolation begins. Then the grow speed gradually decreases along with the value `target - current` . 
+
+### Linear Interpolation
+Of course what we, to be frankly, animators desire is linear interpolation. And it is not that difficult to implement, but it's not easy to handle multi target interpolation. 
+
+In this case, blend speed `s` represents the time a target interpolation needs to be completed. If the target weight changes frequently, this means a lot of work to handle these transition. 
 

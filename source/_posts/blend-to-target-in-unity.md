@@ -78,7 +78,7 @@ Weight_New = Lerp(Weight_Old, Weight_Target, Clamp01(t * s));
 
 But the problem is that this method is not linear: 
 
-![plot](blend-to-target-in-unity.assets/trinket_plot.png)
+![plot](trinket_plot.png)
 
 As we can see, the weight grows fast in the beginning because the value `target - current` is large when the interpolation begins. Then the grow speed gradually decreases along with the value `target - current` . 
 

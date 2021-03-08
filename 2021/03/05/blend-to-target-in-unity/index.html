@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/image-20210306142721918.png">
 <meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/disabled.gif">
 <meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/enabled.gif">
-<meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/blend-to-target-in-unity.assets/trinket_plot.png">
+<meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/trinket_plot.png">
 <meta property="og:updated_time" content="2021-03-08T07:41:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Blend to Target In Unity">
@@ -518,7 +518,7 @@
 <p>Let <code>s</code> be our blend speed, in a frame of delta time <code>t</code>, the interpolation method is: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Weight_New = Lerp(Weight_Old, Weight_Target, Clamp01(t * s));</span><br></pre></td></tr></table></figure>
 <p>But the problem is that this method is not linear: </p>
-<p><img src="blend-to-target-in-unity.assets/trinket_plot.png" alt="plot"></p>
+<p><img src="trinket_plot.png" alt="plot"></p>
 <p>As we can see, the weight grows fast in the beginning because the value <code>target - current</code> is large when the interpolation begins. Then the grow speed gradually decreases along with the value <code>target - current</code> . </p>
 <h3 id="Linear-Interpolation"><a href="#Linear-Interpolation" class="headerlink" title="Linear Interpolation"></a>Linear Interpolation</h3><p>Of course what we, to be frankly, animators desire is linear interpolation. And it is not that difficult to implement, but it’s not easy to handle multi target interpolation. </p>
 <p>In this case, blend speed <code>s</code> represents the time a target interpolation needs to be completed. If the target weight changes frequently, this means a lot of work to handle these transition. </p>

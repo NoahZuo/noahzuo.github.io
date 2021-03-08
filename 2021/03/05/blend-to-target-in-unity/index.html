@@ -97,7 +97,7 @@
 
 
   <meta name="description" content="This article introduces a feature that I implemented called `blend to target` in Unity Engine, which is widely used in `Cross File Mobile` and `Call of Duty Mobile`.">
-<meta name="keywords" content="Animation,Unity">
+<meta name="keywords" content="Unity,Animation">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Blend to Target In Unity">
 <meta property="og:url" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/index.html">
@@ -108,7 +108,8 @@
 <meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/image-20210306142721918.png">
 <meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/disabled.gif">
 <meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/enabled.gif">
-<meta property="og:updated_time" content="2021-03-05T09:44:28.000Z">
+<meta property="og:image" content="http://yoursite.com/2021/03/05/blend-to-target-in-unity/blend-to-target-in-unity.assets/trinket_plot.png">
+<meta property="og:updated_time" content="2021-03-08T07:41:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Blend to Target In Unity">
 <meta name="twitter:description" content="This article introduces a feature that I implemented called `blend to target` in Unity Engine, which is widely used in `Cross File Mobile` and `Call of Duty Mobile`.">
@@ -389,12 +390,24 @@
                 
               
 
-              <time title="Created: 2021-03-05 11:15:12 / Modified: 17:44:28" itemprop="dateCreated datePublished" datetime="2021-03-05T11:15:12+08:00">2021-03-05</time>
+              <time title="Created: 2021-03-05 11:15:12" itemprop="dateCreated datePublished" datetime="2021-03-05T11:15:12+08:00">2021-03-05</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-03-08 15:41:28" itemprop="dateModified" datetime="2021-03-08T15:41:28+08:00">2021-03-08</time>
               
             
           </span>
@@ -462,7 +475,6 @@
 <h1 id="How-does-it-work"><a href="#How-does-it-work" class="headerlink" title="How does it work?"></a>How does it work?</h1><p>Instead of blending animations by parameter value, <code>Blend to target</code> blends animations by sample weights directly.  </p>
 <p>When the character is moving left, the sample weights of this blend tree is <code>(1.0, 0.0, 0.0)</code>, when the character is moving right, the sample weights is <code>(0.0, 0.0, 1.0)</code>. </p>
 <p>Lerp between this sample weights would be performed to get the final result: </p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -499,8 +511,17 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>And we can see the <code>Fwd</code> node is not affected now. </p>
+<h1 id="Interpolation-Speed"><a href="#Interpolation-Speed" class="headerlink" title="Interpolation Speed"></a>Interpolation Speed</h1><p>What is worth mentioning is how we handle interpolation speed when a blend target is set. </p>
+<h2 id="Current-to-Target-Interpolation"><a href="#Current-to-Target-Interpolation" class="headerlink" title="Current to Target Interpolation"></a>Current to Target Interpolation</h2><p>Personally I perfer the <code>Current to Target</code> method, which is also what UE4 adapts for their animation blend space. </p>
+<p>This method has the virtue of simplicity. Because we only need to care about what the current&amp;target  weight is, and interp from current to target. </p>
+<p>Let <code>s</code> be our blend speed, in a frame of delta time <code>t</code>, the interpolation method is: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Weight_New = Lerp(Weight_Old, Weight_Target, Clamp01(t * s));</span><br></pre></td></tr></table></figure>
+<p>But the problem is that this method is not linear: </p>
+<p><img src="blend-to-target-in-unity.assets/trinket_plot.png" alt="plot"></p>
+<p>As we can see, the weight grows fast in the beginning because the value <code>target - current</code> is large when the interpolation begins. Then the grow speed gradually decreases along with the value <code>target - current</code> . </p>
+<h3 id="Linear-Interpolation"><a href="#Linear-Interpolation" class="headerlink" title="Linear Interpolation"></a>Linear Interpolation</h3><p>Of course what we, to be frankly, animators desire is linear interpolation. And it is not that difficult to implement, but it’s not easy to handle multi target interpolation. </p>
+<p>In this case, blend speed <code>s</code> represents the time a target interpolation needs to be completed. If the target weight changes frequently, this means a lot of work to handle these transition. </p>
 
       
     </div>
@@ -557,9 +578,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Animation/" rel="tag"># Animation</a>
-          
             <a href="/tags/Unity/" rel="tag"># Unity</a>
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
           
         </div>
       
@@ -819,7 +840,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-Is-Blend-To-Target"><span class="nav-number">2.</span> <span class="nav-text">What Is Blend To Target?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-does-it-work"><span class="nav-number">3.</span> <span class="nav-text">How does it work?</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#What-Is-Blend-To-Target"><span class="nav-number">2.</span> <span class="nav-text">What Is Blend To Target?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-does-it-work"><span class="nav-number">3.</span> <span class="nav-text">How does it work?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Interpolation-Speed"><span class="nav-number">4.</span> <span class="nav-text">Interpolation Speed</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Current-to-Target-Interpolation"><span class="nav-number">4.1.</span> <span class="nav-text">Current to Target Interpolation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linear-Interpolation"><span class="nav-number">4.1.1.</span> <span class="nav-text">Linear Interpolation</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

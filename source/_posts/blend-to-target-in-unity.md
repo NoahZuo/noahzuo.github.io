@@ -6,7 +6,7 @@ tags:
 category: Unity
 date: 2021-03-05 11:15:12
 updated: 2021-03-08 15:41:28
-description: This article introduces a feature that I implemented called `blend to target` in Unity Engine, which is widely used in `Cross File Mobile` and `Call of Duty Mobile`. 
+description: This article introduces a feature that I implemented called `blend to target` in Unity Engine, which is widely used in `Cross Fire Mobile` and `Call of Duty Mobile`. 
 
 ---
 

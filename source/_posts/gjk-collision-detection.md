@@ -31,8 +31,6 @@ An important point is that the GJK algorithm does not actually operate on the tw
 
 ## Minkowski Difference and Sum
 
-
-
 ### For Point Sets
 
 It is quite important to understand Minkowski sum and Minkowski difference of point sets for eventually understanding GJK algorithm. Let `A` and `B` be two point sets and let `a` and `b` be the position vectors corresponding to pairs of points in `A` and `B`. So the Minkowski sum, $A \oplus B$ is then defined as the set: 

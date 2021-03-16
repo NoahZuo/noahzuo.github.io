@@ -1,12 +1,12 @@
 ---
-title: Some math about capsule collision
+title: Some Math About Capsule Collision
 mathjax: true
 tags: 
  - Math
  - Physics
 category: Math
 date: 2021-03-15 15:29:03
-updated: 2021-03-15 15:29:03
+updated: 2021-03-16 17:19:56
 description: This article records something about capsule collision calculation.  
 
 ---
@@ -69,6 +69,35 @@ float SqDistPointSegment(Point a, Point b, Point c)
     return Dot(ac, ac) – e * e / f;
 }
 ```
+
+Or you may want the reference point value: 
+
+```cpp
+void ClosestPtPointSegment(Point c, Point a, Point b, float &t, Point &d)
+{
+    Vector ab = b – a;
+    // Project c onto ab, but deferring divide by Dot(ab, ab)
+    t = Dot(c – a, ab);
+    if (t <= 0.0f) {
+        // c projects outside the [a,b] interval, on the a side; clamp to a
+        t = 0.0f;
+        d = a;
+    } else {
+        float denom = Dot(ab, ab); // Always nonnegative since denom = ||ab||∧2
+        if (t >= denom) {
+        // c projects outside the [a,b] interval, on the b side; clamp to b
+        t = 1.0f;
+        d = b;
+        } else {
+            // c projects inside the [a,b] interval; must do deferred divide now
+            t = t / denom;
+            d = a + t * ab;
+        }
+    }
+}
+```
+
+
 
 
 

@@ -99,7 +99,7 @@
   <meta name="description" content="This article records something about capsule collision calculation.">
 <meta name="keywords" content="Math,Physics">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Some math about capsule collision">
+<meta property="og:title" content="Some Math About Capsule Collision">
 <meta property="og:url" content="http://yoursite.com/2021/03/15/some-math-about-capsule-collision/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
 <meta property="og:description" content="This article records something about capsule collision calculation.">
@@ -107,9 +107,9 @@
 <meta property="og:image" content="http://yoursite.com/2021/03/15/some-math-about-capsule-collision/image-20210315163352510.png">
 <meta property="og:image" content="http://yoursite.com/2021/03/15/some-math-about-capsule-collision/image-20210315174151863.png">
 <meta property="og:image" content="http://yoursite.com/2021/03/15/some-math-about-capsule-collision/image-20210315210702293.png">
-<meta property="og:updated_time" content="2021-03-15T07:29:03.000Z">
+<meta property="og:updated_time" content="2021-03-16T09:19:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Some math about capsule collision">
+<meta name="twitter:title" content="Some Math About Capsule Collision">
 <meta name="twitter:description" content="This article records something about capsule collision calculation.">
 <meta name="twitter:image" content="http://yoursite.com/2021/03/15/some-math-about-capsule-collision/image-20210315163352510.png">
 
@@ -129,7 +129,7 @@
   };
 </script>
 
-  <title>Some math about capsule collision | Noah Zuo's Blog</title>
+  <title>Some Math About Capsule Collision | Noah Zuo's Blog</title>
   
 
 
@@ -362,7 +362,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Some math about capsule collision
+          <h1 class="post-title" itemprop="name headline">Some Math About Capsule Collision
 
               
             
@@ -391,6 +391,22 @@
               <time title="Created: 2021-03-15 15:29:03" itemprop="dateCreated datePublished" datetime="2021-03-15T15:29:03+08:00">2021-03-15</time>
             
 
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-03-16 17:19:56" itemprop="dateModified" datetime="2021-03-16T17:19:56+08:00">2021-03-16</time>
+              
             
           </span>
 
@@ -444,9 +460,8 @@
 
       
         <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><h2 id="What-Is-A-Capsule"><a href="#What-Is-A-Capsule" class="headerlink" title="What Is A Capsule?"></a>What Is A Capsule?</h2><p>The capsule collision is a simple extension to the sphere intersection test. A capsule is defined, in most cases, by a base point <code>a</code> and a tip point <code>b</code>. </p>
-<p>A capsule collision can be defined like this: </p>
-<script type="math/tex; mode=display">
-R = \{x|(x - [a + (b - a) * t]) ^ 2 \leq r \}, 0 \leq t \leq 1</script><p><img src="image-20210315163352510.png" alt="image-20210315163352510"></p>
+<p>A capsule collision can be defined like this:<br>$$<br>R = {x|(x - [a + (b - a) * t]) ^ 2 \leq r }, 0 \leq t \leq 1<br>$$</p>
+<p><img src="image-20210315163352510.png" alt="image-20210315163352510"></p>
 <h2 id="Why-Is-Capsule-Important"><a href="#Why-Is-Capsule-Important" class="headerlink" title="Why Is Capsule Important?"></a>Why Is Capsule Important?</h2><p>We can of course use cylinders as bounding volumes. Unfortunately, it turns out that the overlap test for cylinders is quite expensive. </p>
 <p>As an alternative result, capsule shapes are wildly used in physics engines because of calculation simplicity. Thus it is always good to know what is happening deep inside when collisions are detected. </p>
 <h1 id="Collision-Detection-Methods"><a href="#Collision-Detection-Methods" class="headerlink" title="Collision Detection Methods"></a>Collision Detection Methods</h1><h2 id="Sphere-Capsule-Intersection"><a href="#Sphere-Capsule-Intersection" class="headerlink" title="Sphere-Capsule Intersection"></a>Sphere-Capsule Intersection</h2><p>A useful property of capsules, or rather, sphere-swept volumes, is that the distance computation between the inner structures does not rely on the inner structures being of the same type. </p>
@@ -456,6 +471,8 @@ R = \{x|(x - [a + (b - a) * t]) ^ 2 \leq r \}, 0 \leq t \leq 1</script><p><img s
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">TestSphereCapsule</span><span class="params">(Sphere s, Capsule capsule)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Compute (squared) distance between sphere center and capsule line segment</span></span><br><span class="line">    <span class="keyword">float</span> dist2 = SqDistPointSegment(capsule.a, capsule.b, s.c);</span><br><span class="line">    <span class="comment">// If (squared) distance smaller than (squared) sum of radii, they collide</span></span><br><span class="line">    <span class="keyword">float</span> radius = s.r + capsule.r;</span><br><span class="line">    <span class="keyword">return</span> dist2 &lt;= radius * radius;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Distance from point to a segment can be easily calculated by: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Returns the squared distance between point c and segment ab</span></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">SqDistPointSegment</span><span class="params">(Point a, Point b, Point c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Vector ab = b – a, ac = c – a, bc = c – b;</span><br><span class="line">    <span class="keyword">float</span> e = Dot(ac, ab);</span><br><span class="line">    <span class="comment">// Handle cases where c projects outside ab</span></span><br><span class="line">    <span class="keyword">if</span> (e &lt;= <span class="number">0.0f</span>) <span class="keyword">return</span> Dot(ac, ac);</span><br><span class="line">    <span class="keyword">float</span> f = Dot(ab, ab);</span><br><span class="line">    <span class="keyword">if</span> (e &gt;= f) <span class="keyword">return</span> Dot(bc, bc);</span><br><span class="line">    <span class="comment">// Handle cases where c projects onto ab</span></span><br><span class="line">    <span class="keyword">return</span> Dot(ac, ac) – e * e / f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Or you may want the reference point value: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ClosestPtPointSegment</span><span class="params">(Point c, Point a, Point b, <span class="keyword">float</span> &amp;t, Point &amp;d)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Vector ab = b – a;</span><br><span class="line">    <span class="comment">// Project c onto ab, but deferring divide by Dot(ab, ab)</span></span><br><span class="line">    t = Dot(c – a, ab);</span><br><span class="line">    <span class="keyword">if</span> (t &lt;= <span class="number">0.0f</span>) &#123;</span><br><span class="line">        <span class="comment">// c projects outside the [a,b] interval, on the a side; clamp to a</span></span><br><span class="line">        t = <span class="number">0.0f</span>;</span><br><span class="line">        d = a;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">float</span> denom = Dot(ab, ab); <span class="comment">// Always nonnegative since denom = ||ab||∧2</span></span><br><span class="line">        <span class="keyword">if</span> (t &gt;= denom) &#123;</span><br><span class="line">        <span class="comment">// c projects outside the [a,b] interval, on the b side; clamp to b</span></span><br><span class="line">        t = <span class="number">1.0f</span>;</span><br><span class="line">        d = b;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// c projects inside the [a,b] interval; must do deferred divide now</span></span><br><span class="line">            t = t / denom;</span><br><span class="line">            d = a + t * ab;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Capsule-Capsule-Intersection"><a href="#Capsule-Capsule-Intersection" class="headerlink" title="Capsule-Capsule Intersection"></a>Capsule-Capsule Intersection</h2><p>It is natural to consider a capsule-capsule intersection as a problem to solve the distance between two segments: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">TestCapsuleCapsule</span><span class="params">(Capsule capsule1, Capsule capsule2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Compute (squared) distance between the inner structures of the capsules</span></span><br><span class="line">    <span class="keyword">float</span> s, t;</span><br><span class="line">    Point c1, c2;</span><br><span class="line">    <span class="keyword">float</span> dist2 = ClosestPtSegmentSegment(capsule1.a, capsule1.b,</span><br><span class="line">    capsule2.a, capsule2.b, s, t, c1, c2);</span><br><span class="line">    <span class="comment">// If (squared) distance smaller than (squared) sum of radii, they collide</span></span><br><span class="line">    <span class="keyword">float</span> radius = capsule1.r + capsule2.r;</span><br><span class="line">    <span class="keyword">return</span> dist2 &lt;= radius * radius;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>This is much more complicated, however, to compute closest points of two segments. </p>

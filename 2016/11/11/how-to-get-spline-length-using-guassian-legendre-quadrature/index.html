@@ -96,20 +96,18 @@
 
 
 
-  <meta name="description" content="This article tells you something about physX scratch buffer in Unity.">
-<meta name="keywords" content="Unity,Programming,Game Physics,physX">
+  <meta name="description" content="This article tells you how to get length of a spline using Gauss–Legendre Quadrature.">
+<meta name="keywords" content="Math">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PhysX Scratch Buffer in Unity">
-<meta property="og:url" content="http://yoursite.com/2019/07/17/physx-scratch-buffer-in-unity/index.html">
+<meta property="og:title" content="How To Get A Spline&#39;s Length Using Gauss–Legendre Quadrature?">
+<meta property="og:url" content="http://yoursite.com/2016/11/11/how-to-get-spline-length-using-guassian-legendre-quadrature/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article tells you something about physX scratch buffer in Unity.">
+<meta property="og:description" content="This article tells you how to get length of a spline using Gauss–Legendre Quadrature.">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2019/07/17/physx-scratch-buffer-in-unity/scratch%20buffer.png">
-<meta property="og:updated_time" content="2021-03-26T09:11:30.434Z">
+<meta property="og:updated_time" content="2021-03-30T12:29:28.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PhysX Scratch Buffer in Unity">
-<meta name="twitter:description" content="This article tells you something about physX scratch buffer in Unity.">
-<meta name="twitter:image" content="http://yoursite.com/2019/07/17/physx-scratch-buffer-in-unity/scratch%20buffer.png">
+<meta name="twitter:title" content="How To Get A Spline&#39;s Length Using Gauss–Legendre Quadrature?">
+<meta name="twitter:description" content="This article tells you how to get length of a spline using Gauss–Legendre Quadrature.">
 
 
 
@@ -117,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/07/17/physx-scratch-buffer-in-unity/">
+  <link rel="canonical" href="http://yoursite.com/2016/11/11/how-to-get-spline-length-using-guassian-legendre-quadrature/">
 
 
 
@@ -127,7 +125,7 @@
   };
 </script>
 
-  <title>PhysX Scratch Buffer in Unity | Noah Zuo's Blog</title>
+  <title>How To Get A Spline's Length Using Gauss–Legendre Quadrature? | Noah Zuo's Blog</title>
   
 
 
@@ -343,7 +341,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/17/physx-scratch-buffer-in-unity/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/11/how-to-get-spline-length-using-guassian-legendre-quadrature/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -360,7 +358,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">PhysX Scratch Buffer in Unity
+          <h1 class="post-title" itemprop="name headline">How To Get A Spline's Length Using Gauss–Legendre Quadrature?
 
               
             
@@ -386,7 +384,7 @@
                 
               
 
-              <time title="Created: 2019-07-17 20:24:39" itemprop="dateCreated datePublished" datetime="2019-07-17T20:24:39+08:00">2019-07-17</time>
+              <time title="Created: 2016-11-11 14:07:00" itemprop="dateCreated datePublished" datetime="2016-11-11T14:07:00+08:00">2016-11-11</time>
             
 
             
@@ -403,7 +401,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2021-03-26 17:11:30" itemprop="dateModified" datetime="2021-03-26T17:11:30+08:00">2021-03-26</time>
+                <time title="Modified: 2021-03-30 20:29:28" itemprop="dateModified" datetime="2021-03-30T20:29:28+08:00">2021-03-30</time>
               
             
           </span>
@@ -420,7 +418,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a></span>
 
                 
                 
@@ -441,7 +439,7 @@
           
 
           
-            <div class="post-description">This article tells you something about physX scratch buffer in Unity.</div>
+            <div class="post-description">This article tells you how to get length of a spline using Gauss–Legendre Quadrature.</div>
           
 
         </div>
@@ -457,25 +455,46 @@
       
 
       
-        <h2 id="What-is-Scratch-Buffer-in-PhysX"><a href="#What-is-Scratch-Buffer-in-PhysX" class="headerlink" title="What is Scratch Buffer in PhysX?"></a>What is Scratch Buffer in PhysX?</h2><p>We always encounter bottleneck in <code>scene::simulate</code> function. When there are too many rigid bodies or joints in the scene, a lot of performance is required to complete those simulations. </p>
-<blockquote>
-<p>As far as possible, PhysX will internally allocate temporary buffers<br>from the scratch memory block, thereby reducing the need to perform<br>temporary allocations from PxAllocatorCallback. </p>
-</blockquote>
-<p>So… In the function<code>scene::simulate</code>, scratch buffer is pushed into the scratch allocator. And this means that physX would try to allocate temp buffers inside the scratch buffer. </p>
-<p>It needs to be concerned that: </p>
-<blockquote>
-<p>Much of the memory PhysX uses for simulation is held in a pool of blocks, each 16K in size.</p>
-</blockquote>
-<p>Thus we need to make sure that the buffer size should be multiple of 16k. And in addition, this buffer should be 16-byte aligned. </p>
-<p>We can use <code>uint8</code> and <code>malloc</code> to do this. </p>
-<h2 id="Scratch-Buffer-in-Unity"><a href="#Scratch-Buffer-in-Unity" class="headerlink" title="Scratch Buffer in Unity"></a>Scratch Buffer in Unity</h2><p>Surprisingly, Unity did nothing about scratch buffer(Well… at least for 5.6). It simply passes fixed delta time to <code>physicsScene::simulate</code> function. And this means that it does not use scratch buffer at all. </p>
-<p>As a result, <code>Physics.simulate</code> costs too much performance in our rag doll scene. Especially for those low-end device. </p>
-<p>And it is time for us to modify the engine code. </p>
-<h2 id="Our-Modification"><a href="#Our-Modification" class="headerlink" title="Our Modification"></a>Our Modification</h2><p>We created an int variable in physics manager class. This value means the block number of scratch buffer we need. The default value is 0, which means we still do not use scratch buffer. </p>
-<p><img src="scratch buffer.png" alt="Scratch Buffer"></p>
-<p>We created the scratch buffer in the physics manager constructor function. And destroy this buffer in the destructor function. </p>
-<p>Moreover, we add some terminal function to re-allocate scratch buffer during runtime. This makes us easily to compare performance cost between different set of scratch buffer. </p>
-<p>And the result is inspiring. Scratch buffer saved us lots of performance for our regular scene. </p>
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Sometimes, we need to get the length of a spline. For example, hair length is required when hair-style is modeled using Hermit splines. </p>
+<p>Actually this post is simply translated from the one I wrote on CSDN: <a href="https://blog.csdn.net/noahzuo/article/details/53127319" target="_blank" rel="noopener">https://blog.csdn.net/noahzuo/article/details/53127319</a></p>
+<h1 id="Gauss–Legendre-Quadrature"><a href="#Gauss–Legendre-Quadrature" class="headerlink" title="Gauss–Legendre Quadrature"></a>Gauss–Legendre Quadrature</h1><p>When we try to find the integration value of a function $\int_{-1}^{1}f(x) dx$, it is a good choice to use Gaussian quadrature: </p>
+<p>$$\sum_{i=1}^n w_i f(x_i)$$</p>
+<p>, which  $w_i, i = 1 … n$ is the weight to get the approximate result. </p>
+<p>But it is known to all that <code>Guass Quadrature</code> can only be used for functions that can be well-approximated by a polynomial on $[−1, 1]$. </p>
+<p>Thus, we can make $f(x) = W(x)g(x)$, which $g(x)$ is a approximated polynomial function, and $W(x)$ is a known weight function. As a result, we have: </p>
+<p>$$\int_{-1}^1 f(x) dx = \int_{-1}^1 W(x)g(x)dx \approx \sum_{i=1}^n w_i’g(x_i)$$</p>
+<p>For <code>Gauss–Legendre Quadrature</code>, which needs to be sampled only 5 times to get a reasonable result,  let $P_n(x)$ be the polynomial function when $W(x)=1$. We have: </p>
+<p>$$ w_i = \frac{2}{(1-x_i^2)[P_n’(x_i)^2]} $$</p>
+<p>, which $x_i$ is the $i_{th}$ root of $P_n(x)$, and $P_n(x)$ is: </p>
+<p>$$ P_n(x) = \prod_{1\le i\le n}(x-x_i) $$</p>
+<p>For those 5 sample points, we have the value table: </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">$P_i$</th>
+<th style="text-align:left">$w_i$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">$0$</td>
+<td style="text-align:left">$\tfrac{128}{255}$</td>
+</tr>
+<tr>
+<td style="text-align:left">$\pm\tfrac{\sqrt{245-14\sqrt{70}}}{21}$</td>
+<td style="text-align:left">$\tfrac{322+13\sqrt{70}}{900}$</td>
+</tr>
+<tr>
+<td style="text-align:left">$\pm\tfrac{\sqrt{245+14\sqrt{70}}}{21}$</td>
+<td style="text-align:left">$\tfrac{322-13\sqrt{70}}{900}$</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Implementation-Code"><a href="#Implementation-Code" class="headerlink" title="Implementation Code"></a>Implementation Code</h1><p>As a result, all those values can be calculated in advance, so we can use it directly: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FLegendreGaussCoefficient</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">float</span> Abscissa;</span><br><span class="line">	<span class="keyword">float</span> Weight;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> FLegendreGaussCoefficient LegendreGaussCoefficients[] =</span><br><span class="line">&#123;</span><br><span class="line">	&#123; <span class="number">0.0f</span>, <span class="number">0.5688889f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">-0.5384693f</span>, <span class="number">0.47862867f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">0.5384693f</span>, <span class="number">0.47862867f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">-0.90617985f</span>, <span class="number">0.23692688f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">0.90617985f</span>, <span class="number">0.23692688f</span> &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>So, the algorithm is truly easy. We take 4 vectors $P_0, P_1, T_0, T_1$ representing the position and tangent of starting point and ending point: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">LengthOfSegment</span><span class="params">(FVector P0, FVector P1, FVector T0, FVector T1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	FVector Coeff1 = ((P0 - P1) * <span class="number">2.0f</span> + T0 + T1) * <span class="number">3.0f</span>;</span><br><span class="line">	FVector Coeff2 = (P1 - P0) * <span class="number">6.0f</span> - T0 * <span class="number">4.0f</span> - T1 * <span class="number">2.0f</span>;</span><br><span class="line">	FVector Coeff3 = T0;</span><br><span class="line">	<span class="keyword">float</span> HalfParam = <span class="number">0.5f</span>;</span><br><span class="line">	<span class="keyword">float</span> Length = <span class="number">0.0f</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; LegendreGaussCoefficient : LegendreGaussCoefficients)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// Calculate derivative at each Legendre-Gauss sample, and perform a weighted sum</span></span><br><span class="line">		<span class="keyword">const</span> <span class="keyword">float</span> Alpha = HalfParam * (<span class="number">1.0f</span> + LegendreGaussCoefficient.Abscissa);</span><br><span class="line">		<span class="keyword">const</span> FVector Derivative = ((Coeff1 * Alpha + Coeff2) * Alpha + Coeff3);</span><br><span class="line">		Length += Derivative.Size() * LegendreGaussCoefficient.Weight;</span><br><span class="line">	&#125;</span><br><span class="line">	Length *= HalfParam;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> Length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Finally we have our result. </p>
 
       
     </div>
@@ -532,13 +551,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Unity/" rel="tag"># Unity</a>
-          
-            <a href="/tags/Programming/" rel="tag"># Programming</a>
-          
-            <a href="/tags/Game-Physics/" rel="tag"># Game Physics</a>
-          
-            <a href="/tags/physX/" rel="tag"># physX</a>
+            <a href="/tags/Math/" rel="tag"># Math</a>
           
         </div>
       
@@ -551,8 +564,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/08/learning-notes-smashing-the-stack-for-fun-and-profit/" rel="next" title="Learning Notes about Smashing the Stack for Fun and Profit">
-                <i class="fa fa-chevron-left"></i> Learning Notes about Smashing the Stack for Fun and Profit
+              <a href="/2016/06/01/fast-invsqrt-algorithm-in-quake-iii/" rel="next" title="Fast Inv-Sqrt Algorithm In Quake III">
+                <i class="fa fa-chevron-left"></i> Fast Inv-Sqrt Algorithm In Quake III
               </a>
             
           </div>
@@ -561,8 +574,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/24/gjk-collision-detection/" rel="prev" title="GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection">
-                GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection <i class="fa fa-chevron-right"></i>
+              <a href="/2019/05/11/tool-tips-for-ue4-animation-programming/" rel="prev" title="Tool tips for ue4 animation programming">
+                Tool tips for ue4 animation programming <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -802,7 +815,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Scratch-Buffer-in-PhysX"><span class="nav-number">1.</span> <span class="nav-text">What is Scratch Buffer in PhysX?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scratch-Buffer-in-Unity"><span class="nav-number">2.</span> <span class="nav-text">Scratch Buffer in Unity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Our-Modification"><span class="nav-number">3.</span> <span class="nav-text">Our Modification</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Gauss–Legendre-Quadrature"><span class="nav-number">2.</span> <span class="nav-text">Gauss–Legendre Quadrature</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Implementation-Code"><span class="nav-number">3.</span> <span class="nav-text">Implementation Code</span></a></li></ol></div>
             
 
           </div>
@@ -974,6 +987,46 @@
   
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
   
 
 

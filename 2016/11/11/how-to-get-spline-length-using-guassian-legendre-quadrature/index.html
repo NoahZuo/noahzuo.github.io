@@ -458,13 +458,16 @@
         <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Sometimes, we need to get the length of a spline. For example, hair length is required when hair-style is modeled using Hermit splines. </p>
 <p>Actually this post is simply translated from the one I wrote on CSDN: <a href="https://blog.csdn.net/noahzuo/article/details/53127319" target="_blank" rel="noopener">https://blog.csdn.net/noahzuo/article/details/53127319</a></p>
 <h1 id="Gauss–Legendre-Quadrature"><a href="#Gauss–Legendre-Quadrature" class="headerlink" title="Gauss–Legendre Quadrature"></a>Gauss–Legendre Quadrature</h1><p>When we try to find the integration value of a function $\int_{-1}^{1}f(x) dx$, it is a good choice to use Gaussian quadrature: </p>
-<script type="math/tex; mode=display">\sum_{i=1}^n w_i f(x_i)</script><p>, which  $w_i, i = 1 … n$ is the weight to get the approximate result. </p>
+<p>$$\sum_{i=1}^n w_i f(x_i)$$</p>
+<p>, which  $w_i, i = 1 … n$ is the weight to get the approximate result. </p>
 <p>But it is known to all that <code>Guass Quadrature</code> can only be used for functions that can be well-approximated by a polynomial on $[−1, 1]$. </p>
 <p>Thus, we can make $f(x) = W(x)g(x)$, which $g(x)$ is a approximated polynomial function, and $W(x)$ is a known weight function. As a result, we have: </p>
-<script type="math/tex; mode=display">\int_{-1}^1 f(x) dx = \int_{-1}^1 W(x)g(x)dx \approx \sum_{i=1}^n w_i'g(x_i)</script><p>For <code>Gauss–Legendre Quadrature</code>, which needs to be sampled only 5 times to get a reasonable result,  let $P_n(x)$ be the polynomial function when $W(x)=1$. We have: </p>
-<script type="math/tex; mode=display">w_i = \frac{2}{(1-x_i^2)[P_n'(x_i)^2]}</script><p>, which $x<em>i$ is the $i</em>{th}$ root of $P_n(x)$, and $P_n(x)$ is: </p>
-<script type="math/tex; mode=display">P_n(x) = \prod_{1\le i\le n}(x-x_i)</script><p>For those 5 sample points, we have the value table: </p>
-<div class="table-container">
+<p>$$\int_{-1}^1 f(x) dx = \int_{-1}^1 W(x)g(x)dx \approx \sum_{i=1}^n w_i’g(x_i)$$</p>
+<p>For <code>Gauss–Legendre Quadrature</code>, which needs to be sampled only 5 times to get a reasonable result,  let $P_n(x)$ be the polynomial function when $W(x)=1$. We have: </p>
+<p>$$ w_i = \frac{2}{(1-x_i^2)[P_n’(x_i)^2]} $$</p>
+<p>, which $x_i$ is the $i_{th}$ root of $P_n(x)$, and $P_n(x)$ is: </p>
+<p>$$ P_n(x) = \prod_{1\le i\le n}(x-x_i) $$</p>
+<p>For those 5 sample points, we have the value table: </p>
 <table>
 <thead>
 <tr>
@@ -487,7 +490,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <h1 id="Implementation-Code"><a href="#Implementation-Code" class="headerlink" title="Implementation Code"></a>Implementation Code</h1><p>As a result, all those values can be calculated in advance, so we can use it directly: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FLegendreGaussCoefficient</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">float</span> Abscissa;</span><br><span class="line">	<span class="keyword">float</span> Weight;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> FLegendreGaussCoefficient LegendreGaussCoefficients[] =</span><br><span class="line">&#123;</span><br><span class="line">	&#123; <span class="number">0.0f</span>, <span class="number">0.5688889f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">-0.5384693f</span>, <span class="number">0.47862867f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">0.5384693f</span>, <span class="number">0.47862867f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">-0.90617985f</span>, <span class="number">0.23692688f</span> &#125;,</span><br><span class="line">	&#123; <span class="number">0.90617985f</span>, <span class="number">0.23692688f</span> &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>So, the algorithm is truly easy. We take 4 vectors $P_0, P_1, T_0, T_1$ representing the position and tangent of starting point and ending point: </p>
@@ -643,7 +645,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

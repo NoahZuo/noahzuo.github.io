@@ -15,17 +15,17 @@ description: This article tells you how to implement component-space-based save\
 
 UE4 has already provided a `Save Cached Pose` for one-to-many link in Anim Graph like this: 
 
-![image-20210630114534533](component-space-save-cached-pose-node-in-ue4.assets/image-20210630114534533.png)
+![image-20210630114534533](image-20210630114534533.png)
 
 We can use a `Use Save Cached Pose` node to refer a `Save Cached Pose` node. 
 
-![image-20210630140804168](component-space-save-cached-pose-node-in-ue4.assets/image-20210630140804168.png)
+![image-20210630140804168](image-20210630140804168.png)
 
 ## Not-recommended Way
 
 It actually surprised me that we can use `Reroute Node` to achieve `one to many` pose link like this: 
 
-![image-20210630141700847](component-space-save-cached-pose-node-in-ue4.assets/image-20210630141700847.png)
+![image-20210630141700847](image-20210630141700847.png)
 
 And it does work. 
 
@@ -64,7 +64,7 @@ This method only works, however, in Local Spaces.
 
 This means that we need extra some space transform nodes if we want to achieve `one-to-many` pose link in component space like this: 
 
-![image-20210630145539256](component-space-save-cached-pose-node-in-ue4.assets/image-20210630145539256.png)
+![image-20210630145539256](image-20210630145539256.png)
 
 Space convert node is not that cheap since every bone is required to perform a space conversion. 
 
@@ -179,7 +179,7 @@ if (UAnimGraphNode_SaveCachedPose* AssociatedSaveNode = SaveCachedPoseNodes.Find
 
 Last but not least, we should handle such warning: 
 
-![image-20210708165338511](component-space-save-cached-pose-node-in-ue4.assets/image-20210708165338511.png)
+![image-20210708165338511](image-20210708165338511.png)
 
 In order to solve this issue, we should modify `FAnimBlueprintCompilerContext::ProcessAnimationNode` function: 
 
@@ -197,7 +197,7 @@ In order to solve this issue, we should modify `FAnimBlueprintCompilerContext::P
 
 And that's all! Everything is good to go: 
 
-![enter image description here](component-space-save-cached-pose-node-in-ue4.assets/tapd_20418141_1625033370_95.png)
+![enter image description here](tapd_20418141_1625033370_95.png)
 
 Enjoy this feature. 
 

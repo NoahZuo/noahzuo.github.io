@@ -460,8 +460,9 @@
 
       
         <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><h2 id="What-Is-A-Capsule"><a href="#What-Is-A-Capsule" class="headerlink" title="What Is A Capsule?"></a>What Is A Capsule?</h2><p>The capsule collision is a simple extension to the sphere intersection test. A capsule is defined, in most cases, by a base point <code>a</code> and a tip point <code>b</code>. </p>
-<p>A capsule collision can be defined like this:<br>$$<br>R = {x|(x - [a + (b - a) * t]) ^ 2 \leq r }, 0 \leq t \leq 1<br>$$</p>
-<p><img src="image-20210315163352510.png" alt="image-20210315163352510"></p>
+<p>A capsule collision can be defined like this: </p>
+<script type="math/tex; mode=display">
+R = \{x|(x - [a + (b - a) * t]) ^ 2 \leq r \}, 0 \leq t \leq 1</script><p><img src="image-20210315163352510.png" alt="image-20210315163352510"></p>
 <h2 id="Why-Is-Capsule-Important"><a href="#Why-Is-Capsule-Important" class="headerlink" title="Why Is Capsule Important?"></a>Why Is Capsule Important?</h2><p>We can of course use cylinders as bounding volumes. Unfortunately, it turns out that the overlap test for cylinders is quite expensive. </p>
 <p>As an alternative result, capsule shapes are wildly used in physics engines because of calculation simplicity. Thus it is always good to know what is happening deep inside when collisions are detected. </p>
 <h1 id="Collision-Detection-Methods"><a href="#Collision-Detection-Methods" class="headerlink" title="Collision Detection Methods"></a>Collision Detection Methods</h1><h2 id="Sphere-Capsule-Intersection"><a href="#Sphere-Capsule-Intersection" class="headerlink" title="Sphere-Capsule Intersection"></a>Sphere-Capsule Intersection</h2><p>A useful property of capsules, or rather, sphere-swept volumes, is that the distance computation between the inner structures does not rely on the inner structures being of the same type. </p>
@@ -636,7 +637,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

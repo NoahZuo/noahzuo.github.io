@@ -459,7 +459,7 @@
       
         <p>It seems that Epic prefers telling developers how to use animation blueprint in Unreal Engine 4. But me, as a programmer, still needs to get to know what the animation system actually works underlying. </p>
 <h2 id="Relevant-Data-Structure"><a href="#Relevant-Data-Structure" class="headerlink" title="Relevant Data Structure"></a>Relevant Data Structure</h2><h3 id="USkeletalMeshComponent"><a href="#USkeletalMeshComponent" class="headerlink" title="USkeletalMeshComponent"></a><code>USkeletalMeshComponent</code></h3><p>This is the where we setup our skeletal mesh in UE4. We use this component to handle <code>game-play</code> stuff. But it seems that UE4 want to decoupling game-play and animation system, as a result, you cannot write bone transform using this component. </p>
-<h3 id="UAnimInstance"><a href="#UAnimInstance" class="headerlink" title="UAnimInstance"></a><code>UAnimInstance</code></h3><p>You may not be very familiar with this class. But you must be very familiar with its child classes – <code>AnimBlueprint</code>. </p>
+<h3 id="UAnimInstance"><a href="#UAnimInstance" class="headerlink" title="UAnimInstance"></a><code>UAnimInstance</code></h3><p>You may not be very familiar with this class. But you must be very familiar with its child classes — <code>AnimBlueprint</code>. </p>
 <p>We can choose an <code>Anim Class</code> for a <code>USkeletalMeshComponent</code>. As we just mentioned that UE4 want to decoupling game-play and animation system. And since <code>USkeletalMeshComponent</code> focus on game-play stuff, it needs <code>UAnimInstance</code> to handle animation stuff. </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UAnimInstance* USkeletalMeshComponent::GetAnimInstance() <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> AnimScriptInstance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><code>AnimBlueprint</code> always inherits from <code>UAnimInstance</code>. I am pretty sure that you have played with <code>Blueprint Update Animation</code> event… We always setup our animation data in this event. </p>
@@ -633,7 +633,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

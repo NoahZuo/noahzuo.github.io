@@ -137,6 +137,17 @@
 
 
 
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
 
 
 
@@ -475,7 +486,6 @@
 <h1 id="How-does-it-work"><a href="#How-does-it-work" class="headerlink" title="How does it work?"></a>How does it work?</h1><p>Instead of blending animations by parameter value, <code>Blend to target</code> blends animations by sample weights directly.  </p>
 <p>When the character is moving left, the sample weights of this blend tree is <code>(1.0, 0.0, 0.0)</code>, when the character is moving right, the sample weights is <code>(0.0, 0.0, 1.0)</code>. </p>
 <p>Lerp between this sample weights would be performed to get the final result: </p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -512,7 +522,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>And we can see the <code>Fwd</code> node is not affected now. </p>
 <h1 id="Interpolation-Speed"><a href="#Interpolation-Speed" class="headerlink" title="Interpolation Speed"></a>Interpolation Speed</h1><p>What is worth mentioning is how we handle interpolation speed when a blend target is set. </p>
 <h2 id="Current-to-Target-Interpolation"><a href="#Current-to-Target-Interpolation" class="headerlink" title="Current to Target Interpolation"></a>Current to Target Interpolation</h2><p>Personally I perfer the <code>Current to Target</code> method, which is also what UE4 adapts for their animation blend space. </p>

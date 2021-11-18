@@ -137,6 +137,17 @@
 
 
 
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
 
 
 
@@ -504,6 +515,7 @@
 <h2 id="Eliminate-Conditional-Branch"><a href="#Eliminate-Conditional-Branch" class="headerlink" title="Eliminate Conditional Branch"></a>Eliminate Conditional Branch</h2><p>Even most modern computer has implemented branch prediction mechanism, we still consider a condition branch is expensive and should be avoid as much as possible. </p>
 <p>Thus <code>QRI</code> can be refactored as: </p>
 <blockquote>
+</blockquote>
 <ol>
 <li>$d\leftarrow 0$</li>
 <li>for each $i \in { x, y, z }$</li>
@@ -513,7 +525,6 @@
 <li>if $(d \leq r^2)$ return true</li>
 <li>return false </li>
 </ol>
-</blockquote>
 <p>As we can see, the algorithm can take good advantage of <code>max</code> instruction, which is super fast on most <code>SIMD</code> instruction set. </p>
 <h2 id="Even-Faster"><a href="#Even-Faster" class="headerlink" title="Even Faster"></a>Even Faster</h2><p>So there is an even faster method: </p>
 <p>First, we shift the origin to the center of the rectangle. And let <code>a</code> be the vector pointing from the origin to the rectangle-corner in the first quadrant: </p>
@@ -532,7 +543,8 @@
 <p><img src="20160726165356440" alt="img"></p>
 </li>
 <li><p>$x &lt; 0, y &lt; 0$: </p>
-<script type="math/tex; mode=display">c = (0, 0)</script></li>
+<p>$$c = (0, 0)$$</p>
+</li>
 </ul>
 <p>Then we simply compare the length of <code>r</code> and <code>c</code>: </p>
 <ul>

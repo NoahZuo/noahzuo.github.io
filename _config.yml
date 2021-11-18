@@ -81,3 +81,5 @@ deploy:
   type: git
   repository: https://github.com/NoahZuo/noahzuo.github.io.git
   branch: master
+  token: $GITHUB_TOKEN
+  name: noahzuo

@@ -14,9 +14,9 @@ I already have some Chinese blog accounts in both CSDN and Jianshu. I'll set up 
 
 ## About My Work
 
-I am a passionate game developer. Currently I work for Timi J3 Studio in Tencent Games as a game engine developer. 
+I am a passionate game developer. Currently I am working for Lightspeed & Quantum Studio in Tencent Games as a game engine developer. 
 
-I took part in development and optimization of [PUBGM](https://pubgm.qq.com/index.shtml), [Cross Fire Mobile](https://cfm.qq.com/) and [Call of Duty Mobile](https://www.callofduty.com/mobile). 
+I took part in development and optimization of [PUBGM](https://pubgm.qq.com/index.shtml), [Cross Fire Mobile](https://cfm.qq.com/)， [Call of Duty Mobile](https://www.callofduty.com/mobile) and [Apex Legends Mobile](https://play.google.com/store/apps/details?id=com.ea.gp.apexlegendsmobilefps&hl=en&gl=US). 
 
 Before joining Tencent, I  took part in development of [Nikki 4th](https://nikki4.papegames.cn/) and [Hidden Dragon: Shadow Trace](http://ylz.wanmei.com/). 
 

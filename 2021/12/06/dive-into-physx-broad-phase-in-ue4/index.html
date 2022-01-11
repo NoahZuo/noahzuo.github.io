@@ -97,7 +97,7 @@
 
 
   <meta name="description" content="This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.">
-<meta name="keywords" content="UE4,PhysX">
+<meta name="keywords" content="UE4,PhysX,Physics">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dive Into PhysX Broad Phase In UE4">
 <meta property="og:url" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/index.html">
@@ -458,8 +458,8 @@
       
 
       
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function like <code>BroadPhaseSAP::Update</code> or <code>BroadPhaseMBP::Update</code>can cost lots of performance, especially when you have millions of rigid bodies or fast-moving rigid bodies in your scene. </p>
-<p>And it is so common that the performance issue is even worse on a dedicated server because of single-thread CPU-Dispatcher. </p>
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function like <code>BroadPhaseSAP::Update</code> or <code>BroadPhaseMBP::Update</code>can cost lots of performance, especially when there are millions of rigid bodies or fast-moving rigid bodies in your scene. </p>
+<p>And it is so common that the performance issue is even worse on a dedicated server because of <code>PhysX</code>‘s single-thread CPU-Dispatcher. </p>
 <h1 id="About-Broad-Phase"><a href="#About-Broad-Phase" class="headerlink" title="About Broad Phase"></a>About Broad Phase</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function is not always a performance hot-spot in most cases if you are not developing an open world game which contains lots of fast-moving objects. </p>
 <p>PhysX has provided us two broad-phase algorithms: <code>SAP</code> and <code>MBP</code>. Both of them use <code>AABB</code> to detect collision. </p>
 <p>The basic idea behind these algorithms is: </p>
@@ -471,15 +471,15 @@
 <p><img src="image-20211217174528727.png" alt="image-20211217174528727"></p>
 <p>This function is called in the <code>TG_StartPhysics</code> tick group. After all those three tasks are completed, we’ve managed to get a sorted array for each axis. </p>
 <h1 id="Something-About-Sorting"><a href="#Something-About-Sorting" class="headerlink" title="Something About Sorting"></a>Something About Sorting</h1><p>It is known to all that we should choose different sorting algorithm for different cases. </p>
-<p>Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how PhysX handle it: </p>
+<p>Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how <code>PhysX</code> handle it: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BroadPhaseSap::batchUpdate</span><br><span class="line">(<span class="keyword">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span><br><span class="line">&#123;</span><br><span class="line">        <span class="comment">//Nothin updated so don't do anything</span></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//If number updated is sufficiently fewer than number of boxes (say less than 20%)</span></span><br><span class="line">        <span class="keyword">if</span>((mUpdatedSize*<span class="number">5</span>) &lt; mBoxesSize)</span><br><span class="line">        &#123;</span><br><span class="line">                batchUpdateFewUpdates(Axis, pairs, pairsSize, pairsCapacity);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 <p>Moreover, <code>QSort</code> is used if the updated box is fewer than 512. Or else, <code>Bucket Sort</code> is used: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">void</span> BroadPhaseSap::batchUpdateFewUpdates</span><br><span class="line">(<span class="keyword">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span><br><span class="line">&#123;</span><br><span class="line">    	...</span><br><span class="line">        <span class="comment">//There are no extents, just the sentinels, so exit early.</span></span><br><span class="line">        <span class="keyword">if</span>(isSentinel(BaseEPDatas[<span class="number">1</span>]))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 ind_ = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 index = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize &lt; <span class="number">512</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is small, so use qsort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(PxU32 a = <span class="number">0</span>; a &lt; mUpdatedSize; ++a)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">                Ps::sort(mSortedUpdateElements, ind_);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is large so use a bucket sort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(; index &lt; endPointSize; ++index)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="Issue-Cause"><a href="#Issue-Cause" class="headerlink" title="Issue Cause"></a>Issue Cause</h1><p>So it is time for us to investigate what on earth eventually cause this issue. </p>
-<p>For an open world game that contains millions of colliders, it is quite obvious that all colliders’ AABBs would be projected onto three axis. As a result, we’ve finally get three extremely dense arrays. </p>
+<h1 id="Issue-Cause"><a href="#Issue-Cause" class="headerlink" title="Issue Cause"></a>Issue Cause</h1><p>Time to investigate what on earth eventually cause this issue. </p>
+<p>After millions of AABB projecting them self onto  three axis, we can eventually get three extremely dense arrays. </p>
 <p>Think about a moving rigid body moving from <code>(10, 0, 0)</code> to <code>(20, 0, 0)</code>. During sorting stage, it would be compared with colliders far far away: </p>
 <p><img src="image-20211223205231390.png" alt="image-20211223205231390"></p>
-<p>This leads to a large array sorting problem. Of course, this is pretty expensive. </p>
+<p>This leads to a large array sorting problem, a common but expensive problem. </p>
 <h1 id="How-To-Solve-This-Problem"><a href="#How-To-Solve-This-Problem" class="headerlink" title="How To Solve This Problem?"></a>How To Solve This Problem?</h1><h2 id="Level-Streaming"><a href="#Level-Streaming" class="headerlink" title="Level Streaming"></a>Level Streaming</h2><p>One common solution to this issue for non-server build is to streaming in or out those colliders dynamically. This method works really well since it leads to a much smaller array for each axis. </p>
 <p>This is a widely known solution so that I am not going to talk about its detail here since Epic has already provided tons of tutorials about it. </p>
 <h2 id="Multi-Pruning-Box"><a href="#Multi-Pruning-Box" class="headerlink" title="Multi Pruning Box"></a>Multi Pruning Box</h2><p>Also know as <code>MBP</code> algorithm. To use this algorithm, a level bound is needed. And you can set this value in the project setting: </p>
@@ -511,7 +511,7 @@
 <p>And yet btw, PhysX doesn’t have a benchmark for static aggregates. In my opinion, just don’t use aggregate for static mesh components: </p>
 <p><img src="image_16406844721012.png" alt="img"></p>
 <h1 id="A-Deeper-Thought"><a href="#A-Deeper-Thought" class="headerlink" title="A Deeper Thought"></a>A Deeper Thought</h1><p>In the old days, broad phase was hardly ever a performance hot-spot because we might not have too many rigid bodies in our scene. </p>
-<p>However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it seems not to make any sense. </p>
+<p>However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it can sometimes seem ridiculous for some ordinary cases. </p>
 <p>For example, you may think a triangle mesh collider is really expensive in any case. But for an open world game, a triangle mesh collider is preferred because of saving a considerable amount of rigid bodies. </p>
 
       
@@ -573,6 +573,8 @@
           
             <a href="/tags/PhysX/" rel="tag"># PhysX</a>
           
+            <a href="/tags/Physics/" rel="tag"># Physics</a>
+          
         </div>
       
 
@@ -593,6 +595,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/06/better-orientation-warping/" rel="prev" title="Better Orientation Warping Implementation In UE4">
+                Better Orientation Warping Implementation In UE4 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -661,7 +667,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-count">43</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -860,7 +866,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

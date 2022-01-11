@@ -3,6 +3,7 @@ title: Dive Into PhysX Broad Phase In UE4
 tags: 
  - UE4
  - PhysX
+ - Physics
 category: UE4
 date: 2021-12-06 17:30:03
 updated: 2021-12-06 17:30:03
@@ -11,11 +12,11 @@ description: This article tells you something you might not notice about broad p
 
 # Introduction
 
-The `Broad Phase`'s `Update` function like `BroadPhaseSAP::Update` or `BroadPhaseMBP::Update`can cost lots of performance, especially when you have millions of rigid bodies or fast-moving rigid bodies in your scene. 
+The `Broad Phase`'s `Update` function like `BroadPhaseSAP::Update` or `BroadPhaseMBP::Update`can cost lots of performance, especially when there are millions of rigid bodies or fast-moving rigid bodies in your scene. 
 
 
 
-And it is so common that the performance issue is even worse on a dedicated server because of single-thread CPU-Dispatcher. 
+And it is so common that the performance issue is even worse on a dedicated server because of `PhysX`'s single-thread CPU-Dispatcher. 
 
 # About Broad Phase 
 
@@ -39,7 +40,7 @@ This function is called in the `TG_StartPhysics` tick group. After all those thr
 
 It is known to all that we should choose different sorting algorithm for different cases. 
 
-Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how PhysX handle it: 
+Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how `PhysX` handle it: 
 
 ```cpp
 void BroadPhaseSap::batchUpdate
@@ -95,15 +96,15 @@ void BroadPhaseSap::batchUpdateFewUpdates
 
 # Issue Cause
 
-So it is time for us to investigate what on earth eventually cause this issue. 
+Time to investigate what on earth eventually cause this issue. 
 
-For an open world game that contains millions of colliders, it is quite obvious that all colliders' AABBs would be projected onto three axis. As a result, we've finally get three extremely dense arrays. 
+After millions of AABB projecting them self onto  three axis, we can eventually get three extremely dense arrays. 
 
 Think about a moving rigid body moving from `(10, 0, 0)` to `(20, 0, 0)`. During sorting stage, it would be compared with colliders far far away: 
 
 ![image-20211223205231390](image-20211223205231390.png)
 
-This leads to a large array sorting problem. Of course, this is pretty expensive. 
+This leads to a large array sorting problem, a common but expensive problem. 
 
 # How To Solve This Problem? 
 
@@ -202,8 +203,6 @@ As a result, all existing aggregate pairs, both `actor-aggregate` pairs or `aggr
 
 So, it is not recommended to have too many aggregates in our scene. 
 
-
-
 #### Static Aggregate Issue
 
 It firstly comes to my mind that we can put all rigid bodies of a `Static Mesh Actor` into an aggregate, like rigid bodies in a tree, a desk or even a building. In this way we can greatly optimize performance in `BpSAP.updateWork` or `BpMBP.updateWork`. 
@@ -218,7 +217,7 @@ And yet btw, PhysX doesn't have a benchmark for static aggregates. In my opinion
 
 In the old days, broad phase was hardly ever a performance hot-spot because we might not have too many rigid bodies in our scene. 
 
-However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it seems not to make any sense. 
+However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it can sometimes seem ridiculous for some ordinary cases. 
 
 For example, you may think a triangle mesh collider is really expensive in any case. But for an open world game, a triangle mesh collider is preferred because of saving a considerable amount of rigid bodies. 
 

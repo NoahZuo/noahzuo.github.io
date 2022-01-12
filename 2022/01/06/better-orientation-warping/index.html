@@ -96,13 +96,13 @@
 
 
 
-  <meta name="description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieve.">
+  <meta name="description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieved.">
 <meta name="keywords" content="Animation,UE4">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Better Orientation Warping Implementation In UE4">
 <meta property="og:url" content="http://yoursite.com/2022/01/06/better-orientation-warping/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieve.">
+<meta property="og:description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieved.">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110205610176.png">
 <meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/nioh2_pose_switch_2.gif">
@@ -117,7 +117,7 @@
 <meta property="og:updated_time" content="2022-01-06T13:34:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Better Orientation Warping Implementation In UE4">
-<meta name="twitter:description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieve.">
+<meta name="twitter:description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieved.">
 <meta name="twitter:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110205610176.png">
 
 
@@ -445,7 +445,7 @@
           
 
           
-            <div class="post-description">This article tells you how to implement a better orientation warping feature than what Paragon has achieve.</div>
+            <div class="post-description">This article tells you how to implement a better orientation warping feature than what Paragon has achieved.</div>
           
 
         </div>
@@ -464,7 +464,7 @@
         <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Orientation warping is an animation technique that is used in <code>Paragon</code>. You can find more information about it here. </p>
 <p>There are already a bunch of implementation methods provided by <code>Epic</code> or <a href="https://www.unrealengine.com/marketplace/en-US/product/animgraphnode" target="_blank" rel="noopener">SeanChen</a>. None of them really suits our project, though. And I’ve eventually implemented orientation warping in a brand new way, which works brilliantly in our project. </p>
 <h1 id="About-Orientation-Warping"><a href="#About-Orientation-Warping" class="headerlink" title="About Orientation Warping"></a>About Orientation Warping</h1><p>You may wonder what on earth orientation warping is or why and when I should use this feature. </p>
-<p>There are two types of locomotion style: <code>forward move</code> and <code>sideway move(aka. strafe move)</code>. Orientation warping is typically used for <code>sideway move</code>, which means that the character aims forward while moving in all directions. You can find more information about it <a href="https://en.wikipedia.org/wiki/Strafing_(video_games" target="_blank" rel="noopener">here</a>#Strafe-running). </p>
+<p>There are two types of locomotion style: <code>forward move</code> and <code>sideway move(aka. strafe move)</code>. Orientation warping is typically used for <code>sideway move</code>, which means that the character aims forward while moving in all directions. You can find more information about it <a href="https://en.wikipedia.org/wiki/Strafing_(video_games" target="_blank" rel="noopener">here</a>). </p>
 <h2 id="A-Naive-Strafe-Move-Implementation"><a href="#A-Naive-Strafe-Move-Implementation" class="headerlink" title="A Naive Strafe Move Implementation"></a>A Naive <code>Strafe Move</code> Implementation</h2><p>A naive but common implementation is simply applying a looping animation sequence for a certain range of moving directions: </p>
 <p><img src="image-20220110205610176.png" alt="image-20220110205610176"></p>
 <p>Straightforward but effective. The main problem is that it always causes foot-sliding. To my surprise, I can still find it in some so-called modern games(yes, I mean <code>Nioh 2</code>): </p>

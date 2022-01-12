@@ -6,7 +6,7 @@ tags:
 category: UE4
 date: 2022-01-06 21:34:03
 updated: 2022-01-06 21:34:03
-description: This article tells you how to implement a better orientation warping feature than what Paragon has achieve.  
+description: This article tells you how to implement a better orientation warping feature than what Paragon has achieved.  
 ---
 
 # Introduction
@@ -21,7 +21,7 @@ There are already a bunch of implementation methods provided by `Epic` or [SeanC
 
 You may wonder what on earth orientation warping is or why and when I should use this feature. 
 
-There are two types of locomotion style: `forward move` and `sideway move(aka. strafe move)`. Orientation warping is typically used for `sideway move`, which means that the character aims forward while moving in all directions. You can find more information about it [here](https://en.wikipedia.org/wiki/Strafing_(video_games)#Strafe-running). 
+There are two types of locomotion style: `forward move` and `sideway move(aka. strafe move)`. Orientation warping is typically used for `sideway move`, which means that the character aims forward while moving in all directions. You can find more information about it [here](https://en.wikipedia.org/wiki/Strafing_(video_games)). 
 
 ## A Naive `Strafe Move` Implementation
 

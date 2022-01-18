@@ -473,7 +473,7 @@
 <p>This tools can really help a lot to find performance hotspots. But pvd should be used if you want to digging into PhysX since  measuring scope performance is pretty common during performance profile. </p>
 <h1 id="How-Does-UE4-Handle-PVD"><a href="#How-Does-UE4-Handle-PVD" class="headerlink" title="How Does UE4 Handle PVD?"></a>How Does UE4 Handle PVD?</h1><p>UE4 handles PVD using <code>GPhysXVisualDebugger</code>, which is created in <code>InitGamePhysCore</code> function. You need to call <code>PvdConnect</code> function by console command to connect to <code>PhysX Visual Debugger</code> running on your local machine like: </p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvd connect localhost</span><br></pre></td></tr></table></figure>
-<p>But there is a huge limitation with this method–You cannot easily collect PVD data on dedicated server or mobile device. </p>
+<p>But there is a huge limitation with this method—You cannot easily collect PVD data on dedicated server or mobile device. </p>
 <h1 id="Streaming-To-File"><a href="#Streaming-To-File" class="headerlink" title="Streaming To File"></a>Streaming To File</h1><p>Obviously, it would be much better to streaming pvd data to a file, which can be loaded later in <code>PVD</code>. </p>
 <h2 id="Global-Parameters-Setup"><a href="#Global-Parameters-Setup" class="headerlink" title="Global Parameters Setup"></a>Global Parameters Setup</h2><p>Instead of simply creating two functions to handle connection, we choose to create two Global Parameters, <code>GConnecttoPVD</code>  and <code>GDisconnectFromPVD</code> since we want to handle pvd connection in <code>FPhysScene_PhysX::StartFrame()</code>. </p>
 <p>You may also handle connection in other stages as well. But I still recommend <code>FPhysScene_PhysX::StartFrame()</code> because <code>PVD</code> is known as easy to crash. </p>
@@ -642,7 +642,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">43</span>
+                    <span class="site-state-item-count">44</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -728,7 +728,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">18</span>
+                      
+                    
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

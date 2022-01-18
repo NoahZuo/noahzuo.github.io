@@ -467,7 +467,7 @@
 <p>two AABBs overlap <strong>iff</strong> their projections on the X, Y and Z coordinate axes overlap. </p>
 </blockquote>
 <p>That is to say, physX needs to keep three sorted arrays, one for each axis, to track the bounding box’s <code>min</code> and <code>max</code> value of each rigid body. </p>
-<p>And since we can play with those rigid bodies by interfaces that UE4 has provided.  As a result, physx needs to keep these arrays sorted–this is exactly what <code>Broad Phase</code>‘s <code>Update</code> function does. </p>
+<p>And since we can play with those rigid bodies by interfaces that UE4 has provided.  As a result, physx needs to keep these arrays sorted—this is exactly what <code>Broad Phase</code>‘s <code>Update</code> function does. </p>
 <p><img src="image-20211217174528727.png" alt="image-20211217174528727"></p>
 <p>This function is called in the <code>TG_StartPhysics</code> tick group. After all those three tasks are completed, we’ve managed to get a sorted array for each axis. </p>
 <h1 id="Something-About-Sorting"><a href="#Something-About-Sorting" class="headerlink" title="Something About Sorting"></a>Something About Sorting</h1><p>It is known to all that we should choose different sorting algorithm for different cases. </p>
@@ -667,7 +667,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">43</span>
+                    <span class="site-state-item-count">44</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -753,7 +753,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">18</span>
+                      
+                    
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

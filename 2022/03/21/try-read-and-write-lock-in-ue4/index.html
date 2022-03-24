@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="This article tells you how to get bone position of a skeleton&apos;s ref pose.">
-<meta name="keywords" content="Animation,UE4">
+  <meta name="description" content="This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.">
+<meta name="keywords" content="UE4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Get Ref Pose Bone Position in Component Space in UE4">
-<meta property="og:url" content="http://yoursite.com/2019/10/08/how-to-get-refpose-bone-position-in-component-space-in-ue4/index.html">
+<meta property="og:title" content="TryReadLock And TryWriteLock In UE4">
+<meta property="og:url" content="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article tells you how to get bone position of a skeleton&apos;s ref pose.">
+<meta property="og:description" content="This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2021-03-26T09:11:30.399Z">
+<meta property="og:updated_time" content="2022-03-24T09:07:23.795Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Get Ref Pose Bone Position in Component Space in UE4">
-<meta name="twitter:description" content="This article tells you how to get bone position of a skeleton&apos;s ref pose.">
+<meta name="twitter:title" content="TryReadLock And TryWriteLock In UE4">
+<meta name="twitter:description" content="This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.">
 
 
 
@@ -115,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/10/08/how-to-get-refpose-bone-position-in-component-space-in-ue4/">
+  <link rel="canonical" href="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/">
 
 
 
@@ -125,7 +125,7 @@
   };
 </script>
 
-  <title>Get Ref Pose Bone Position in Component Space in UE4 | Noah Zuo's Blog</title>
+  <title>TryReadLock And TryWriteLock In UE4 | Noah Zuo's Blog</title>
   
 
 
@@ -352,7 +352,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/08/how-to-get-refpose-bone-position-in-component-space-in-ue4/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Noah Zuo">
@@ -369,7 +369,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Get Ref Pose Bone Position in Component Space in UE4
+          <h1 class="post-title" itemprop="name headline">TryReadLock And TryWriteLock In UE4
 
               
             
@@ -395,7 +395,7 @@
                 
               
 
-              <time title="Created: 2019-10-08 12:14:28" itemprop="dateCreated datePublished" datetime="2019-10-08T12:14:28+08:00">2019-10-08</time>
+              <time title="Created: 2022-03-21 10:49:12" itemprop="dateCreated datePublished" datetime="2022-03-21T10:49:12+08:00">2022-03-21</time>
             
 
             
@@ -412,7 +412,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2021-03-26 17:11:30" itemprop="dateModified" datetime="2021-03-26T17:11:30+08:00">2021-03-26</time>
+                <time title="Modified: 2022-03-24 17:07:23" itemprop="dateModified" datetime="2022-03-24T17:07:23+08:00">2022-03-24</time>
               
             
           </span>
@@ -450,7 +450,7 @@
           
 
           
-            <div class="post-description">This article tells you how to get bone position of a skeleton's ref pose.</div>
+            <div class="post-description">This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.</div>
           
 
         </div>
@@ -466,10 +466,19 @@
       
 
       
-        <p>Since I am engaged into something needs bone position of a ref pose in UE4, and UE4 does not provide access to it, so we need to calculate it manually. </p>
-<h2 id="If-You-Just-Want-the-Answer"><a href="#If-You-Just-Want-the-Answer" class="headerlink" title="If You Just Want the Answer"></a>If You Just Want the Answer</h2><p>We can calculate bone position like this: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_ref_pose_bone_comp_space_transform</span><span class="params">(TArray&lt;FTransform&gt;&amp; outResult, USkeletalMeshComponent* inSkelComp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     FReferenceSkeleton refSkeleton = inSkelComp-&gt;SkeletalMesh-&gt;RefSkeleton;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">const</span> int32 poseNum = refSkeleton.GetRefBonePose().Num(); </span><br><span class="line"></span><br><span class="line">     outResult.Reset(); </span><br><span class="line">     outResult.AddUninitialized(poseNum); </span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (int32 i = <span class="number">0</span>; i &lt; poseNum; i++)</span><br><span class="line">     &#123;</span><br><span class="line">          outResult[i] = get_ref_pose_single_bone_comp_space_transform(refSkeleton, i); </span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FTransform <span class="title">get_ref_pose_single_bone_comp_space_transform</span><span class="params">(FReferenceSkeleton inSkel, int32 boneIdx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     FTransform resultBoneTransform = inSkel.GetRefBonePose()[boneIdx];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">auto</span> refBoneInfo = inSkel.GetRefBoneInfo(); </span><br><span class="line"></span><br><span class="line">     <span class="keyword">while</span> (boneIdx)</span><br><span class="line">     &#123;</span><br><span class="line">          resultBoneTransform *= inSkel.GetRefBonePose()[refBoneInfo[boneIdx].ParentIndex]; </span><br><span class="line">          boneIdx = refBoneInfo[boneIdx].ParentIndex; </span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> resultBoneTransform; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="How-to-Get-the-Bone-Position-of-the-Current-Pose"><a href="#How-to-Get-the-Bone-Position-of-the-Current-Pose" class="headerlink" title="How to Get the Bone Position of the Current Pose?"></a>How to Get the Bone Position of the Current Pose?</h2><p>We can use <code>USkeletalMeshComponent::GetComponentSpaceTransforms()</code> to get current bone position in component space. </p>
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>I simply need to implement <code>FTryReadScopeLock</code> and <code>FTryWriteScopeLock</code> for some of my features these days. </p>
+<p>For the moment, the only way to <code>try get lock</code> is to use <code>FScopeTryLock</code>, which is based on a <a href="https://en.wikipedia.org/wiki/Critical_section" target="_blank" rel="noopener"><code>critical section</code></a>. </p>
+<p>But unfortunately, there is no <code>try get lock</code> method for <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock" target="_blank" rel="noopener"><code>Readers-writer lock</code></a> in UE4. </p>
+<p>Thus I’ve extend the <code>FRWLock</code> implementation for both Windows and pthreads. </p>
+<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><h2 id="Extending-ScopeRWLock-h"><a href="#Extending-ScopeRWLock-h" class="headerlink" title="Extending ScopeRWLock.h"></a>Extending <code>ScopeRWLock.h</code></h2><p>Add a <code>FTryReadScopeLock</code> class like this: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/** Try to get a FRWLock read-locked while this scope lives </span></span><br><span class="line"><span class="comment"> * This is a utility class that handles scope level locking using TryLock.</span></span><br><span class="line"><span class="comment"> * Scope locking helps to avoid programming errors by which a lock is acquired</span></span><br><span class="line"><span class="comment"> * and never released.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;code&gt;</span></span><br><span class="line"><span class="comment"> *	&#123;</span></span><br><span class="line"><span class="comment"> *		// Try to acquire a lock on CriticalSection for the current scope.</span></span><br><span class="line"><span class="comment"> *		FTryReadScopeLock ScopeTryLock(CriticalSection);</span></span><br><span class="line"><span class="comment"> *		// Check that the lock was acquired.</span></span><br><span class="line"><span class="comment"> *		if (ScopeTryLock.IsLocked())</span></span><br><span class="line"><span class="comment"> *		&#123;</span></span><br><span class="line"><span class="comment"> *			// If the lock was acquired, we can safely access resources protected</span></span><br><span class="line"><span class="comment"> *			// by the lock.</span></span><br><span class="line"><span class="comment"> *		&#125;</span></span><br><span class="line"><span class="comment"> *		// When ScopeTryLock goes out of scope, the critical section will be</span></span><br><span class="line"><span class="comment"> *		// released if it was ever acquired.</span></span><br><span class="line"><span class="comment"> *	&#125;</span></span><br><span class="line"><span class="comment"> * &lt;/code&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FTryReadScopeLock</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">FTryReadScopeLock</span><span class="params">(FRWLock* InLock)</span></span></span><br><span class="line">		: Lock(InLock)</span><br><span class="line">	&#123;</span><br><span class="line">		check(Lock);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!Lock-&gt;TryReadLock())</span><br><span class="line">		&#123;</span><br><span class="line">			Lock = <span class="literal">nullptr</span>; </span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	~FTryReadScopeLock()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (Lock)</span><br><span class="line">		&#123;</span><br><span class="line">			Lock-&gt;ReadUnlock();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">FORCEINLINE <span class="keyword">bool</span> <span class="title">IsLocked</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span> != Lock;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	FRWLock* Lock;</span><br><span class="line"></span><br><span class="line">	UE_NONCOPYABLE(FTryReadScopeLock);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="Implementation-For-PThreadRWLock-Platform"><a href="#Implementation-For-PThreadRWLock-Platform" class="headerlink" title="Implementation For PThreadRWLock Platform"></a>Implementation For <code>PThreadRWLock</code> Platform</h2><p>Add <code>TryReadLock</code> and <code>TryWriteLock</code> method to <code>PThreadRWLock.h</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == pthread_rwlock_tryrdlock(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == pthread_rwlock_trywrlock(&amp;Mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This shall work for most of non-Windows platform. </p>
+<h2 id="Implementation-For-WindowsPlatform"><a href="#Implementation-For-WindowsPlatform" class="headerlink" title="Implementation For WindowsPlatform"></a>Implementation For <code>Windows</code>Platform</h2><h3 id="Modification-For-MinimalWindowsApi-h"><a href="#Modification-For-MinimalWindowsApi-h" class="headerlink" title="Modification For MinimalWindowsApi.h"></a>Modification For <code>MinimalWindowsApi.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="Modification-For-MinimalWindowsApi-cpp"><a href="#Modification-For-MinimalWindowsApi-cpp" class="headerlink" title="Modification For MinimalWindowsApi.cpp"></a>Modification For <code>MinimalWindowsApi.cpp</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::TryAcquireSRWLockExclusive((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::TryAcquireSRWLockShared((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Modification-For-WindowsCriticalSection-h"><a href="#Modification-For-WindowsCriticalSection-h" class="headerlink" title="Modification For WindowsCriticalSection.h"></a>Modification For <code>WindowsCriticalSection.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FORCEINLINE <span class="keyword">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::TryAcquireSRWLockShared(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FORCEINLINE <span class="keyword">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::TryAcquireSRWLockExclusive(&amp;Mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>And everything is good to go. </p>
 
       
     </div>
@@ -526,8 +535,6 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Animation/" rel="tag"># Animation</a>
-          
             <a href="/tags/UE4/" rel="tag"># UE4</a>
           
         </div>
@@ -541,8 +548,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/" rel="next" title="Sub Anim Input Issue in UE 4.23, part I">
-                <i class="fa fa-chevron-left"></i> Sub Anim Input Issue in UE 4.23, part I
+              <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" rel="next" title="A Tiny Performance Issue In UE4 Camera View">
+                <i class="fa fa-chevron-left"></i> A Tiny Performance Issue In UE4 Camera View
               </a>
             
           </div>
@@ -550,10 +557,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/18/sub-anim-issue-in-ue-4-23-part-II/" rel="prev" title="Sub Anim Input Issue in UE 4.23, part II">
-                Sub Anim Input Issue in UE 4.23, part II <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -802,7 +805,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#If-You-Just-Want-the-Answer"><span class="nav-number">1.</span> <span class="nav-text">If You Just Want the Answer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-Get-the-Bone-Position-of-the-Current-Pose"><span class="nav-number">2.</span> <span class="nav-text">How to Get the Bone Position of the Current Pose?</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Implementation"><span class="nav-number">2.</span> <span class="nav-text">Implementation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Extending-ScopeRWLock-h"><span class="nav-number">2.1.</span> <span class="nav-text">Extending ScopeRWLock.h</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-For-PThreadRWLock-Platform"><span class="nav-number">2.2.</span> <span class="nav-text">Implementation For PThreadRWLock Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-For-WindowsPlatform"><span class="nav-number">2.3.</span> <span class="nav-text">Implementation For WindowsPlatform</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Modification-For-MinimalWindowsApi-h"><span class="nav-number">2.3.1.</span> <span class="nav-text">Modification For MinimalWindowsApi.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modification-For-MinimalWindowsApi-cpp"><span class="nav-number">2.3.2.</span> <span class="nav-text">Modification For MinimalWindowsApi.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modification-For-WindowsCriticalSection-h"><span class="nav-number">2.3.3.</span> <span class="nav-text">Modification For WindowsCriticalSection.h</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

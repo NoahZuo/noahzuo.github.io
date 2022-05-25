@@ -121,5 +121,5 @@ Since it is not possible for me to paste any relevant code here because of secre
 
 This method works perfectly! And eventually this method is adopted in our project! 
 
-It's a pity that I cannot share more details(maybe later?). Go for [Apex Legends Mobile](https://play.google.com/store/apps/details?id=com.ea.gp.apexlegendsmobilefps&hl=en&gl=US) now and experience this implementation method. 
+It's a pity that I cannot share more details(maybe later?). Go for [Apex Legends Mobile](https://play.google.com/store/apps/details?id=com.ea.gp.apexlegendsmobilefps&hl=en&gl=US) now and check how this looks like!  
 

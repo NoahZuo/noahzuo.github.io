@@ -1,266 +1,1010 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+
+
+
+
+
+
+
+
+
+
+
 
   
-  <title>TryReadLock And TryWriteLock In UE4 | Noah Zuo&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="This article tells you how to implement a &#96;FTryReadScopeLock&#96; or &#96;FTryWriteScopeLock&#96; in UE4.">
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.">
+<meta name="keywords" content="UE4">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TryReadLock And TryWriteLock In UE4">
 <meta property="og:url" content="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:description" content="This article tells you how to implement a &#96;FTryReadScopeLock&#96; or &#96;FTryWriteScopeLock&#96; in UE4.">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-03-21T02:49:12.000Z">
-<meta property="article:modified_time" content="2024-10-27T02:26:24.047Z">
-<meta property="article:author" content="Noah Zuo">
-<meta property="article:tag" content="UE4">
+<meta property="og:description" content="This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2024-10-27T02:26:24.047Z">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+<meta name="twitter:title" content="TryReadLock And TryWriteLock In UE4">
+<meta name="twitter:description" content="This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.">
 
-<meta name="generator" content="Hexo 7.3.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
-      </h1>
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TryReadLock And TryWriteLock In UE4 | Noah Zuo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Noah Zuo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
         
-          <a class="main-nav-link" href="/">Home</a>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
         
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-try-read-and-write-lock-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/03/21/try-read-and-write-lock-in-ue4/" class="article-date">
-  <time datetime="2022-03-21T02:49:12.000Z" itemprop="datePublished">2022-03-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
+          
+          <li class="menu-item menu-item-home">
 
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
         
-  
-    <h1 class="article-title" itemprop="name">
-      TryReadLock And TryWriteLock In UE4
-    </h1>
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
   
 
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TryReadLock And TryWriteLock In UE4
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-03-21 10:49:12" itemprop="dateCreated datePublished" datetime="2022-03-21T10:49:12+08:00">2022-03-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2024-10-27 10:26:24" itemprop="dateModified" datetime="2024-10-27T10:26:24+08:00">2024-10-27</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.</div>
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
       
         <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>I simply need to implement <code>FTryReadScopeLock</code> and <code>FTryWriteScopeLock</code> for some of my features these days. </p>
-<p>For the moment, the only way to <code>try get lock</code> is to use <code>FScopeTryLock</code>, which is based on a <a href="https://en.wikipedia.org/wiki/Critical_section"><code>critical section</code></a>. </p>
-<p>But unfortunately, there is no <code>try get lock</code> method for <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock"><code>Readers-writer lock</code></a> in UE4. </p>
+<p>For the moment, the only way to <code>try get lock</code> is to use <code>FScopeTryLock</code>, which is based on a <a href="https://en.wikipedia.org/wiki/Critical_section" target="_blank" rel="noopener"><code>critical section</code></a>. </p>
+<p>But unfortunately, there is no <code>try get lock</code> method for <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock" target="_blank" rel="noopener"><code>Readers-writer lock</code></a> in UE4. </p>
 <p>Thus I’ve extend the <code>FRWLock</code> implementation for both Windows and pthreads. </p>
 <h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><h2 id="Extending-ScopeRWLock-h"><a href="#Extending-ScopeRWLock-h" class="headerlink" title="Extending ScopeRWLock.h"></a>Extending <code>ScopeRWLock.h</code></h2><p>Add a <code>FTryReadScopeLock</code> class like this: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/** Try to get a FRWLock read-locked while this scope lives </span></span><br><span class="line"><span class="comment"> * This is a utility class that handles scope level locking using TryLock.</span></span><br><span class="line"><span class="comment"> * Scope locking helps to avoid programming errors by which a lock is acquired</span></span><br><span class="line"><span class="comment"> * and never released.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;code&gt;</span></span><br><span class="line"><span class="comment"> *	&#123;</span></span><br><span class="line"><span class="comment"> *		// Try to acquire a lock on CriticalSection for the current scope.</span></span><br><span class="line"><span class="comment"> *		FTryReadScopeLock ScopeTryLock(CriticalSection);</span></span><br><span class="line"><span class="comment"> *		// Check that the lock was acquired.</span></span><br><span class="line"><span class="comment"> *		if (ScopeTryLock.IsLocked())</span></span><br><span class="line"><span class="comment"> *		&#123;</span></span><br><span class="line"><span class="comment"> *			// If the lock was acquired, we can safely access resources protected</span></span><br><span class="line"><span class="comment"> *			// by the lock.</span></span><br><span class="line"><span class="comment"> *		&#125;</span></span><br><span class="line"><span class="comment"> *		// When ScopeTryLock goes out of scope, the critical section will be</span></span><br><span class="line"><span class="comment"> *		// released if it was ever acquired.</span></span><br><span class="line"><span class="comment"> *	&#125;</span></span><br><span class="line"><span class="comment"> * &lt;/code&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">FTryReadScopeLock</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">FTryReadScopeLock</span><span class="params">(FRWLock* InLock)</span></span></span><br><span class="line"><span class="function">		: Lock(InLock)</span></span><br><span class="line"><span class="function">	&#123;</span></span><br><span class="line">		<span class="built_in">check</span>(Lock);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!Lock-&gt;<span class="built_in">TryReadLock</span>())</span><br><span class="line">		&#123;</span><br><span class="line">			Lock = <span class="literal">nullptr</span>; </span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	~<span class="built_in">FTryReadScopeLock</span>()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (Lock)</span><br><span class="line">		&#123;</span><br><span class="line">			Lock-&gt;<span class="built_in">ReadUnlock</span>();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">FORCEINLINE <span class="type">bool</span> <span class="title">IsLocked</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span> != Lock;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	FRWLock* Lock;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">UE_NONCOPYABLE</span>(FTryReadScopeLock);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/** Try to get a FRWLock read-locked while this scope lives </span></span><br><span class="line"><span class="comment"> * This is a utility class that handles scope level locking using TryLock.</span></span><br><span class="line"><span class="comment"> * Scope locking helps to avoid programming errors by which a lock is acquired</span></span><br><span class="line"><span class="comment"> * and never released.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;code&gt;</span></span><br><span class="line"><span class="comment"> *	&#123;</span></span><br><span class="line"><span class="comment"> *		// Try to acquire a lock on CriticalSection for the current scope.</span></span><br><span class="line"><span class="comment"> *		FTryReadScopeLock ScopeTryLock(CriticalSection);</span></span><br><span class="line"><span class="comment"> *		// Check that the lock was acquired.</span></span><br><span class="line"><span class="comment"> *		if (ScopeTryLock.IsLocked())</span></span><br><span class="line"><span class="comment"> *		&#123;</span></span><br><span class="line"><span class="comment"> *			// If the lock was acquired, we can safely access resources protected</span></span><br><span class="line"><span class="comment"> *			// by the lock.</span></span><br><span class="line"><span class="comment"> *		&#125;</span></span><br><span class="line"><span class="comment"> *		// When ScopeTryLock goes out of scope, the critical section will be</span></span><br><span class="line"><span class="comment"> *		// released if it was ever acquired.</span></span><br><span class="line"><span class="comment"> *	&#125;</span></span><br><span class="line"><span class="comment"> * &lt;/code&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FTryReadScopeLock</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">FTryReadScopeLock</span><span class="params">(FRWLock* InLock)</span></span></span><br><span class="line">		: Lock(InLock)</span><br><span class="line">	&#123;</span><br><span class="line">		check(Lock);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!Lock-&gt;TryReadLock())</span><br><span class="line">		&#123;</span><br><span class="line">			Lock = <span class="literal">nullptr</span>; </span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	~FTryReadScopeLock()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (Lock)</span><br><span class="line">		&#123;</span><br><span class="line">			Lock-&gt;ReadUnlock();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">FORCEINLINE <span class="keyword">bool</span> <span class="title">IsLocked</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span> != Lock;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	FRWLock* Lock;</span><br><span class="line"></span><br><span class="line">	UE_NONCOPYABLE(FTryReadScopeLock);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <h2 id="Implementation-For-PThreadRWLock-Platform"><a href="#Implementation-For-PThreadRWLock-Platform" class="headerlink" title="Implementation For PThreadRWLock Platform"></a>Implementation For <code>PThreadRWLock</code> Platform</h2><p>Add <code>TryReadLock</code> and <code>TryWriteLock</code> method to <code>PThreadRWLock.h</code>: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == <span class="built_in">pthread_rwlock_tryrdlock</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == <span class="built_in">pthread_rwlock_trywrlock</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == pthread_rwlock_tryrdlock(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == pthread_rwlock_trywrlock(&amp;Mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>This shall work for most of non-Windows platform. </p>
-<h2 id="Implementation-For-Windows-Platform"><a href="#Implementation-For-Windows-Platform" class="headerlink" title="Implementation For Windows Platform"></a>Implementation For <code>Windows </code>Platform</h2><h3 id="Modification-For-MinimalWindowsApi-h"><a href="#Modification-For-MinimalWindowsApi-h" class="headerlink" title="Modification For MinimalWindowsApi.h"></a>Modification For <code>MinimalWindowsApi.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Modification-For-MinimalWindowsApi-cpp"><a href="#Modification-For-MinimalWindowsApi-cpp" class="headerlink" title="Modification For MinimalWindowsApi.cpp"></a>Modification For <code>MinimalWindowsApi.cpp</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::<span class="built_in">TryAcquireSRWLockExclusive</span>((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::<span class="built_in">TryAcquireSRWLockShared</span>((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Modification-For-WindowsCriticalSection-h"><a href="#Modification-For-WindowsCriticalSection-h" class="headerlink" title="Modification For WindowsCriticalSection.h"></a>Modification For <code>WindowsCriticalSection.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FORCEINLINE <span class="type">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::<span class="built_in">TryAcquireSRWLockShared</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FORCEINLINE <span class="type">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::<span class="built_in">TryAcquireSRWLockExclusive</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<h2 id="Implementation-For-WindowsPlatform"><a href="#Implementation-For-WindowsPlatform" class="headerlink" title="Implementation For WindowsPlatform"></a>Implementation For <code>Windows</code>Platform</h2><h3 id="Modification-For-MinimalWindowsApi-h"><a href="#Modification-For-MinimalWindowsApi-h" class="headerlink" title="Modification For MinimalWindowsApi.h"></a>Modification For <code>MinimalWindowsApi.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="Modification-For-MinimalWindowsApi-cpp"><a href="#Modification-For-MinimalWindowsApi-cpp" class="headerlink" title="Modification For MinimalWindowsApi.cpp"></a>Modification For <code>MinimalWindowsApi.cpp</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::TryAcquireSRWLockExclusive((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="keyword">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::TryAcquireSRWLockShared((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Modification-For-WindowsCriticalSection-h"><a href="#Modification-For-WindowsCriticalSection-h" class="headerlink" title="Modification For WindowsCriticalSection.h"></a>Modification For <code>WindowsCriticalSection.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FORCEINLINE <span class="keyword">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::TryAcquireSRWLockShared(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FORCEINLINE <span class="keyword">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::TryAcquireSRWLockExclusive(&amp;Mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>And everything is good to go. </p>
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/" data-id="cm2qzvapo004h0547cdlp4frt" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Noah Zuo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Noah Zuo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" rel="next" title="A Tiny Performance Issue In UE4 Camera View">
+                <i class="fa fa-chevron-left"></i> A Tiny Performance Issue In UE4 Camera View
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/" rel="prev" title="Digging Into The Bind Pose Scale Issue In UE4">
+                Digging Into The Bind Pose Scale Issue In UE4 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
     </footer>
   </div>
   
-    
-<nav id="article-nav">
   
-    <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
         
-          Digging Into The Bind Pose Scale Issue In UE4
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Noah Zuo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Implementation"><span class="nav-number">2.</span> <span class="nav-text">Implementation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Extending-ScopeRWLock-h"><span class="nav-number">2.1.</span> <span class="nav-text">Extending ScopeRWLock.h</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-For-PThreadRWLock-Platform"><span class="nav-number">2.2.</span> <span class="nav-text">Implementation For PThreadRWLock Platform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-For-WindowsPlatform"><span class="nav-number">2.3.</span> <span class="nav-text">Implementation For WindowsPlatform</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Modification-For-MinimalWindowsApi-h"><span class="nav-number">2.3.1.</span> <span class="nav-text">Modification For MinimalWindowsApi.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modification-For-MinimalWindowsApi-cpp"><span class="nav-number">2.3.2.</span> <span class="nav-text">Modification For MinimalWindowsApi.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modification-For-WindowsCriticalSection-h"><span class="nav-number">2.3.3.</span> <span class="nav-text">Modification For WindowsCriticalSection.h</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
         
       </div>
-    </a>
-  
-  
-    <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">A Tiny Performance Issue In UE4 Camera View</div>
-    </a>
-  
-</nav>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Noah Zuo</span>
 
   
-</article>
 
-</section>
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
         
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
-    </div>
-  </div>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
-    </div>
-  </div>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
-    </div>
-  </div>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
 
-  
-</aside>
+
         
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2024 Noah Zuo<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    
 
+    
 
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+    
   </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>

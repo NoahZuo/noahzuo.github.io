@@ -1,911 +1,2527 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
+
+
+
+
+
+
+
+
+
+
+
 
   
-  <title>Noah Zuo&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
   <meta property="og:type" content="website">
 <meta property="og:title" content="Noah Zuo&#39;s Blog">
 <meta property="og:url" content="http://yoursite.com/index.html">
 <meta property="og:site_name" content="Noah Zuo&#39;s Blog">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="Noah Zuo">
+<meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+<meta name="twitter:title" content="Noah Zuo&#39;s Blog">
 
-<meta name="generator" content="Hexo 7.3.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
-      </h1>
-      
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Noah Zuo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Noah Zuo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
         
-          <a class="main-nav-link" href="/">Home</a>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
         
-      </nav>
-      <nav id="sub-nav">
+          
+          <li class="menu-item menu-item-home menu-item-active">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-an-out-dated-introduction-to-volume-caching-in-physx" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/" class="article-date">
-  <time datetime="2022-05-06T12:49:12.000Z" itemprop="datePublished">2022-05-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Physics/">Physics</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
-    </h1>
-  
+          
+          <li class="menu-item menu-item-about">
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Scene query performance can always be a huge issue for game optimization. Thus <code>PhysX</code> has already provided a optimization mechanism called <a href="https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/SceneQueries.html#volume-caching"><code>Volume Caching</code></a> for accelerating scene queries. </p>
-<p>This mechanism has already been deprecated in PhysX 3.4 or later versions. In my point of view, <code>Volume Caching</code> can sometimes, or rather, always result in worse performance when it is not used properly. </p>
-<p>However, we can still learn something from this method. </p>
-<h1 id="Normal-Scene-Query-Routine"><a href="#Normal-Scene-Query-Routine" class="headerlink" title="Normal Scene Query Routine"></a>Normal Scene Query Routine</h1><h2 id="The-Most-Wildly-Used-Method"><a href="#The-Most-Wildly-Used-Method" class="headerlink" title="The Most Wildly-Used Method"></a>The Most Wildly-Used Method</h2><p>In a normal scene query routine, we need to go through <em>Broad Phase</em>, <em>Middle Phase</em> and <em>Narrow Phase</em> before we can finally get the result: </p>
-<p><img src="/image-20220506212617067.png" alt="image-20220506212617067"></p>
-<p>The <em>broad phase</em> and <em>middle phase</em> roughly determine which physics bodies might intersect, and then the narrow <em>phase</em> performs the actual detection. </p>
-<p>This method works fine in most cases. And in fact, this is the only scene query method that most game engine provide. </p>
-<h2 id="But-What’s-The-Price"><a href="#But-What’s-The-Price" class="headerlink" title="But What’s The Price?"></a>But What’s The Price?</h2><p><img src="/image-20220509134446150.png" alt="image-20220509134446150"></p>
-<p>**Everything comes with a price, even for an optimization mechanism. **</p>
-<p>An optimization mechanism works if and only if the price being lower than performance we actually gain. For the traditional scene query routine, it always works because a <em>narrow phase</em> is extremely expensive when compared with <em>broad phase</em> and <em>middle phase</em> in a common game scene. </p>
-<p>In general, the <em>broad phase</em> and <em>middle phase</em> stage cost little CPU performance because intersection detection between <code>AABB</code> is rather cheap. </p>
-<p>But for an open-world scene contains millions of rigid bodies, the <em>broad phase</em> and <em>middle phase</em> can cost some performance. And we may save a considerable amount of performance by getting rid of those <em>broad phase</em> or <em>middle phase</em> operation. </p>
-<p>And yes, that is exactly the design goal of <em>volume caching</em>. </p>
-<h1 id="Volume-Caching-Scene-Query-Routine"><a href="#Volume-Caching-Scene-Query-Routine" class="headerlink" title="Volume Caching Scene Query Routine"></a>Volume Caching Scene Query Routine</h1><h2 id="How-Does-Volume-Caching-Work"><a href="#How-Does-Volume-Caching-Work" class="headerlink" title="How Does Volume Caching Work?"></a>How Does Volume Caching Work?</h2><p>Sometimes we know that there would be an amount of scene queries around a specific location in the near future.   </p>
-<p>For example, a <code>Character Movement Component</code> can perform more than 5 scene queries around this character in one frame. By collecting colliders around this character in advance, we can skip those repeated <em>broad phase</em> or <em>middle phase</em> stage and go through every collider to detect intersection directly. </p>
-<h2 id="Trade-off-Details"><a href="#Trade-off-Details" class="headerlink" title="Trade-off Details"></a>Trade-off Details</h2><p>Let’s have $ cost_{b+m} $ to represent the performance cost of <em>broad phase</em> and <em>middle phase</em>. </p>
-<p>The whole performance cost to perform $n$ scene queries is: </p>
-<p>$$ Cost_{b+m} + N_{narrow} \cdot Cost_{narrow} $$</p>
-<p>where $ 0 \leq N_{narrow} \leq 5$ in most cases. </p>
-<p>But for volume caching routine, the whole cost is like: </p>
-<p>$$  N_{cached} \cdot Cost_{narrow} $$</p>
-<p>As a result, the delta cost is like: </p>
-<p>$$ \Delta{Cost} &#x3D; Cost_{b+m} +  Cost_{narrow} \cdot ( N_{narrow} - N_{cached} ) $$</p>
-<p>The larger $ \Delta_{Cost} $ is, the more performance we can save. </p>
-<p>Now here comes the question: **How To Save Performance As Much As Possible? **</p>
-<ul>
-<li>The $ Cost_{b+m} $ can cost some performance when the scene contains lots of colliders. Thus <em>volume caching</em> can save some performance in a open world scene. </li>
-<li>We should keep $N_{cached}$ relative small. The default maximum value in physx is 24(for static object) and 8(for movable object). Thus <em>volume caching</em>  can fail if collider density is high in an area.</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/" data-id="cm2qzvapf000h05479asc4uk5" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-an-issue-about-closestpointontriangletopoint-function-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/" class="article-date">
-  <time datetime="2022-04-18T07:38:12.000Z" itemprop="datePublished">2022-04-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>UE4 has already provide a function <code>FMath::ClosestPointOnTriangleToPoint</code> for us to calculate the closest point on a triangle to a specific point: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FVector <span class="title">FMath::ClosestPointOnTriangleToPoint</span><span class="params">(<span class="type">const</span> FVector&amp; Point, <span class="type">const</span> FVector&amp; A, <span class="type">const</span> FVector&amp; B, <span class="type">const</span> FVector&amp; C)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">//Figure out what region the point is in and compare against that &quot;point&quot; or &quot;edge&quot;</span></span><br><span class="line">        <span class="type">const</span> FVector BA = A - B;</span><br><span class="line">        <span class="type">const</span> FVector AC = C - A;</span><br><span class="line">        <span class="type">const</span> FVector CB = B - C;</span><br><span class="line">        <span class="type">const</span> FVector TriNormal = BA ^ CB;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the planes that define this triangle</span></span><br><span class="line">        <span class="comment">// edges BA, AC, BC with normals perpendicular to the edges facing outward</span></span><br><span class="line">        <span class="type">const</span> FPlane Planes[<span class="number">3</span>] = &#123; <span class="built_in">FPlane</span>(B, TriNormal ^ BA), <span class="built_in">FPlane</span>(A, TriNormal ^ AC), <span class="built_in">FPlane</span>(C, TriNormal ^ CB) &#125;;</span><br><span class="line">        int32 PlaneHalfspaceBitmask = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Determine which side of each plane the test point exists</span></span><br><span class="line">        <span class="keyword">for</span> (int32 i=<span class="number">0</span>; i&lt;<span class="number">3</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">if</span> (Planes[i].<span class="built_in">PlaneDot</span>(Point) &gt; <span class="number">0.0f</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                        PlaneHalfspaceBitmask |= (<span class="number">1</span> &lt;&lt; i);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function">FVector <span class="title">Result</span><span class="params">(Point.X, Point.Y, Point.Z)</span></span>;</span><br><span class="line">        <span class="keyword">switch</span> (PlaneHalfspaceBitmask)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>: <span class="comment">//000 Inside</span></span><br><span class="line">                <span class="keyword">return</span> FVector::<span class="built_in">PointPlaneProject</span>(Point, A, B, C);</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:        <span class="comment">//001 Segment BA</span></span><br><span class="line">                Result = FMath::<span class="built_in">ClosestPointOnSegment</span>(Point, B, A);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:        <span class="comment">//010 Segment AC</span></span><br><span class="line">                Result = FMath::<span class="built_in">ClosestPointOnSegment</span>(Point, A, C);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:        <span class="comment">//011 point A</span></span><br><span class="line">                <span class="keyword">return</span> A;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>: <span class="comment">//100 Segment BC</span></span><br><span class="line">                Result = FMath::<span class="built_in">ClosestPointOnSegment</span>(Point, B, C);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>: <span class="comment">//101 point B</span></span><br><span class="line">                <span class="keyword">return</span> B;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">6</span>: <span class="comment">//110 point C</span></span><br><span class="line">                <span class="keyword">return</span> C;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">UE_LOG</span>(LogUnrealMath, Log, <span class="built_in">TEXT</span>(<span class="string">&quot;Impossible result in FMath::ClosestPointOnTriangleToPoint&quot;</span>));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>This function works fine for a <code>right triangle</code> or an <code>acute triangle</code>. But this function can return a wrong result for an <a href="https://en.wikipedia.org/wiki/Acute_and_obtuse_triangles">obtuse triangle</a>: </p>
-<p><img src="/image-20220418200108252.png" alt="image-20220418200108252"></p>
-<h1 id="The-Core-Algorithm"><a href="#The-Core-Algorithm" class="headerlink" title="The Core Algorithm"></a>The Core Algorithm</h1><h2 id="How-Does-This-Function-Work"><a href="#How-Does-This-Function-Work" class="headerlink" title="How Does This Function Work?"></a>How Does This Function Work?</h2><p>This function simply split the 3-d space into 8 regions. And the closest point is calculated considering which region it is located in: </p>
-<p><img src="/image-20220418205901968.png" alt="image-20220418205901968"></p>
-<p>It’s easy to tell that this can perfectly do the trick for an acute triangle through a little calculation.  But this does not work for an obtuse triangle. </p>
-<h2 id="What-About-An-Obtuse-Triangle"><a href="#What-About-An-Obtuse-Triangle" class="headerlink" title="What About An Obtuse Triangle?"></a>What About An Obtuse Triangle?</h2><p>Imagine a triangle and a point like this: </p>
-<p><img src="/image-20220418203405725.png" alt="image-20220418203405725"></p>
-<p>The function can return point <code>A</code> as the result of the input point <code>P</code>. But actually it is point <code>D</code> that is the true closest point on the triangle like this: </p>
-<p><img src="/image-20220418213114046.png" alt="image-20220418213114046"></p>
-<p>And that is the issue, or rather, the bug of this implementation. </p>
-<h1 id="PhysX’s-Implementation"><a href="#PhysX’s-Implementation" class="headerlink" title="PhysX’s Implementation"></a>PhysX’s Implementation</h1><p><code>PhysX</code>‘s implementation is like this: </p>
-<p><img src="/image-20220419101806005.png" alt="image-20220419101806005"></p>
-<p>Two additional dot production comparisons are performed to fix this issue. So the space partition is like this: </p>
-<p><img src="/image-20220419123932918.png" alt="image-20220419123932918"></p>
-<p>A precise solution is necessary for <code>physx</code> since <code>GJK algorithm</code> needs to find the support point. </p>
-<h1 id="Chaos’-Implementation"><a href="#Chaos’-Implementation" class="headerlink" title="Chaos’ Implementation"></a>Chaos’ Implementation</h1><p>Chaos has its own implementation as well: </p>
-<p><img src="/image-20220419170139893.png" alt="image-20220419170139893"></p>
-<p>This implementation method is quite simple: </p>
-<ol>
-<li>Firstly, calculate the target point onto the plane <code>P&#39;</code>; </li>
-<li>Second, calculate the <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates">barycentric coordinate</a> of <code>P&#39;</code>. If <code>P&#39;</code> is located in this triangle, then <code>P&#39;</code> is the closest point. </li>
-<li>Or else, the result point must locate in the edge of this triangle. Thus, calculate the closest point to these 3 line segment, and find the closest one.</li>
-</ol>
-<p>The performance implementation is not that good. The implementation of <code>PhysX</code> is preferred considering performance. </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/" data-id="cm2qzvapf000f05471w7wai42" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-digging-into-the-bindpose-scale-issue-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/" class="article-date">
-  <time datetime="2022-04-12T02:17:51.000Z" itemprop="datePublished">2022-04-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="What’s-The-Issue"><a href="#What’s-The-Issue" class="headerlink" title="What’s The Issue?"></a>What’s The Issue?</h1><p>For a special, or rather, a stupid reason, sometimes the bone scale in a bind pose can have a non-identity value. Let me address this issue by a <a href="Test_Skel_Mesh_BindPose_Scale_1.fbx">test resource</a>: </p>
-<p><img src="/image-20220412111334664.png" alt="image-20220412111334664"></p>
-<p>After being imported to the UE4, the <code>joint4</code> ref pose became<code>(0.333, 0.333, 0.333)</code>: </p>
-<p> <img src="/image2022-4-11_21-1-30.png" alt="image2022-4-11_21-1-30"></p>
-<p>Oops. </p>
-<h1 id="Skeletal-Mesh-Importing"><a href="#Skeletal-Mesh-Importing" class="headerlink" title="Skeletal Mesh Importing"></a>Skeletal Mesh Importing</h1><p>So the key is in function <code>UnFbx::FFbxImporter::ImportBone</code>. Each bone’s transform is evaluated in global space first, and then calculate the local transform when building the ref pose transform array. </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Add the join orientation</span></span><br><span class="line">GlobalsPerLink[LinkIndex] = GlobalsPerLink[LinkIndex] * FFbxDataConverter::<span class="built_in">GetJointPostConversionMatrix</span>();</span><br><span class="line"><span class="keyword">if</span> (LinkIndex)</span><br><span class="line">&#123;</span><br><span class="line">	FbxAMatrix	Matrix;</span><br><span class="line">	Matrix = GlobalsPerLink[ParentIndex].<span class="built_in">Inverse</span>() * GlobalsPerLink[LinkIndex];</span><br><span class="line">	LocalLinkT = Matrix.<span class="built_in">GetT</span>();</span><br><span class="line">	LocalLinkQ = Matrix.<span class="built_in">GetQ</span>();</span><br><span class="line">	LocalLinkS = Matrix.<span class="built_in">GetS</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>	<span class="comment">// skeleton root</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// for root, this is global coordinate</span></span><br><span class="line">	LocalLinkT = GlobalsPerLink[LinkIndex].<span class="built_in">GetT</span>();</span><br><span class="line">	LocalLinkQ = GlobalsPerLink[LinkIndex].<span class="built_in">GetQ</span>();</span><br><span class="line">	LocalLinkS = GlobalsPerLink[LinkIndex].<span class="built_in">GetS</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>It turned out that the <code>Global Scale Value</code>, which is calculated by <code>fbxsdk</code>, of <code>Joint4</code> is <code>(1, 1, 1)</code> instead of <code>(3, 3, 3)</code>. </p>
-<p><img src="/image2022-4-11_20-41-36.png" alt="image2022-4-11_20-41-36"></p>
-<p>And that’s the reason why ref pose transform of <code>Joint4</code> became <code>(0.333, 0.333, 0.333)</code> after the mesh is imported into UE4. </p>
-<h1 id="Deeper-Thought"><a href="#Deeper-Thought" class="headerlink" title="Deeper Thought"></a>Deeper Thought</h1><p>So why does <code>Fbxsdk</code> give <code>(1, 1, 1)</code> of global scale value? </p>
-<p>Let’s take a look at what a <code>bind pose</code> is: </p>
-<blockquote>
-<p>The bind pose is the pose that the skeleton is in when you bind skin and so it is the base (or rest) pose of your character.</p>
-</blockquote>
-<p>And that is to say, a bind pose is supposed not to be skinned while being modified. </p>
-<p>You might also notice that the skeletal mesh is not scaled even if it is skinned to a scaled bone: </p>
-<p><img src="/image-20220412174319153.png" alt="image-20220412174319153"></p>
-<p>In another word, the ref pose scale value of one bone would be normalized as soon as this bone got skinned with a mesh. </p>
-<p>Actually, there is really no need for us to set a non-identity scale value. </p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>In short, don’t use a non-identity scale value for bind pose, even if it might look fine in the first place. It may cause some trouble when handle additive animation or skeletal control nodes. </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/" data-id="cm2qzvapk00290547gxy5bmjv" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-try-read-and-write-lock-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/03/21/try-read-and-write-lock-in-ue4/" class="article-date">
-  <time datetime="2022-03-21T02:49:12.000Z" itemprop="datePublished">2022-03-21</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
-    </h1>
-  
+          
+          <li class="menu-item menu-item-tags">
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>I simply need to implement <code>FTryReadScopeLock</code> and <code>FTryWriteScopeLock</code> for some of my features these days. </p>
-<p>For the moment, the only way to <code>try get lock</code> is to use <code>FScopeTryLock</code>, which is based on a <a href="https://en.wikipedia.org/wiki/Critical_section"><code>critical section</code></a>. </p>
-<p>But unfortunately, there is no <code>try get lock</code> method for <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock"><code>Readers-writer lock</code></a> in UE4. </p>
-<p>Thus I’ve extend the <code>FRWLock</code> implementation for both Windows and pthreads. </p>
-<h1 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h1><h2 id="Extending-ScopeRWLock-h"><a href="#Extending-ScopeRWLock-h" class="headerlink" title="Extending ScopeRWLock.h"></a>Extending <code>ScopeRWLock.h</code></h2><p>Add a <code>FTryReadScopeLock</code> class like this: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/** Try to get a FRWLock read-locked while this scope lives </span></span><br><span class="line"><span class="comment"> * This is a utility class that handles scope level locking using TryLock.</span></span><br><span class="line"><span class="comment"> * Scope locking helps to avoid programming errors by which a lock is acquired</span></span><br><span class="line"><span class="comment"> * and never released.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;code&gt;</span></span><br><span class="line"><span class="comment"> *	&#123;</span></span><br><span class="line"><span class="comment"> *		// Try to acquire a lock on CriticalSection for the current scope.</span></span><br><span class="line"><span class="comment"> *		FTryReadScopeLock ScopeTryLock(CriticalSection);</span></span><br><span class="line"><span class="comment"> *		// Check that the lock was acquired.</span></span><br><span class="line"><span class="comment"> *		if (ScopeTryLock.IsLocked())</span></span><br><span class="line"><span class="comment"> *		&#123;</span></span><br><span class="line"><span class="comment"> *			// If the lock was acquired, we can safely access resources protected</span></span><br><span class="line"><span class="comment"> *			// by the lock.</span></span><br><span class="line"><span class="comment"> *		&#125;</span></span><br><span class="line"><span class="comment"> *		// When ScopeTryLock goes out of scope, the critical section will be</span></span><br><span class="line"><span class="comment"> *		// released if it was ever acquired.</span></span><br><span class="line"><span class="comment"> *	&#125;</span></span><br><span class="line"><span class="comment"> * &lt;/code&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">FTryReadScopeLock</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">FTryReadScopeLock</span><span class="params">(FRWLock* InLock)</span></span></span><br><span class="line"><span class="function">		: Lock(InLock)</span></span><br><span class="line"><span class="function">	&#123;</span></span><br><span class="line">		<span class="built_in">check</span>(Lock);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!Lock-&gt;<span class="built_in">TryReadLock</span>())</span><br><span class="line">		&#123;</span><br><span class="line">			Lock = <span class="literal">nullptr</span>; </span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	~<span class="built_in">FTryReadScopeLock</span>()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (Lock)</span><br><span class="line">		&#123;</span><br><span class="line">			Lock-&gt;<span class="built_in">ReadUnlock</span>();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">FORCEINLINE <span class="type">bool</span> <span class="title">IsLocked</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nullptr</span> != Lock;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	FRWLock* Lock;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">UE_NONCOPYABLE</span>(FTryReadScopeLock);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Implementation-For-PThreadRWLock-Platform"><a href="#Implementation-For-PThreadRWLock-Platform" class="headerlink" title="Implementation For PThreadRWLock Platform"></a>Implementation For <code>PThreadRWLock</code> Platform</h2><p>Add <code>TryReadLock</code> and <code>TryWriteLock</code> method to <code>PThreadRWLock.h</code>: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == <span class="built_in">pthread_rwlock_tryrdlock</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span> == <span class="built_in">pthread_rwlock_trywrlock</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>This shall work for most of non-Windows platform. </p>
-<h2 id="Implementation-For-Windows-Platform"><a href="#Implementation-For-Windows-Platform" class="headerlink" title="Implementation For Windows Platform"></a>Implementation For <code>Windows </code>Platform</h2><h3 id="Modification-For-MinimalWindowsApi-h"><a href="#Modification-For-MinimalWindowsApi-h" class="headerlink" title="Modification For MinimalWindowsApi.h"></a>Modification For <code>MinimalWindowsApi.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Modification-For-MinimalWindowsApi-cpp"><a href="#Modification-For-MinimalWindowsApi-cpp" class="headerlink" title="Modification For MinimalWindowsApi.cpp"></a>Modification For <code>MinimalWindowsApi.cpp</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockExclusive</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::<span class="built_in">TryAcquireSRWLockExclusive</span>((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">MINIMAL_WINDOWS_API <span class="type">bool</span> WINAPI <span class="title">TryAcquireSRWLockShared</span><span class="params">(PSRWLOCK SRWLock)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> ::<span class="built_in">TryAcquireSRWLockShared</span>((::PSRWLOCK)SRWLock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Modification-For-WindowsCriticalSection-h"><a href="#Modification-For-WindowsCriticalSection-h" class="headerlink" title="Modification For WindowsCriticalSection.h"></a>Modification For <code>WindowsCriticalSection.h</code></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FORCEINLINE <span class="type">bool</span> <span class="title">TryReadLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::<span class="built_in">TryAcquireSRWLockShared</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FORCEINLINE <span class="type">bool</span> <span class="title">TryWriteLock</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Windows::<span class="built_in">TryAcquireSRWLockExclusive</span>(&amp;Mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>And everything is good to go. </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/" data-id="cm2qzvapo004h0547cdlp4frt" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-a-tiny-performance-issue-in-ue4-cameraview" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" class="article-date">
-  <time datetime="2022-01-18T07:15:27.000Z" itemprop="datePublished">2022-01-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Issue-Introduction"><a href="#Issue-Introduction" class="headerlink" title="Issue Introduction"></a>Issue Introduction</h1><p>I’ve been playing with <code>streamlines</code> for quite a long time. And actually it helps us a lot to find our performance issue. </p>
-<p>In our project, camera view point information is required in a lot of places. By default we use function like <code>APlayerCameraManager::GetCameraViewPoint</code> to get exactly what we need. </p>
-<p>However we’ve found that a strange function cost: </p>
-<p><img src="/image-20220118153154176.png" alt="image-20220118153154176"></p>
-<p>So it seems that a copy construction of <code>FMinimalViewInfo</code> is performed here: </p>
-<p><img src="/image-20220118153353029.png" alt="image-20220118153353029"></p>
-<p>And yes, there is a <code>FPostProcessSettings</code>, a complex struct, inside a <code>FMinimalViewInfo</code>. And this can cost a considerable CPU performance. </p>
-<h1 id="Issue-Solution"><a href="#Issue-Solution" class="headerlink" title="Issue Solution"></a>Issue Solution</h1><p>Well we simply avoid copy construction of <code>FMinimalViewInfo</code> and directly return those result required. This can save some performance. </p>
-<h1 id="An-Irrelevant-Note"><a href="#An-Irrelevant-Note" class="headerlink" title="An Irrelevant Note"></a>An Irrelevant Note</h1><p>Well… I just need a place to write this down since I always forget this feature. </p>
-<p>If you want a detailed performance information about slate performance. You can visit <code>slateglobals.h</code> to find more information. </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" data-id="cm2qzvape000b0547ez1w3ivd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-better-orientation-warping" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2022/01/06/better-orientation-warping/" class="article-date">
-  <time datetime="2022-01-06T13:34:03.000Z" itemprop="datePublished">2022-01-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/06/better-orientation-warping/">Better Orientation Warping Implementation In UE4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Orientation warping is an animation technique that is used in <code>Paragon</code>. You can find more information about it here. </p>
-<p>There are already a bunch of implementation methods provided by <code>Epic</code> or <a href="https://www.unrealengine.com/marketplace/en-US/product/animgraphnode">SeanChen</a>. None of them really suits our project, though. And I’ve eventually implemented orientation warping in a brand new way, which works brilliantly in our project. </p>
-<h1 id="About-Orientation-Warping"><a href="#About-Orientation-Warping" class="headerlink" title="About Orientation Warping"></a>About Orientation Warping</h1><p>You may wonder what on earth orientation warping is or why and when I should use this feature. </p>
-<p>There are two types of locomotion style: <code>forward move</code> and <code>sideway move(aka. strafe move)</code>. Orientation warping is typically used for <code>sideway move</code>, which means that the character aims forward while moving in all directions. You can find more information about it <a href="https://en.wikipedia.org/wiki/Strafing_(video_games)">here</a>. </p>
-<h2 id="A-Naive-Strafe-Move-Implementation"><a href="#A-Naive-Strafe-Move-Implementation" class="headerlink" title="A Naive Strafe Move Implementation"></a>A Naive <code>Strafe Move</code> Implementation</h2><p>A naive but common implementation is simply applying a looping animation sequence for a certain range of moving directions: </p>
-<p><img src="/image-20220110205610176.png" alt="image-20220110205610176"></p>
-<p>Straightforward but effective. The main problem is that it always causes foot-sliding. To my surprise, I can still find it in some so-called modern games(yes, I mean <code>Nioh 2</code>): </p>
-<p><img src="/nioh2_pose_switch_2.gif" alt="nioh2_pose_switch_2"></p>
-<h2 id="Blending-Another-Naive-Strafe-Move-Method"><a href="#Blending-Another-Naive-Strafe-Move-Method" class="headerlink" title="Blending:  Another Naive Strafe Move Method"></a>Blending:  Another Naive <code>Strafe Move</code> Method</h2><p>It naturally comes to my mind that I can use a <code>2-D Blend Space</code> in UE4, or <code>Blend tree</code> in Unity to achieve this feature. </p>
-<p>And I have to admit, sometimes this method works pretty nice. But strange pose can still be found since it’s hard to control animation blending: </p>
-<p><img src="/blending_issue.gif" alt="blending_issue"></p>
-<p>As can be seen from the image above, character legs get crossed with each other for some certain input: </p>
-<p><img src="/image-20220110212427236.png" alt="image-20220110212427236"></p>
-<p>This issue is even worse for stylized character because animation resource can vary dramatically in different moving directions. </p>
-<h2 id="What-Is-Orientation-Warping"><a href="#What-Is-Orientation-Warping" class="headerlink" title="What Is Orientation Warping?"></a>What Is Orientation Warping?</h2><p>Orientation warping solves this problem once and for all. </p>
-<p>The main idea of this method is rotating the whole character first, so that foot-sliding is prevented. And then rotating the upper body to the front. </p>
-<p>In this case, I can get a controllable and non foot-sliding character strafing pose. </p>
-<p><img src="/image-20220110214652142.gif" alt="image-20220110214652142"></p>
-<p>In addition, orientation warping requires far less anim resources. In <code>Paragon</code>, only 4-direction anim resources are required to produce a pretty nice locomotion effect. </p>
-<h1 id="Three-Imperfect-Implementation-Methods"><a href="#Three-Imperfect-Implementation-Methods" class="headerlink" title="Three Imperfect Implementation Methods"></a>Three Imperfect Implementation Methods</h1><h2 id="Blend-Space-Aim-Offset-Rotate-Root-Bone"><a href="#Blend-Space-Aim-Offset-Rotate-Root-Bone" class="headerlink" title="Blend Space + Aim Offset + Rotate Root Bone"></a>Blend Space + Aim Offset + Rotate Root Bone</h2><p>An earlier implementation method proposed by Laurent Delayen can be found <a href="https://www.youtube.com/watch?v=1UOY-FMm-xo">here</a>.  </p>
-<p>And it seems that <code>Paragon</code> simply use a blend space that handles one direction, an <code>AimOffset</code> node that reverse-rotates the upper body, and a <code>rotate root bone</code> node to prevent foot-sliding as well as rotate upper body back to forward: </p>
-<p><img src="/image-20220110220121478.png" alt="image-20220110220121478"></p>
-<p>This works, in price of a complex anim graph structure and many aim offset resources. </p>
-<p>Moreover, this implementation has bad performance since an <code>AimOffset</code> node is expensive! </p>
-<h2 id="State-Machine-Based-Orientation-Warping"><a href="#State-Machine-Based-Orientation-Warping" class="headerlink" title="State-Machine Based Orientation Warping"></a>State-Machine Based Orientation Warping</h2><p>This implementation method can be found in <a href="https://www.unrealengine.com/marketplace/en-US/product/advanced-locomotion-system-v1"><code>Advanced Locomotion System V4</code></a>: </p>
-<p><img src="/image-20220111131730974.png" alt="image-20220111131730974"></p>
-<p>Since this is a free project that is available on Unreal Marketplace. You can download this project and play with it. And I am pretty sure that most of you can be overwhelmed by its complexity. And btw, I hate Animation Layers. </p>
-<p>The performance can also be a big issue. So it would be a better choice to considered this project as reference only. </p>
-<h2 id="Orientation-Warping-Anim-Node"><a href="#Orientation-Warping-Anim-Node" class="headerlink" title="Orientation Warping Anim Node"></a>Orientation Warping Anim Node</h2><p>This should be the most well-known orientation warping implementation method. For more information, check <a href="https://www.youtube.com/watch?v=YlKA22Hzerk">this</a> out. </p>
-<p><img src="/image-20220111134249796.png" alt="image-20220111134249796"></p>
-<p>And <a href="https://www.unrealengine.com/marketplace/en-US/product/animgraphnode">SeanChen</a> has already shared his or her implementation on Unreal Marketplace. You can play with these anim nodes and use them in your project. </p>
-<p>Actually I’ve tried this method in our project at the very beginning. I’ve encountered several severe problems and as a result,I decided to implement our own orientation warping implementation method, which I will talk about later. </p>
-<p>But it is much more valuable, in my opinion, to share those problems I just encountered using this method. </p>
-<h3 id="Switch-Direction-Pose-Problem"><a href="#Switch-Direction-Pose-Problem" class="headerlink" title="Switch Direction Pose Problem"></a>Switch Direction Pose Problem</h3><p>It looks nice in general. But sometimes it looks not smooth enough when switching from one direction to another direction. </p>
-<p><img src="/orientation_warping_3.gif" alt="orientation_warping_3"></p>
-<p>The <code>Anim Graph</code> looks like: </p>
-<p><img src="/image.png" alt="img"></p>
-<p>When active child index changes, animation blending can still happen. And moreover, a <code>Blend List</code> node looks bad when blending interruption happens. You can use <code>Inertialization</code> transition type to ease this problem(well, sometimes this problem can be aggravated). </p>
-<p>This problem can be eased even more if <code>sync marker</code> is properly used. But frankly speaking, it is hard to manage sync marker, especially when a blend-space is involved with sync groups. </p>
-<h1 id="Our-Final-Solution"><a href="#Our-Final-Solution" class="headerlink" title="Our Final Solution"></a>Our Final Solution</h1><p>It turned out that our animators loves how animation sequence play rate is handled inside a single blend space. It is smooth enough so that switching direction looks wonderful! </p>
-<p>And we’ve integrate the bone modification feature into a <code>BlendSpacePlayer</code>. To be more specific, we can rewrite <code>UBlendSpaceBase::GetAnimationPose</code> function. </p>
-<p>Since it is not possible for me to paste any relevant code here because of secrecy. But I believe that is simply enough–All you need to do is applying orientation warping to each sample pose, and then blend those poses together. </p>
-<p>This method works perfectly! And eventually this method is adopted in our project! </p>
-<p>It’s a pity that I cannot share more details(maybe later?). Go for <a href="https://play.google.com/store/apps/details?id=com.ea.gp.apexlegendsmobilefps&hl=en&gl=US">Apex Legends Mobile</a> now and check how this looks like!  </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2022/01/06/better-orientation-warping/" data-id="cm2qzvapg000t05479yr95pln" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-dive-into-physx-broad-phase-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/12/06/dive-into-physx-broad-phase-in-ue4/" class="article-date">
-  <time datetime="2021-12-06T09:30:03.000Z" itemprop="datePublished">2021-12-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/06/dive-into-physx-broad-phase-in-ue4/">Dive Into PhysX Broad Phase In UE4</a>
-    </h1>
-  
+          
+          <li class="menu-item menu-item-categories">
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function like <code>BroadPhaseSAP::Update</code> or <code>BroadPhaseMBP::Update</code>can cost lots of performance, especially when there are millions of rigid bodies or fast-moving rigid bodies in your scene. </p>
-<p>And it is so common that the performance issue is even worse on a dedicated server because of <code>PhysX</code>‘s single-thread CPU-Dispatcher. </p>
-<h1 id="About-Broad-Phase"><a href="#About-Broad-Phase" class="headerlink" title="About Broad Phase"></a>About Broad Phase</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function is not always a performance hot-spot in most cases if you are not developing an open world game which contains lots of fast-moving objects. </p>
-<p>PhysX has provided us two broad-phase algorithms: <code>SAP</code> and <code>MBP</code>. Both of them use <code>AABB</code> to detect collision. </p>
-<p>The basic idea behind these algorithms is: </p>
-<blockquote>
-<p>two AABBs overlap <strong>iff</strong> their projections on the X, Y and Z coordinate axes overlap. </p>
-</blockquote>
-<p>That is to say, physX needs to keep three sorted arrays, one for each axis, to track the bounding box’s <code>min</code> and <code>max</code> value of each rigid body. </p>
-<p>And since we can play with those rigid bodies by interfaces that UE4 has provided.  As a result, physx needs to keep these arrays sorted–this is exactly what <code>Broad Phase</code>‘s <code>Update</code> function does. </p>
-<p><img src="/image-20211217174528727.png" alt="image-20211217174528727"></p>
-<p>This function is called in the <code>TG_StartPhysics</code> tick group. After all those three tasks are completed, we’ve managed to get a sorted array for each axis. </p>
-<h1 id="Something-About-Sorting"><a href="#Something-About-Sorting" class="headerlink" title="Something About Sorting"></a>Something About Sorting</h1><p>It is known to all that we should choose different sorting algorithm for different cases. </p>
-<p>Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how <code>PhysX</code> handle it: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">BroadPhaseSap::batchUpdate</span></span></span><br><span class="line"><span class="function"><span class="params">(<span class="type">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">//Nothin updated so don&#x27;t do anything</span></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//If number updated is sufficiently fewer than number of boxes (say less than 20%)</span></span><br><span class="line">        <span class="keyword">if</span>((mUpdatedSize*<span class="number">5</span>) &lt; mBoxesSize)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="built_in">batchUpdateFewUpdates</span>(Axis, pairs, pairsSize, pairsCapacity);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    ... </span><br></pre></td></tr></table></figure>
-
-<p>Moreover, <code>QSort</code> is used if the updated box is fewer than 512. Or else, <code>Bucket Sort</code> is used: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BroadPhaseSap::batchUpdateFewUpdates</span></span></span><br><span class="line"><span class="function"><span class="params">(<span class="type">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    	...</span><br><span class="line">        <span class="comment">//There are no extents, just the sentinels, so exit early.</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">isSentinel</span>(BaseEPDatas[<span class="number">1</span>]))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 ind_ = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 index = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize &lt; <span class="number">512</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is small, so use qsort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(PxU32 a = <span class="number">0</span>; a &lt; mUpdatedSize; ++a)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">                Ps::<span class="built_in">sort</span>(mSortedUpdateElements, ind_);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is large so use a bucket sort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(; index &lt; endPointSize; ++index)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="Issue-Cause"><a href="#Issue-Cause" class="headerlink" title="Issue Cause"></a>Issue Cause</h1><p>Time to investigate what on earth eventually cause this issue. </p>
-<p>After millions of AABB projecting them self onto  three axis, we can eventually get three extremely dense arrays. </p>
-<p>Think about a moving rigid body moving from <code>(10, 0, 0)</code> to <code>(20, 0, 0)</code>. During sorting stage, it would be compared with colliders far far away: </p>
-<p><img src="/image-20211223205231390.png" alt="image-20211223205231390"></p>
-<p>This leads to a large array sorting problem, a common but expensive problem. </p>
-<h1 id="How-To-Solve-This-Problem"><a href="#How-To-Solve-This-Problem" class="headerlink" title="How To Solve This Problem?"></a>How To Solve This Problem?</h1><h2 id="Level-Streaming"><a href="#Level-Streaming" class="headerlink" title="Level Streaming"></a>Level Streaming</h2><p>One common solution to this issue for non-server build is to streaming in or out those colliders dynamically. This method works really well since it leads to a much smaller array for each axis. </p>
-<p>This is a widely known solution so that I am not going to talk about its detail here since Epic has already provided tons of tutorials about it. </p>
-<h2 id="Multi-Pruning-Box"><a href="#Multi-Pruning-Box" class="headerlink" title="Multi Pruning Box"></a>Multi Pruning Box</h2><p>Also know as <code>MBP</code> algorithm. To use this algorithm, a level bound is needed. And you can set this value in the project setting: </p>
-<p><img src="/mbp-bound.png" alt="img"></p>
-<p>In general, <code>MBP</code> simply divides the whole physics world into several regions:</p>
-<p><img src="/image-20211224152518444.png" alt="image-20211224152518444"></p>
-<p> Thus interactions between far aways objects are skipped because they are not likely in the same <code>SAP</code> region. On the other hand, parallel computing can be used to boost performance. </p>
-<p>After all regions finish their updating task, found&#x2F;lost pairs, compared to previous frame, is generated in its <code>PostUpdate</code> stage. What worth to be mentioned is that there is significant performance cost here since <code>pushback</code> and <code>remove</code> operations are called to <code>BroadPhaseMBP.mCreated</code> and <code>BroadPhaseMBP.mDeleted</code> array. </p>
-<p>In conclusion, <code>MBP</code> can save <code>Broad Phase</code> performance if the physics world is large enough. But since <code>PostUpdate</code>costs some performance, <code>MBP</code> can be more expensive than <code>SAP</code> when the scene is small or there is few moving object in the scene. </p>
-<h2 id="Aggregate"><a href="#Aggregate" class="headerlink" title="Aggregate"></a>Aggregate</h2><h3 id="Aggregate-Introduction"><a href="#Aggregate-Introduction" class="headerlink" title="Aggregate Introduction"></a>Aggregate Introduction</h3><p>Aside from dividing the whole scene into several regions, there is another way to save performance by putting some rigid bodies into one single aggregate to reducing the array size. </p>
-<p>A typical usage of aggregate is ragdoll. As we all know, a moving object is terribly expensive, not to mention a set of ragdoll, which is composed of a variety of simulating bones. </p>
-<p>Thus it is pretty obvious that we can put those bone rigid bodies into one single aggregate, which has only one entry during <code>Broad Phase</code> stage. It is even more efficient if collision detection is ignored among these rigid bodies. </p>
-<p>For the moment, or maybe forever, UE4 use aggregate with physics asset of a skeletal mesh. An configurable value is provided in the project settings to determine when to use aggregate, <code>4</code> by default: </p>
-<p><img src="/aggre-threshold.png" alt="img"></p>
-<p>If there are more than 4 rigid bodies in a physics asset, an aggregate would be created to hold real rigid bodies. </p>
-<p>It is an optional optimization to use aggregate for a moving static mesh actor&#x2F;component. And frankly speaking we’ve managed to achieve this feature in our customized engine. It’s fairly easy to implement and I sincerely suggest you try it. </p>
-<h3 id="Aggregate-Side-Effect"><a href="#Aggregate-Side-Effect" class="headerlink" title="Aggregate Side Effect"></a>Aggregate Side Effect</h3><p>There are several side effects about aggregate if you dive into physx source code. Two major issues are covered here. </p>
-<h4 id="Aggregate-Pair-Issue"><a href="#Aggregate-Pair-Issue" class="headerlink" title="Aggregate Pair Issue"></a>Aggregate Pair Issue</h4><p>A noticeable performance hot-spot called <code>ScScene.PostBroadPhase</code> would pop up if a large amount of aggregates are inserted into physics scene: </p>
-<p><img src="/image-20211228143150896.png" alt="image-20211228143150896"></p>
-<p>After getting some more detailed profiling data by PVD, we’ve found that it is <code>SimpleAABBManager::postBroadPhase - process actor-aggregate pairs</code> that has eaten up more than <code>70%</code> performance: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	 <span class="built_in">PX_PROFILE_ZONE</span>(<span class="string">&quot;SimpleAABBManager::postBroadPhase - process actor-aggregate pairs&quot;</span>, <span class="built_in">getContextId</span>());</span><br><span class="line">	<span class="built_in">processAggregatePairs</span>(mActorAggregatePairs, *<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Strange enough, huh? It shouldn’t be so expensive. Let’s check <code>processAggregatePairs</code> out: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">processAggregatePairs</span><span class="params">(AggPairMap&amp; map, SimpleAABBManager&amp; manager)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> hmmm we have a list of dirty aggregates but we don&#x27;t have a list of dirty pairs.</span></span><br><span class="line">        <span class="comment">// PT: not sure how the 3.4 trunk solves this but let&#x27;s just iterate all pairs for now</span></span><br><span class="line">        <span class="comment">// PT: atm we reuse this loop to delete removed interactions</span></span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> in fact we could handle all the &quot;lost pairs&quot; stuff right there with extra aabb-abb tests</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> replace with decent hash map - or remove the hashmap entirely and use a linear array</span></span><br><span class="line">        Ps::Array&lt;AggPair&gt; removedEntries;</span><br><span class="line">        <span class="keyword">for</span>(AggPairMap::Iterator iter = map.<span class="built_in">getIterator</span>(); !iter.<span class="built_in">done</span>(); ++iter)</span><br><span class="line">        &#123;</span><br><span class="line">                PersistentPairs* p = iter-&gt;second;</span><br><span class="line">                <span class="keyword">if</span>(p-&gt;<span class="built_in">update</span>(manager))</span><br><span class="line">                &#123;</span><br><span class="line">                        removedEntries.<span class="built_in">pushBack</span>(iter-&gt;first);</span><br><span class="line">                        <span class="built_in">PX_DELETE</span>(p);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(PxU32 i=<span class="number">0</span>;i&lt;removedEntries.<span class="built_in">size</span>();i++)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="type">bool</span> status = map.<span class="built_in">erase</span>(removedEntries[i]);</span><br><span class="line">                <span class="built_in">PX_ASSERT</span>(status);</span><br><span class="line">                <span class="built_in">PX_UNUSED</span>(status);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Uh-huh… There you are! **TODO! ** </p>
-<p>As a result, all existing aggregate pairs, both <code>actor-aggregate</code> pairs or <code>aggregate-aggregate</code> pairs, are fully iterated, even if most of those pairs are not updated. </p>
-<p>So, it is not recommended to have too many aggregates in our scene. </p>
-<h4 id="Static-Aggregate-Issue"><a href="#Static-Aggregate-Issue" class="headerlink" title="Static Aggregate Issue"></a>Static Aggregate Issue</h4><p>It firstly comes to my mind that we can put all rigid bodies of a <code>Static Mesh Actor</code> into an aggregate, like rigid bodies in a tree, a desk or even a building. In this way we can greatly optimize performance in <code>BpSAP.updateWork</code> or <code>BpMBP.updateWork</code>. </p>
-<p>It works, though. <code>updateWork</code> function is greatly optimized. But it turned out that <code>ScScene.PostBroadPhase</code> has cost too much CPU resources. Sometimes we get a <strong>NEGATIVE OPTIMIZATION</strong>. </p>
-<p>And yet btw, PhysX doesn’t have a benchmark for static aggregates. In my opinion, just don’t use aggregate for static mesh components: </p>
-<p><img src="/image_16406844721012.png" alt="img"></p>
-<h1 id="A-Deeper-Thought"><a href="#A-Deeper-Thought" class="headerlink" title="A Deeper Thought"></a>A Deeper Thought</h1><p>In the old days, broad phase was hardly ever a performance hot-spot because we might not have too many rigid bodies in our scene. </p>
-<p>However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it can sometimes seem ridiculous for some ordinary cases. </p>
-<p>For example, you may think a triangle mesh collider is really expensive in any case. But for an open world game, a triangle mesh collider is preferred because of saving a considerable amount of rigid bodies. </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/" data-id="cm2qzvapk002c0547e3b0hyq0" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-better-profile-physx-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/11/27/better-profile-physx-in-ue4/" class="article-date">
-  <time datetime="2021-11-27T03:15:12.000Z" itemprop="datePublished">2021-11-27</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/27/better-profile-physx-in-ue4/">Better Way To Profile PhysX In UE4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>It still remains hard to profile PhysX when you are developing a UE4 project. Of course you can use <code>Heat Maps(For Linux)</code> or <code>StreamLines(for Android)</code> to get very in-depth performance data like: </p>
-<p><img src="/image_1.png" alt="image_1"></p>
-<p>This tools can really help a lot to find performance hotspots. But pvd should be used if you want to digging into PhysX since  measuring scope performance is pretty common during performance profile. </p>
-<h1 id="How-Does-UE4-Handle-PVD"><a href="#How-Does-UE4-Handle-PVD" class="headerlink" title="How Does UE4 Handle PVD?"></a>How Does UE4 Handle PVD?</h1><p>UE4 handles PVD using <code>GPhysXVisualDebugger</code>, which is created in <code>InitGamePhysCore</code> function. You need to call <code>PvdConnect</code> function by console command to connect to <code>PhysX Visual Debugger</code> running on your local machine like: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pvd connect localhost</span><br></pre></td></tr></table></figure>
-
-<p>But there is a huge limitation with this method–You cannot easily collect PVD data on dedicated server or mobile device. </p>
-<h1 id="Streaming-To-File"><a href="#Streaming-To-File" class="headerlink" title="Streaming To File"></a>Streaming To File</h1><p>Obviously, it would be much better to streaming pvd data to a file, which can be loaded later in <code>PVD</code>. </p>
-<h2 id="Global-Parameters-Setup"><a href="#Global-Parameters-Setup" class="headerlink" title="Global Parameters Setup"></a>Global Parameters Setup</h2><p>Instead of simply creating two functions to handle connection, we choose to create two Global Parameters, <code>GConnecttoPVD</code>  and <code>GDisconnectFromPVD</code> since we want to handle pvd connection in <code>FPhysScene_PhysX::StartFrame()</code>. </p>
-<p>You may also handle connection in other stages as well. But I still recommend <code>FPhysScene_PhysX::StartFrame()</code> because <code>PVD</code> is known as easy to crash. </p>
-<h2 id="Connect-Disconnect"><a href="#Connect-Disconnect" class="headerlink" title="Connect&amp;Disconnect"></a>Connect&amp;Disconnect</h2><p>And there is a hint: We might want to name our file by date like: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FString TextToSave = FDateTime::<span class="built_in">Now</span>().<span class="built_in">ToString</span>();</span><br><span class="line">TextToSave.<span class="built_in">Append</span>(<span class="string">&quot;.pxd2&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>So, we can connect to <code>PVD</code> file like: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PxPvdTransport* transport = <span class="built_in">PxDefaultPvdFileTransportCreate</span>(<span class="built_in">TCHAR_TO_ANSI</span>(*TextToSave));</span><br><span class="line">GPhysXVisualDebugger-&gt;<span class="built_in">connect</span>(*transport, PxPvdInstrumentationFlag::eALL );</span><br></pre></td></tr></table></figure>
-
-<p>Here, <code>PxPvdInstrumentationFlag::eALL</code> means streaming everything, which includes profile, memory and even all visualized debug data, to your file. Hence this cause a very large file, and it is very easy to crash during loading this file. </p>
-<p>Thus, I personally recommend to specify <code>PxPvdInstrumentationFlag::ePROFILE</code> only when creating PVD file. </p>
-<p>And as for disconnecting from PVD, we simply call: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GPhysXVisualDebugger-&gt;<span class="built_in">disconnect</span>();</span><br></pre></td></tr></table></figure>
-
-<p>And it’s done! </p>
-<h1 id="Recommended-Way-To-Connect-Disconnect"><a href="#Recommended-Way-To-Connect-Disconnect" class="headerlink" title="Recommended Way To Connect&amp;Disconnect"></a>Recommended Way To Connect&amp;Disconnect</h1><p>Personally, I love to specify two timers to manually handle <code>PVD</code> connections by <code>FParse::Value(FCommandLine::Get(), TEXT(&quot;-PVDTimer=&quot;), Value)</code>. </p>
-<p>Try to avoid connecting to <code>PVD</code> at start to prevent crash. Sigh… </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/11/27/better-profile-physx-in-ue4/" data-id="cm2qzvaph000x0547arm87krf" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-tool-tips-about-ue4-cooking" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/09/12/tool-tips-about-ue4-cooking/" class="article-date">
-  <time datetime="2021-09-12T07:10:03.000Z" itemprop="datePublished">2021-09-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/09/12/tool-tips-about-ue4-cooking/">Tool Tips About UE4 Cooking</a>
-    </h1>
-  
+        
+          
+          <li class="menu-item menu-item-archives">
 
-      </header>
     
-    <div class="article-entry" itemprop="articleBody">
+    
+    
       
-        <h1 id="How-To-Debug-UE4-Cooking-Stage"><a href="#How-To-Debug-UE4-Cooking-Stage" class="headerlink" title="How To Debug UE4 Cooking Stage?"></a>How To Debug UE4 Cooking Stage?</h1><p>When an error is triggered during cooking, the break point would not be hit in your visual studio because another <code>UE4Editor</code> process is invoked to run cooking command. </p>
-<p>Without help of Visual Studio, it must be very hard to address and fix your cooking error. </p>
-<p>In Visual Studio, right-click on your project-&gt;Properties: </p>
-<p><img src="/image_001.png" alt="image_001"></p>
-<p>Set the configuration to <code>Development_Editor</code> or <code>Debug_Editor</code>, and you can find the <code>Command Arguments</code> in the <code>Debugging</code> tab: </p>
-<p><img src="/image_002.png" alt="img"></p>
-<p>Usually the default value should be <code>&quot;$(SolutionDir)$(ProjectName).uproject&quot; -skipcompile</code>. And change it to <code>&quot;$(SolutionDir)$(ProjectName).uproject&quot; -run=Cook -TargetPlatform=WindowsNoEditor -unversioned -CookAll</code>: </p>
-<p><img src="/image_003.png" alt="image_001"></p>
-<p>And it’s done. Hit <code>Local Windows Debugger</code>, and start debuging your cooking stage! </p>
-<h1 id="How-To-Cook-A-Single-Asset"><a href="#How-To-Cook-A-Single-Asset" class="headerlink" title="How To Cook A Single Asset?"></a>How To Cook A Single Asset?</h1><p>It seems that the <code>HotPatcher</code> plugin has already provided us a <code>OnCookPlatform</code> function, which cooks our selected assets in <code>BrowserContent</code>: </p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">FHotPatcherEditorModule::OnCookPlatform</span><span class="params">(ETargetPlatform Platform)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        TArray&lt;FAssetData&gt; AssetsData = <span class="built_in">GetSelectedAssetsInBrowserContent</span>();</span><br><span class="line">        TArray&lt;UPackage*&gt; AssetsPackage;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; AssetData:AssetsData)</span><br><span class="line">        &#123;</span><br><span class="line">                AssetsPackage.<span class="built_in">AddUnique</span>(AssetData.<span class="built_in">GetPackage</span>());</span><br><span class="line">                <span class="built_in">UE_LOG</span>(LogHotPatcher,Log,<span class="built_in">TEXT</span>(<span class="string">&quot;Cook Package %s Platform %s&quot;</span>),*AssetData.PackagePath.<span class="built_in">ToString</span>(),*UFlibPatchParserHelper::<span class="built_in">GetEnumNameByValue</span>(Platform));</span><br><span class="line">        &#125;</span><br><span class="line">        FString CookedDir = FPaths::<span class="built_in">ConvertRelativePathToFull</span>(FPaths::<span class="built_in">Combine</span>(FPaths::<span class="built_in">ProjectSavedDir</span>(),<span class="built_in">TEXT</span>(<span class="string">&quot;Cooked&quot;</span>)));</span><br><span class="line">        FString CookForPlatform = UFlibPatchParserHelper::<span class="built_in">GetEnumNameByValue</span>(Platform);</span><br><span class="line">        TArray&lt;FString&gt; CookForPlatforms&#123;CookForPlatform&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; AssetPacakge:AssetsPackage)</span><br><span class="line">        &#123;</span><br><span class="line">                FString CookedSavePath = UFlibHotPatcherEditorHelper::<span class="built_in">GetCookAssetsSaveDir</span>(CookedDir,AssetPacakge, CookForPlatform);</span><br><span class="line">                </span><br><span class="line">            <span class="type">bool</span> bCookStatus = UFlibHotPatcherEditorHelper::<span class="built_in">CookPackage</span>(AssetPacakge,CookForPlatforms,CookedDir);</span><br><span class="line">                <span class="keyword">auto</span> Msg = FText::<span class="built_in">Format</span>(</span><br><span class="line">            <span class="built_in">LOCTEXT</span>(<span class="string">&quot;CookAssetsNotify&quot;</span>, <span class="string">&quot;Cook Platform &#123;1&#125; for &#123;0&#125; &#123;2&#125;!&quot;</span>),</span><br><span class="line">            UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(AssetPacakge-&gt;FileName.<span class="built_in">ToString</span>()),</span><br><span class="line">            UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(UFlibPatchParserHelper::<span class="built_in">GetEnumNameByValue</span>(Platform)),</span><br><span class="line">            bCookStatus ? UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;Successfuly&quot;</span>)):UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;Faild&quot;</span>))</span><br><span class="line">            );</span><br><span class="line">                SNotificationItem::ECompletionState CookStatus = bCookStatus ? SNotificationItem::CS_Success:SNotificationItem::CS_Fail;</span><br><span class="line">                UFlibHotPatcherEditorHelper::<span class="built_in">CreateSaveFileNotify</span>(Msg,CookedSavePath,CookStatus);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    
 
-<p>We can easily create an <code>FAutoConsoleCommand</code> to manually achieve this feature. </p>
-<h1 id="How-To-Get-Rid-Of-Property-When-Cooking"><a href="#How-To-Get-Rid-Of-Property-When-Cooking" class="headerlink" title="How To Get Rid Of Property When Cooking?"></a>How To Get Rid Of Property When Cooking?</h1><p>We might want to get rid of some properties during cooking stage. For example, <code>RawAnimationData</code> is supposed to be stripped for cooked builds in consideration of memory.  </p>
-<h2 id="For-A-Non-UPROPERTY-Member"><a href="#For-A-Non-UPROPERTY-Member" class="headerlink" title="For A Non-UPROPERTY Member"></a>For A Non-UPROPERTY Member</h2><p>It might get really complicated to manage since we need to handle <code>PostLoad</code> and <code>Serialize</code> function manually, but we can get more flexibility. </p>
-<p>If you want to remove this property, use <code>FPlatformProperties::RequiresCookedData()</code> function to determine if you need it or not. </p>
-<h2 id="For-A-UPROPERTY-Member"><a href="#For-A-UPROPERTY-Member" class="headerlink" title="For A UPROPERTY Member"></a>For A UPROPERTY Member</h2><p>In a more complicated situation if you still need to handle this property during cooking stage, and frankly speaking, this is exactly what I needed these days. We might need a hook to get rid of this property. </p>
-<p>Sadly, I cannot tell you what precisely I needed to do because of secrecy. </p>
-<p>We can remove its content in <code>UObject::PreSave</code> function. </p>
-<p>In a cooked build, <code>PreSave</code> function would be called before save-serializing happens. That is a wonderful hook for you to modify this data. </p>
-<h1 id="About-Anim-Sequence-Compression"><a href="#About-Anim-Sequence-Compression" class="headerlink" title="About Anim Sequence Compression"></a>About Anim Sequence Compression</h1><p>When an anim sequence get compressed because of any reason. A <code>FString</code> called <code>FinalDDCKey</code> is generated, and it is used by <code>DDC</code> to find whether there has already been a compressed sequence. </p>
-<p>You can check out <code>UAnimSequence::RequestAnimCompression</code> for details. </p>
-<h2 id="AssetDDCKey"><a href="#AssetDDCKey" class="headerlink" title="AssetDDCKey"></a><code>AssetDDCKey</code></h2><p>We can get a <code>AssetDDCKey</code> by <code>GetAnimSequenceSpecificCacheKeySuffix</code> function. For example, anim sequence <code>ThirdPersonWalk</code> has a <code>AssetDDCKey</code> like: </p>
-<blockquote>
-<p>BE37EBBAFBBA3750CECFF71FCA0778E996BD3AFA415DB49D91DC3799835471D700000000000000000000000000000000_000_NoAdditiveGuid_0000803F00000000CDCCCC3D000000000004000004CD5841CCCCCC3E9A99993E9A99993EA3623BAFF72E0049A52AAC206838CFE9000000000000000001000000000070429A99993E9A99993E</p>
-</blockquote>
-<p>You can figure out how this key is generated by checking out <code>GetAnimSequenceSpecificCacheKeySuffix</code> function. But there is something needs to be mentioned about <code>Bone Compression Setting</code>. </p>
-<p>A <code>UAnimBoneCompressionSettings</code> populates its <code>DDC Keys</code> while <code>AssetDDCKey</code> of an anim sequence is generated. And for each compression method would also populates its <code>DDC Key</code>, too. </p>
-<p>This is needed because of we might adjust compression parameters. If any compression parameter is changed, a different key is generated so that the engine can decide whether to re-compress the anim sequence. </p>
-<h2 id="What-Happens-If-A-DDC-Key-Is-Too-Long"><a href="#What-Happens-If-A-DDC-Key-Is-Too-Long" class="headerlink" title="What Happens If A DDC Key Is Too Long?"></a>What Happens If A <code>DDC Key</code> Is Too Long?</h2><p>Let’s still take <code>ThirdPersonWalk</code> for example. Its <code>FinalDDCKey</code> is like: </p>
-<blockquote>
-<p>AnimSeq_EFB2D82D0DDA4A4E9D0D9AC41A9C557A_0_BE37EBBAFBBA3750CECFF71FCA0778E996BD3AFA415DB49D91DC3799835471D700000000000000000000000000000000_000_NoAdditiveGuid_0000803F00000000CDCCCC3D000000000004000004CD5841CCCCCC3E9A99993E9A99993EA3623BAFF72E0049A52AAC206838CFE9000000000000000001000000000070429A99993E9A99993E</p>
-</blockquote>
-<p>If you continue digging into how <code>DDC</code> get its cached data in <code>FDerivedDataLimitKeyLengthWrapper::GetCachedData</code> function. You should find <code>GetShortenKey()</code> is called if the Cache Key is too long. </p>
-<p>A hash string is calculated and appended at the tail of a new shorten key, whose max length is defined by <code>MAX_BACKEND_KEY_LENGTH</code>. Now the shorten key is like: </p>
-<blockquote>
-<p>AnimSeq_EFB2D82D0DDA4A4E9D0D9AC41A9C557A_0_BE37EBBAFBBA3750CECFF71FCA0778E996B__43B4BAB8FB89DFD6EDC705E28B6B0F9F69E8D7D6</p>
-</blockquote>
-<p>But becareful! Since a hash value is used. Hash collide can still happens. </p>
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
 
       
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/" data-id="cm2qzvapn004a0547hlkv3x5i" class="article-share-link">Share</a>
       
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
+    </ul>
   
-</article>
-
-
-  
-    <article id="post-build-physx-on-windows-for-ue4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2021/08/31/build-physx-on-windows-for-ue4/" class="article-date">
-  <time datetime="2021-08-31T03:28:12.000Z" itemprop="datePublished">2021-08-31</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/UE4/">UE4</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/31/build-physx-on-windows-for-ue4/">Build PhysX For UE4 On Windows</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Sometimes we need to debugging PhysX for UE4. But it seems <code>.pdb</code> files are not provided when it comes to PhysX. </p>
-<p>And sometimes we might want to modify PhysX code, thus we need to build our own PhysX binaries. </p>
-<p>You need Visual Studio 2015 and CMake installed on your computer. Make sure you have C++ installed for your VS 2015. </p>
-<h1 id="Steps-1-Generate-Visual-Studio-Files"><a href="#Steps-1-Generate-Visual-Studio-Files" class="headerlink" title="Steps 1: Generate Visual Studio Files"></a>Steps 1: Generate Visual Studio Files</h1><p>This step is fairly easy–simply lanch CMake, fill <code>Source Code Location</code> and <code>Binary Location</code>: </p>
-<p><img src="/image_00.png" alt="image_00"></p>
-<p>Hit <code>Configure</code>, select <code>Win64</code> as platform, and wait…</p>
-<p><img src="/image_01.png" alt="image_01"></p>
-<p>Oops! one error, if my guess is right, would pop up during configuration stage: </p>
-<p><img src="/image_02.png" alt="image_02"></p>
-<p>It seems that <code>GW_DEPS_ROOT</code> is not set. Click <code>Enviroment</code>, and <code>Add Entry</code> like this: </p>
-<p><img src="/image_03.png" alt="image_03"></p>
-<p>This should work! Click <code>Configure</code> again, and then <code>Generate</code>. </p>
-<p>Now we have our Visual Studio files. </p>
-<p><img src="/image_04.png" alt="image_04"></p>
-<h1 id="Step-2-Build-PhysX-Project"><a href="#Step-2-Build-PhysX-Project" class="headerlink" title="Step 2: Build PhysX Project"></a>Step 2: Build PhysX Project</h1><p>I truly believe that there is no need to talk about… compiling the project. </p>
-<p>You can compile any mode of PhysX you like. I prefer <code>profile</code> mode personly. </p>
-<p>It should be noted that different mode of PhysX would be loaded in accordance with different engine mode. You can check out <code>GetPhysXLibraryMode</code> function in <code>PhysX.Build.cs</code> for details. </p>
-<p><img src="/image_05.png" alt="image_05"></p>
-<p>After building PhysX, you can find dlls and pdbs: </p>
-<p><img src="/image_06.png" alt="image_06"></p>
-<h1 id="Step-3-Let’s-Party"><a href="#Step-3-Let’s-Party" class="headerlink" title="Step 3: Let’s Party!"></a>Step 3: Let’s Party!</h1><p>Simply copy our dlls and pdbs to the binary folder in our engine. </p>
-<p>And now we can dive into PhysX’s underlying logic! </p>
-<p><img src="/image_07.png" alt="image_07"></p>
-<p>If you still cannot dive into PhysX, check your module: </p>
-<p><img src="/image_08.png" alt="image_08"></p>
-<p>And load PhysX module manually: </p>
-<p><img src="/image_09.png" alt="image_09"></p>
-<p>That’s all! And enjoy it! </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/08/31/build-physx-on-windows-for-ue4/" data-id="cm2qzvaph001505474gyu6fol" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
-    </div>
-  </div>
-
 
   
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
-    </div>
-  </div>
-
 
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
-    </div>
-  </div>
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2024 Noah Zuo<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
   
 </nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
 
   
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
 
   
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
+  
+  
 
+  
 
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">
 
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
 
-<script src="/js/script.js"></script>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
 
+    
+      <header class="post-header">
 
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/" class="post-title-link" itemprop="url">An Out-dated Introduction To Volume Caching In PhysX</a>
+              
+            
+          </h1>
+        
 
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-05-06 20:49:12" itemprop="dateCreated datePublished" datetime="2022-05-06T20:49:12+08:00">2022-05-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2024-10-27 10:26:23" itemprop="dateModified" datetime="2024-10-27T10:26:23+08:00">2024-10-27</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article introduces an game physics optimization method called volume caching. Being out-dated and deprecated though, we can still learn something from this mechanism.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/" class="post-title-link" itemprop="url">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-04-18 15:38:12" itemprop="dateCreated datePublished" datetime="2022-04-18T15:38:12+08:00">2022-04-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2024-10-27 10:26:23" itemprop="dateModified" datetime="2024-10-27T10:26:23+08:00">2024-10-27</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article introduces an issue about `FMath::ClosestPointOnTriangleToPoint` in UE4. And implementation methods of `Chaos` and `PhysX` is also introduced in this article.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/" class="post-title-link" itemprop="url">Digging Into The Bind Pose Scale Issue In UE4</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-04-12 10:17:51" itemprop="dateCreated datePublished" datetime="2022-04-12T10:17:51+08:00">2022-04-12</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article records an issue about bone scale in bind pose that I've encountered these days.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/21/try-read-and-write-lock-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2022/03/21/try-read-and-write-lock-in-ue4/" class="post-title-link" itemprop="url">TryReadLock And TryWriteLock In UE4</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-03-21 10:49:12" itemprop="dateCreated datePublished" datetime="2022-03-21T10:49:12+08:00">2022-03-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2024-10-27 10:26:24" itemprop="dateModified" datetime="2024-10-27T10:26:24+08:00">2024-10-27</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article tells you how to implement a `FTryReadScopeLock` or `FTryWriteScopeLock` in UE4.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/03/21/try-read-and-write-lock-in-ue4/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" class="post-title-link" itemprop="url">A Tiny Performance Issue In UE4 Camera View</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-01-18 15:15:27" itemprop="dateCreated datePublished" datetime="2022-01-18T15:15:27+08:00">2022-01-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article introduces a tiny performance issue about camera view that I've encountered in UE4.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/06/better-orientation-warping/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2022/01/06/better-orientation-warping/" class="post-title-link" itemprop="url">Better Orientation Warping Implementation In UE4</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-01-06 21:34:03" itemprop="dateCreated datePublished" datetime="2022-01-06T21:34:03+08:00">2022-01-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article tells you how to implement a better orientation warping feature than what Paragon has achieved.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2022/01/06/better-orientation-warping/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2021/12/06/dive-into-physx-broad-phase-in-ue4/" class="post-title-link" itemprop="url">Dive Into PhysX Broad Phase In UE4</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-12-06 17:30:03" itemprop="dateCreated datePublished" datetime="2021-12-06T17:30:03+08:00">2021-12-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2021/12/06/dive-into-physx-broad-phase-in-ue4/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/11/27/better-profile-physx-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2021/11/27/better-profile-physx-in-ue4/" class="post-title-link" itemprop="url">Better Way To Profile PhysX In UE4</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-11-27 11:15:12" itemprop="dateCreated datePublished" datetime="2021-11-27T11:15:12+08:00">2021-11-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-11-30 16:21:28" itemprop="dateModified" datetime="2021-11-30T16:21:28+08:00">2021-11-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article records how to streaming pvd data to a file for better PhysX Profile.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2021/11/27/better-profile-physx-in-ue4/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2021/09/12/tool-tips-about-ue4-cooking/" class="post-title-link" itemprop="url">Tool Tips About UE4 Cooking</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-09-12 15:10:03" itemprop="dateCreated datePublished" datetime="2021-09-12T15:10:03+08:00">2021-09-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-11-19 19:22:23" itemprop="dateModified" datetime="2021-11-19T19:22:23+08:00">2021-11-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article simply records some issues about UE4 cooking that I encountered these days.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2021/09/12/tool-tips-about-ue4-cooking/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/08/31/build-physx-on-windows-for-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Noah Zuo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Noah Zuo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2021/08/31/build-physx-on-windows-for-ue4/" class="post-title-link" itemprop="url">Build PhysX For UE4 On Windows</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-08-31 11:28:12" itemprop="dateCreated datePublished" datetime="2021-08-31T11:28:12+08:00">2021-08-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-11-16 17:34:28" itemprop="dateModified" datetime="2021-11-16T17:34:28+08:00">2021-11-16</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          This article records how to build PhysX binaries for UE4.
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2021/08/31/build-physx-on-windows-for-ue4/">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Noah Zuo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">48</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Noah Zuo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    
+      
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>

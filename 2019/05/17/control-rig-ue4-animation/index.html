@@ -1,23 +1,281 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Control Rig in UE4 Animation | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article introduced some of my thoughts about control rig system in UE4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Control Rig in UE4 Animation">
+<meta property="og:url" content="http://yoursite.com/2019/05/17/control-rig-ue4-animation/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article introduced some of my thoughts about control rig system in UE4">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/image1.png">
+<meta property="og:image" content="http://yoursite.com/image2.png">
+<meta property="og:image" content="http://yoursite.com/image3.png">
+<meta property="article:published_time" content="2019-05-17T14:07:17.000Z">
+<meta property="article:modified_time" content="2024-10-27T02:26:23.943Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="Animation">
+<meta property="article:tag" content="UE4">
+<meta property="article:tag" content="Control Rig">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-control-rig-ue4-animation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/17/control-rig-ue4-animation/" class="article-date">
+  <time datetime="2019-05-17T14:07:17.000Z" itemprop="datePublished">2019-05-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/UE4/">UE4</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Control Rig in UE4 Animation
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="What-is-Control-Rig"><a href="#What-is-Control-Rig" class="headerlink" title="What is Control Rig?"></a>What is Control Rig?</h2><p>Control rig plugin has been in UE4 for quite a long time. But it did not arose my interest until I watched <a href="https://www.youtube.com/watch?v=TYSdxW2WHcI">Wes Bunn’s session in GDC 2019</a>. Actually I was about to build a control rig system and had already been working on it for several weeks. And the control rig system just came out… Complex feeling, huh? </p>
+<p>Since animation blueprint has a strong coupling with animation skeleton, and this makes it hard for users to control the skeleton bones using controllers outside skeleton. Compared with Unity animation playable pipeline, animation blueprint is not that convenient to control skeleton bones. </p>
+<p>Control rig makes it possible for us to to drive skeleton bones outside animation blueprint. We can create customized controllers, and define our own constraints to control bones. It is just amazing!</p>
+<p><img src="/image1.png" alt="Rig Image"></p>
+<h3 id="Deeper-Thinking-about-Control-Rig"><a href="#Deeper-Thinking-about-Control-Rig" class="headerlink" title="Deeper Thinking about Control Rig"></a>Deeper Thinking about Control Rig</h3><h4 id="The-Ultimate-Problem"><a href="#The-Ultimate-Problem" class="headerlink" title="The Ultimate Problem"></a>The Ultimate Problem</h4><p>So the ultimate problem, is that unlike Unity, which is compatible with different skeletons, animation blueprint in UE4 only works with the specific skeletons. If we want to add another bone to the skeleton, lots of work needs to be done. </p>
+<p>I’ll get into this problem with the issue that Wes mentioned in his session. </p>
+<p>Consider a character with a bare hand: </p>
+<p><img src="/image2.png" alt="Character  Image"></p>
+<p>We are very sure that in the very beginning of the development of fortnite, no one would think about adding some extra bones under the character’s hand for her claw, like this: </p>
+<p><img src="/image3.png" alt="Claw Image"></p>
+<p>Every one was happy with the skeleton, and has created lots of animations using this skeleton. But some day, a designer came and tell the programmer: We are gonna add a claw to the character! </p>
+<p>Boom!!! </p>
+<p>If every animation needs to be re-created, that means so much work, and it is the answer that no one wants to hear. </p>
+<p>But why don’t we drive the claw bones using the character’s finger bones? </p>
+<p>And this is how Control Rig works! </p>
+<p>This article would only show the problem of original animation pipeline. Would like to explain how to build a control rig to solve this problem. </p>
+<p>Anyway, we can use control rig to drive skeleton bones outside animation blueprint. And this is just amazing! </p>
+<h4 id="A-Boon-for-Riggers"><a href="#A-Boon-for-Riggers" class="headerlink" title="A Boon for Riggers"></a>A Boon for Riggers</h4><p>Our old animation pipeline is like: Riggers setup character constraints inside Maya, and animators use this rigged character to produce raw animation, and finally animation programmers use these raw animation materials to build a new animation pipeline inside UE4! </p>
+<p>But the problem is, animation programmers are not professional when dealing with character animation! It is a rigger that knows exactly what drives a bone to a location he desired. </p>
+<p>Riggers and animators always play with constraints and controllers. It would be a huge waste if their work are limited inside DCC tools. In my opinion, it would be a great idea for animators&amp;riggers to setup constraints in UE4. </p>
+<h3 id="Something-Still-Needs-to-be-Done"><a href="#Something-Still-Needs-to-be-Done" class="headerlink" title="Something Still Needs to be Done"></a>Something Still Needs to be Done</h3><p>Currently I use UE4.22.1 and more than a lot improvement on Control Rig needs to be done. And here is what I care most: </p>
+<ul>
+<li><p>How to drive controllers<br>Wes use bone transform evaluated from animation blueprint to drive controller transform. But sometimes we need to drive controller transform directly. I modified the plugin code to make it possible to drive controllers, but still not convenient, though. </p>
+</li>
+<li><p>Control Rig event graph does not work<br>We can setup event graph in Control Rig already, but still cannot call events or interface functions in Control Rig. That is terrible… </p>
+</li>
+<li><p>Nodes are not powerful enough<br>I have used control rig for quite a few days. And I have to create some customized nodes for my purposes. It might be someday to make it open-source…</p>
+</li>
+</ul>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/05/17/control-rig-ue4-animation/" data-id="cm2qzvapi001k0547d3bh3yru" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/18/create-a-rounded-star-mesh-in-houdini/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Create a Rounded Star Mesh in Houdini
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/05/11/tool-tips-for-ue4-animation-programming/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Tool tips for ue4 animation programming</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

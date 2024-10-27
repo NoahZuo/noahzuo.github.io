@@ -1,23 +1,290 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Learning Notes about Smashing the Stack for Fun and Profit | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="These are some learning notes about Smashing the Stack while taking the course &#96;Introduction to Cyber Security&#96; on Coursera.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning Notes about Smashing the Stack for Fun and Profit">
+<meta property="og:url" content="http://yoursite.com/2019/07/08/learning-notes-smashing-the-stack-for-fun-and-profit/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="These are some learning notes about Smashing the Stack while taking the course &#96;Introduction to Cyber Security&#96; on Coursera.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-07-08T08:00:22.000Z">
+<meta property="article:modified_time" content="2024-10-27T02:26:24.029Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="Learning notes">
+<meta property="article:tag" content="Coursera">
+<meta property="article:tag" content="Cyber Security">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-learning-notes-smashing-the-stack-for-fun-and-profit" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/08/learning-notes-smashing-the-stack-for-fun-and-profit/" class="article-date">
+  <time datetime="2019-07-08T08:00:22.000Z" itemprop="datePublished">2019-07-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Learning-notes/">Learning notes</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Learning Notes about Smashing the Stack for Fun and Profit
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Basic-Introduction-about-Stack"><a href="#Basic-Introduction-about-Stack" class="headerlink" title="Basic Introduction about Stack"></a>Basic Introduction about Stack</h2><ul>
+<li><p>How a process is organized in memory? </p>
+<p>Processes are divided into three regions: Text, Data and Stack.<br>![Process Memory Regions](Process Memory Regions.png)	</p>
+<ul>
+<li><p>Text Region</p>
+<p>The text region is fixed by the program and includes code (instructions) and read-only data. This region corresponds to the text section of the executable file. This region is normally marked read-only and any attempt to write to it will result in a segmentation violation. </p>
+</li>
+<li><p>Data Region</p>
+<p>The data region contains initialized and uninitialized data. Static variables are stored in this region. The data region corresponds to the data-bss(Data segment space) of the executable file. </p>
+<p>The region’s size can be changed with the <code>brk()</code> system call. If the expansion of the bss data or the user stack exhausts available memory, the process is blocked and is rescheduled to run again with a larger memory space. New Memory is added between the data and stack segments. </p>
+</li>
+<li><p>Stack Region</p>
+<p>A stack is a contiguous block of memory containing data. A register called the stack pointer(<code>SP</code>) points to the top of the stack. The bottom of the stack is at a fixed address. Its size is dynamically adjusted by the kernel at runtime. The CPU implements instructions to <code>PUSH</code> onto and <code>POP</code> off of the stack.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Introduction-to-Some-Important-Register"><a href="#Introduction-to-Some-Important-Register" class="headerlink" title="Introduction to Some Important Register"></a>Introduction to Some Important Register</h2><h3 id="SP"><a href="#SP" class="headerlink" title="SP"></a><code>SP</code></h3><p>The stack pointer(<code>SP</code>) is implementation dependent. It may point to the last address on the stack, or to the next free available address after the stack. </p>
+<h3 id="LB-or-FP"><a href="#LB-or-FP" class="headerlink" title="LB or FP"></a><code>LB</code> or <code>FP</code></h3><p>A local base pointer(<code>LB</code>), which sometimes is also referred to as a frame pointer(<code>FP</code>), points to a fixed location within a frame. In principle, local variables could be referenced by giving their offsets from SP. However, as words are pushed onto the stack and popped from the stack, these offsets change. </p>
+<p>As a result, many compilers use the register, <code>FP</code>, for referencing both local variables and parameters because their distances from FP do not change with PUSHes and POPs. </p>
+<p>On Intel CPUs, BP(EBP) is used for this purpose. On the Motorola CPUs, any address register except A7(the stack pointer) will do. Because the way our stack grows, <strong>actual parameters have positive offsets and local variables have negative offsets from FP</strong>. </p>
+<h2 id="Something-Needs-to-Be-Done-When-Calling-a-Function"><a href="#Something-Needs-to-Be-Done-When-Calling-a-Function" class="headerlink" title="Something Needs to Be Done When Calling a Function"></a>Something Needs to Be Done When Calling a Function</h2><p>Actually, this is called the <strong>procedure prolog</strong>. </p>
+<ol>
+<li><p>Save the previous <code>FP</code><br> We need to restore previous stack at procedure exit. </p>
+ <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pushl %ebp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Copy <code>SP</code> to the <code>FP</code><br> We need to create new <code>FP</code></p>
+ <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movel %esp, %ebp</span><br></pre></td></tr></table></figure></li>
+<li><p>Advance <code>SP</code>to reserve space for the local variables<br> Space is reserved for local variable. For function like this: </p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">function</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">char</span> buffer1[<span class="number">5</span>]; </span><br><span class="line">	<span class="type">char</span> buffer2[<span class="number">10</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> Consider memory align, we need to reserve 20 bytes for buffers. </p>
+ <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">subl  <span class="number">$20</span>, %esp</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Buffer-Overflow-and-How-it-Works"><a href="#Buffer-Overflow-and-How-it-Works" class="headerlink" title="Buffer Overflow and How it Works"></a>Buffer Overflow and How it Works</h2><p>Consider code like this: </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">function</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> c)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> buffer1[<span class="number">5</span>]; </span><br><span class="line">    <span class="type">char</span> buffer2[<span class="number">10</span>]; </span><br><span class="line">    <span class="type">int</span>* ret; </span><br><span class="line">    </span><br><span class="line">    ret = buffer1 + <span class="number">12</span>; </span><br><span class="line">    (*ret) += <span class="number">8</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> x; </span><br><span class="line">    x = <span class="number">0</span>; </span><br><span class="line">    function(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>); </span><br><span class="line">    x = <span class="number">1</span>; </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, x); </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>This program would print “0” in the command window(for a 32-bit system). But how does this work? </p>
+<p>Let’s first take a look at the stack: </p>
+<p>![Function Stack](buffer stack.png)</p>
+<p>It is clear that <code>buffer1</code> takes 8 bytes of space. And pointer <code>sfp</code> is a 4-byte pointer. Thus <code>ret = buffer1 + 12; </code>  would get a correct <code>ret</code> address. </p>
+<p>Eventually, <code>(*ret) += 8; </code>would skip <code>x = 1; </code> statement in the main function. </p>
+<p>And this is really cool! We can influence code execution outside the current stack. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/08/learning-notes-smashing-the-stack-for-fun-and-profit/" data-id="cm2qzvapm003g0547cd3k4h0x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/17/physx-scratch-buffer-in-unity/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PhysX Scratch Buffer in Unity
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/24/does-axis-num-matter-for-ue4-blendspace/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Does Axis Division Number Matter for UE4 BlendSpace</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,23 +1,276 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>How to Create Asset Right Click Menu In UE4 | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article tells you how to create asset right click menu in UE4.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Create Asset Right Click Menu In UE4">
+<meta property="og:url" content="http://yoursite.com/2020/08/28/asset-right-click-menu-in-ue4/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article tells you how to create asset right click menu in UE4.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/image-20200829164232753.png">
+<meta property="article:published_time" content="2020-08-28T07:45:12.000Z">
+<meta property="article:modified_time" content="2020-08-28T09:30:28.000Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="UE4">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image-20200829164232753.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-asset-right-click-menu-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/28/asset-right-click-menu-in-ue4/" class="article-date">
+  <time datetime="2020-08-28T07:45:12.000Z" itemprop="datePublished">2020-08-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/UE4/">UE4</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      How to Create Asset Right Click Menu In UE4
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>It would be wonderful if we can create our own asset menu to process assets. But it seems not that easy to achieve that. I always miss Unity when it comes to creation of a customized editor tool. </p>
+<h1 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h1><p>First of all, it is recommended to  you are guranteed to have these menus setup in the <code>StartModule</code> function: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> F***<span class="title">Module::StartupModule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Set up your menus here.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>It’s easy to know that we should release those menus in the <code>ShutdownModule</code> function: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> F***<span class="title">Module::ShutdownModule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Release your menus here. </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>Content Browser</code> module loaded if you want to create customized right click menu. As a result, we need to load this module by: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FContentBrowserModule&amp; ContentBrowserModule = FModuleManager::<span class="built_in">LoadModuleChecked</span>&lt;FContentBrowserModule&gt;(<span class="built_in">TEXT</span>(<span class="string">&quot;ContentBrowser&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<h1 id="Core-Logic"><a href="#Core-Logic" class="headerlink" title="Core Logic"></a>Core Logic</h1><h2 id="Menu-Extender"><a href="#Menu-Extender" class="headerlink" title="Menu Extender"></a>Menu Extender</h2><p>For a right click function in the content browser, a menu extender should be created and added to the current menu extender array by: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TArray&lt;FContentBrowserMenuExtender_SelectedAssets&gt;&amp; CBMenuAssetExtenderDelegates = ContentBrowserModule.<span class="built_in">GetAllAssetViewContextMenuExtenders</span>();</span><br><span class="line">	CBMenuAssetExtenderDelegates.<span class="built_in">Add</span>(FContentBrowserMenuExtender_SelectedAssets::<span class="built_in">CreateStatic</span>(&amp;YourOnExtendAssetSelectionMenu));</span><br></pre></td></tr></table></figure>
+
+<p><code>YourOnExtendAssetSelectionMenu</code> is a static function that accepts a <code>const TArray&lt;FAssetData&gt;&amp;</code> and returns a <code>TSharedRef&lt;FExtender&gt;</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> TSharedRef&lt;FExtender&gt; <span class="title">YourOnExtendAssetSelectionMenu</span><span class="params">(<span class="type">const</span> TArray&lt;FAssetData&gt;&amp; SelectedAssets)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	TSharedRef&lt;FExtender&gt; Extender = <span class="built_in">MakeShared</span>&lt;FExtender&gt;();</span><br><span class="line">	Extender-&gt;<span class="built_in">AddMenuExtension</span>(</span><br><span class="line">		<span class="string">&quot;CommonAssetActions&quot;</span>,</span><br><span class="line">		EExtensionHook::After,</span><br><span class="line">		<span class="literal">nullptr</span>,</span><br><span class="line">		FMenuExtensionDelegate::<span class="built_in">CreateStatic</span>(&amp;YourAssetExtenderFunc, SelectedAssets)</span><br><span class="line">	);</span><br><span class="line">	<span class="keyword">return</span> Extender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here another function has just came to us. We still need an <code>AssetExtenderFunction</code> which accepts an <code>FMenuBuilder&amp;</code> and an array of <code>FAssetData</code>. We add menu entry here to eventually add a button by: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">YourAssetExtenderFunc</span><span class="params">(FMenuBuilder&amp; MenuBuilder, <span class="type">const</span> TArray&lt;FAssetData&gt; SelectedAssets)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    MenuBuilder.<span class="built_in">BeginSection</span>(<span class="string">&quot;Your Asset Context&quot;</span>, <span class="built_in">LOCTEXT</span>(<span class="string">&quot;ASSET_CONTEXT&quot;</span>, <span class="string">&quot;Your Asset Context&quot;</span>));</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Add Menu Entry Here</span></span><br><span class="line">    &#125;</span><br><span class="line">    MenuBuilder.<span class="built_in">EndSection</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Filtering-the-Selected-Asset"><a href="#Filtering-the-Selected-Asset" class="headerlink" title="Filtering the Selected Asset"></a>Filtering the Selected Asset</h2><p>We always need to add some menu to the specific asset. For example, <code>Find Skeleton</code> button would only appear in the right-click menu for a <code>Animation Sequence Base</code> asset: </p>
+<p><img src="/image-20200829164232753.png" alt="image-20200829164232753"></p>
+<p>We can filter asset data type in <code>YourAssetExtenderFunc</code> like this: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> AssetIt = SelectedAssets.<span class="built_in">CreateConstIterator</span>(); AssetIt; ++AssetIt)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> FAssetData&amp; Asset = *AssetIt;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!Asset.<span class="built_in">IsRedirector</span>() &amp;&amp; Asset.AssetClass != NAME_Class &amp;&amp; !(Asset.PackageFlags &amp; PKG_FilterEditorOnly))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (Asset.<span class="built_in">GetClass</span>()-&gt;<span class="built_in">IsChildOf</span>(UAnimSequenceBase::<span class="built_in">StaticClass</span>()))</span><br><span class="line">		&#123;</span><br><span class="line">            <span class="comment">// ... </span></span><br><span class="line">		&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Add-Menu-Entry"><a href="#Add-Menu-Entry" class="headerlink" title="Add Menu Entry"></a>Add Menu Entry</h2><p>Simply use a Lambda function for this like: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">MenuBuilder.<span class="built_in">AddMenuEntry</span>(</span><br><span class="line">	<span class="built_in">LOCTEXT</span>(<span class="string">&quot;ButtonName&quot;</span>, <span class="string">&quot;ButtonName&quot;</span>),</span><br><span class="line">	<span class="built_in">LOCTEXT</span>(<span class="string">&quot;Button ToolTip&quot;</span>, <span class="string">&quot;Button ToolTip&quot;</span>),</span><br><span class="line">	<span class="built_in">FSlateIcon</span>(FLinterStyle::<span class="built_in">GetStyleSetName</span>(), <span class="string">&quot;Linter.Toolbar.Icon&quot;</span>),</span><br><span class="line">	<span class="built_in">FUIAction</span>(FExecuteAction::<span class="built_in">CreateLambda</span>([SelectedAssets]()</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// Do work here. </span></span><br><span class="line">	&#125;)),</span><br><span class="line">	NAME_None,</span><br><span class="line">	EUserInterfaceActionType::Button);</span><br></pre></td></tr></table></figure>
+
+<p>And that should work. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/08/28/asset-right-click-menu-in-ue4/" data-id="cm2qzvapf000l0547h65o0eno" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/09/15/issues-about-anim-notify-on-server/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Issues About Anim Notify On Server
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/07/30/compatibility-of-savecachedpose-inside-state-machine/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Use SaveCachedPose inside State Machine in UE4</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

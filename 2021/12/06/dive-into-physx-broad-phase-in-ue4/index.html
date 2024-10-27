@@ -1,23 +1,315 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Dive Into PhysX Broad Phase In UE4 | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dive Into PhysX Broad Phase In UE4">
+<meta property="og:url" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/image-20211217174528727.png">
+<meta property="og:image" content="http://yoursite.com/image-20211223205231390.png">
+<meta property="og:image" content="http://yoursite.com/mbp-bound.png">
+<meta property="og:image" content="http://yoursite.com/image-20211224152518444.png">
+<meta property="og:image" content="http://yoursite.com/aggre-threshold.png">
+<meta property="og:image" content="http://yoursite.com/image-20211228143150896.png">
+<meta property="og:image" content="http://yoursite.com/image_16406844721012.png">
+<meta property="article:published_time" content="2021-12-06T09:30:03.000Z">
+<meta property="article:modified_time" content="2021-12-06T09:30:03.000Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="UE4">
+<meta property="article:tag" content="PhysX">
+<meta property="article:tag" content="Physics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image-20211217174528727.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-dive-into-physx-broad-phase-in-ue4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/12/06/dive-into-physx-broad-phase-in-ue4/" class="article-date">
+  <time datetime="2021-12-06T09:30:03.000Z" itemprop="datePublished">2021-12-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/UE4/">UE4</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dive Into PhysX Broad Phase In UE4
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function like <code>BroadPhaseSAP::Update</code> or <code>BroadPhaseMBP::Update</code>can cost lots of performance, especially when there are millions of rigid bodies or fast-moving rigid bodies in your scene. </p>
+<p>And it is so common that the performance issue is even worse on a dedicated server because of <code>PhysX</code>‘s single-thread CPU-Dispatcher. </p>
+<h1 id="About-Broad-Phase"><a href="#About-Broad-Phase" class="headerlink" title="About Broad Phase"></a>About Broad Phase</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function is not always a performance hot-spot in most cases if you are not developing an open world game which contains lots of fast-moving objects. </p>
+<p>PhysX has provided us two broad-phase algorithms: <code>SAP</code> and <code>MBP</code>. Both of them use <code>AABB</code> to detect collision. </p>
+<p>The basic idea behind these algorithms is: </p>
+<blockquote>
+<p>two AABBs overlap <strong>iff</strong> their projections on the X, Y and Z coordinate axes overlap. </p>
+</blockquote>
+<p>That is to say, physX needs to keep three sorted arrays, one for each axis, to track the bounding box’s <code>min</code> and <code>max</code> value of each rigid body. </p>
+<p>And since we can play with those rigid bodies by interfaces that UE4 has provided.  As a result, physx needs to keep these arrays sorted–this is exactly what <code>Broad Phase</code>‘s <code>Update</code> function does. </p>
+<p><img src="/image-20211217174528727.png" alt="image-20211217174528727"></p>
+<p>This function is called in the <code>TG_StartPhysics</code> tick group. After all those three tasks are completed, we’ve managed to get a sorted array for each axis. </p>
+<h1 id="Something-About-Sorting"><a href="#Something-About-Sorting" class="headerlink" title="Something About Sorting"></a>Something About Sorting</h1><p>It is known to all that we should choose different sorting algorithm for different cases. </p>
+<p>Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how <code>PhysX</code> handle it: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">BroadPhaseSap::batchUpdate</span></span></span><br><span class="line"><span class="function"><span class="params">(<span class="type">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">//Nothin updated so don&#x27;t do anything</span></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//If number updated is sufficiently fewer than number of boxes (say less than 20%)</span></span><br><span class="line">        <span class="keyword">if</span>((mUpdatedSize*<span class="number">5</span>) &lt; mBoxesSize)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="built_in">batchUpdateFewUpdates</span>(Axis, pairs, pairsSize, pairsCapacity);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    ... </span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>Moreover, <code>QSort</code> is used if the updated box is fewer than 512. Or else, <code>Bucket Sort</code> is used: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BroadPhaseSap::batchUpdateFewUpdates</span></span></span><br><span class="line"><span class="function"><span class="params">(<span class="type">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    	...</span><br><span class="line">        <span class="comment">//There are no extents, just the sentinels, so exit early.</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">isSentinel</span>(BaseEPDatas[<span class="number">1</span>]))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 ind_ = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 index = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize &lt; <span class="number">512</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is small, so use qsort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(PxU32 a = <span class="number">0</span>; a &lt; mUpdatedSize; ++a)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">                Ps::<span class="built_in">sort</span>(mSortedUpdateElements, ind_);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is large so use a bucket sort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(; index &lt; endPointSize; ++index)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Issue-Cause"><a href="#Issue-Cause" class="headerlink" title="Issue Cause"></a>Issue Cause</h1><p>Time to investigate what on earth eventually cause this issue. </p>
+<p>After millions of AABB projecting them self onto  three axis, we can eventually get three extremely dense arrays. </p>
+<p>Think about a moving rigid body moving from <code>(10, 0, 0)</code> to <code>(20, 0, 0)</code>. During sorting stage, it would be compared with colliders far far away: </p>
+<p><img src="/image-20211223205231390.png" alt="image-20211223205231390"></p>
+<p>This leads to a large array sorting problem, a common but expensive problem. </p>
+<h1 id="How-To-Solve-This-Problem"><a href="#How-To-Solve-This-Problem" class="headerlink" title="How To Solve This Problem?"></a>How To Solve This Problem?</h1><h2 id="Level-Streaming"><a href="#Level-Streaming" class="headerlink" title="Level Streaming"></a>Level Streaming</h2><p>One common solution to this issue for non-server build is to streaming in or out those colliders dynamically. This method works really well since it leads to a much smaller array for each axis. </p>
+<p>This is a widely known solution so that I am not going to talk about its detail here since Epic has already provided tons of tutorials about it. </p>
+<h2 id="Multi-Pruning-Box"><a href="#Multi-Pruning-Box" class="headerlink" title="Multi Pruning Box"></a>Multi Pruning Box</h2><p>Also know as <code>MBP</code> algorithm. To use this algorithm, a level bound is needed. And you can set this value in the project setting: </p>
+<p><img src="/mbp-bound.png" alt="img"></p>
+<p>In general, <code>MBP</code> simply divides the whole physics world into several regions:</p>
+<p><img src="/image-20211224152518444.png" alt="image-20211224152518444"></p>
+<p> Thus interactions between far aways objects are skipped because they are not likely in the same <code>SAP</code> region. On the other hand, parallel computing can be used to boost performance. </p>
+<p>After all regions finish their updating task, found&#x2F;lost pairs, compared to previous frame, is generated in its <code>PostUpdate</code> stage. What worth to be mentioned is that there is significant performance cost here since <code>pushback</code> and <code>remove</code> operations are called to <code>BroadPhaseMBP.mCreated</code> and <code>BroadPhaseMBP.mDeleted</code> array. </p>
+<p>In conclusion, <code>MBP</code> can save <code>Broad Phase</code> performance if the physics world is large enough. But since <code>PostUpdate</code>costs some performance, <code>MBP</code> can be more expensive than <code>SAP</code> when the scene is small or there is few moving object in the scene. </p>
+<h2 id="Aggregate"><a href="#Aggregate" class="headerlink" title="Aggregate"></a>Aggregate</h2><h3 id="Aggregate-Introduction"><a href="#Aggregate-Introduction" class="headerlink" title="Aggregate Introduction"></a>Aggregate Introduction</h3><p>Aside from dividing the whole scene into several regions, there is another way to save performance by putting some rigid bodies into one single aggregate to reducing the array size. </p>
+<p>A typical usage of aggregate is ragdoll. As we all know, a moving object is terribly expensive, not to mention a set of ragdoll, which is composed of a variety of simulating bones. </p>
+<p>Thus it is pretty obvious that we can put those bone rigid bodies into one single aggregate, which has only one entry during <code>Broad Phase</code> stage. It is even more efficient if collision detection is ignored among these rigid bodies. </p>
+<p>For the moment, or maybe forever, UE4 use aggregate with physics asset of a skeletal mesh. An configurable value is provided in the project settings to determine when to use aggregate, <code>4</code> by default: </p>
+<p><img src="/aggre-threshold.png" alt="img"></p>
+<p>If there are more than 4 rigid bodies in a physics asset, an aggregate would be created to hold real rigid bodies. </p>
+<p>It is an optional optimization to use aggregate for a moving static mesh actor&#x2F;component. And frankly speaking we’ve managed to achieve this feature in our customized engine. It’s fairly easy to implement and I sincerely suggest you try it. </p>
+<h3 id="Aggregate-Side-Effect"><a href="#Aggregate-Side-Effect" class="headerlink" title="Aggregate Side Effect"></a>Aggregate Side Effect</h3><p>There are several side effects about aggregate if you dive into physx source code. Two major issues are covered here. </p>
+<h4 id="Aggregate-Pair-Issue"><a href="#Aggregate-Pair-Issue" class="headerlink" title="Aggregate Pair Issue"></a>Aggregate Pair Issue</h4><p>A noticeable performance hot-spot called <code>ScScene.PostBroadPhase</code> would pop up if a large amount of aggregates are inserted into physics scene: </p>
+<p><img src="/image-20211228143150896.png" alt="image-20211228143150896"></p>
+<p>After getting some more detailed profiling data by PVD, we’ve found that it is <code>SimpleAABBManager::postBroadPhase - process actor-aggregate pairs</code> that has eaten up more than <code>70%</code> performance: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	 <span class="built_in">PX_PROFILE_ZONE</span>(<span class="string">&quot;SimpleAABBManager::postBroadPhase - process actor-aggregate pairs&quot;</span>, <span class="built_in">getContextId</span>());</span><br><span class="line">	<span class="built_in">processAggregatePairs</span>(mActorAggregatePairs, *<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Strange enough, huh? It shouldn’t be so expensive. Let’s check <code>processAggregatePairs</code> out: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">processAggregatePairs</span><span class="params">(AggPairMap&amp; map, SimpleAABBManager&amp; manager)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> hmmm we have a list of dirty aggregates but we don&#x27;t have a list of dirty pairs.</span></span><br><span class="line">        <span class="comment">// PT: not sure how the 3.4 trunk solves this but let&#x27;s just iterate all pairs for now</span></span><br><span class="line">        <span class="comment">// PT: atm we reuse this loop to delete removed interactions</span></span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> in fact we could handle all the &quot;lost pairs&quot; stuff right there with extra aabb-abb tests</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> replace with decent hash map - or remove the hashmap entirely and use a linear array</span></span><br><span class="line">        Ps::Array&lt;AggPair&gt; removedEntries;</span><br><span class="line">        <span class="keyword">for</span>(AggPairMap::Iterator iter = map.<span class="built_in">getIterator</span>(); !iter.<span class="built_in">done</span>(); ++iter)</span><br><span class="line">        &#123;</span><br><span class="line">                PersistentPairs* p = iter-&gt;second;</span><br><span class="line">                <span class="keyword">if</span>(p-&gt;<span class="built_in">update</span>(manager))</span><br><span class="line">                &#123;</span><br><span class="line">                        removedEntries.<span class="built_in">pushBack</span>(iter-&gt;first);</span><br><span class="line">                        <span class="built_in">PX_DELETE</span>(p);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(PxU32 i=<span class="number">0</span>;i&lt;removedEntries.<span class="built_in">size</span>();i++)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="type">bool</span> status = map.<span class="built_in">erase</span>(removedEntries[i]);</span><br><span class="line">                <span class="built_in">PX_ASSERT</span>(status);</span><br><span class="line">                <span class="built_in">PX_UNUSED</span>(status);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Uh-huh… There you are! **TODO! ** </p>
+<p>As a result, all existing aggregate pairs, both <code>actor-aggregate</code> pairs or <code>aggregate-aggregate</code> pairs, are fully iterated, even if most of those pairs are not updated. </p>
+<p>So, it is not recommended to have too many aggregates in our scene. </p>
+<h4 id="Static-Aggregate-Issue"><a href="#Static-Aggregate-Issue" class="headerlink" title="Static Aggregate Issue"></a>Static Aggregate Issue</h4><p>It firstly comes to my mind that we can put all rigid bodies of a <code>Static Mesh Actor</code> into an aggregate, like rigid bodies in a tree, a desk or even a building. In this way we can greatly optimize performance in <code>BpSAP.updateWork</code> or <code>BpMBP.updateWork</code>. </p>
+<p>It works, though. <code>updateWork</code> function is greatly optimized. But it turned out that <code>ScScene.PostBroadPhase</code> has cost too much CPU resources. Sometimes we get a <strong>NEGATIVE OPTIMIZATION</strong>. </p>
+<p>And yet btw, PhysX doesn’t have a benchmark for static aggregates. In my opinion, just don’t use aggregate for static mesh components: </p>
+<p><img src="/image_16406844721012.png" alt="img"></p>
+<h1 id="A-Deeper-Thought"><a href="#A-Deeper-Thought" class="headerlink" title="A Deeper Thought"></a>A Deeper Thought</h1><p>In the old days, broad phase was hardly ever a performance hot-spot because we might not have too many rigid bodies in our scene. </p>
+<p>However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it can sometimes seem ridiculous for some ordinary cases. </p>
+<p>For example, you may think a triangle mesh collider is really expensive in any case. But for an open world game, a triangle mesh collider is preferred because of saving a considerable amount of rigid bodies. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/" data-id="cm2qzvapk002c0547e3b0hyq0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/01/06/better-orientation-warping/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Better Orientation Warping Implementation In UE4
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/11/27/better-profile-physx-in-ue4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Better Way To Profile PhysX In UE4</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

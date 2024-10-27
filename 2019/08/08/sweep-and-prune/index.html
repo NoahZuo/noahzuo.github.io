@@ -1,23 +1,287 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Sweep and Prune for Scene Collision Detection | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article tells you something about SAP(sweep and prune) for scene collision detection.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sweep and Prune for Scene Collision Detection">
+<meta property="og:url" content="http://yoursite.com/2019/08/08/sweep-and-prune/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article tells you something about SAP(sweep and prune) for scene collision detection.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/naive-collision-detection.png">
+<meta property="og:image" content="http://yoursite.com/stage-split.png">
+<meta property="og:image" content="http://yoursite.com/BpHandle.png">
+<meta property="article:published_time" content="2019-08-08T14:19:12.000Z">
+<meta property="article:modified_time" content="2024-10-27T02:26:24.036Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="Programming">
+<meta property="article:tag" content="PhysX">
+<meta property="article:tag" content="Physics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/naive-collision-detection.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-sweep-and-prune" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/08/sweep-and-prune/" class="article-date">
+  <time datetime="2019-08-08T14:19:12.000Z" itemprop="datePublished">2019-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Unity/">Unity</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Sweep and Prune for Scene Collision Detection
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Why-do-I-Write-This-Blog"><a href="#Why-do-I-Write-This-Blog" class="headerlink" title="Why do I Write This Blog?"></a>Why do I Write This Blog?</h2><p>I am currently playing with physX. And actually Unity does not do good optimization for physX. We need to modify the engine for optimization. </p>
+<p>When we play with physX or bullet, we always need to determine which broad phase algorithm we use. The most common algorithm is <code>SAP</code>, whose full name is <code>sweep and prune</code>. Currently Unreal Engine 4 and Unity use <code>SAP</code> by default. </p>
+<p>Since <code>SAP</code> is one of broad phase algorithms,  the very first thing we need to know is what <code>Broad Phase</code> algorithm is. </p>
+<h2 id="Broad-Phase"><a href="#Broad-Phase" class="headerlink" title="Broad Phase"></a>Broad Phase</h2><h3 id="Naive-collision-detection-algorithm"><a href="#Naive-collision-detection-algorithm" class="headerlink" title="Naive collision detection algorithm"></a>Naive collision detection algorithm</h3><p>I believe every one know the most naive way to detect a two-phase collision in a scene: We detect collision between each collider using a two nested loop: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> collider1 in allColliders: </span><br><span class="line">	<span class="keyword">for</span> collider2 in allcolliders: </span><br><span class="line">		<span class="keyword">if</span> collider1 == collider2: <span class="keyword">continue</span>; </span><br><span class="line">		<span class="keyword">else</span>: </span><br><span class="line">			detect collision between collider <span class="keyword">and</span> collider2</span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>There is no need to talk about how naive this method is. As the complexity is $O(n^{2})$, performance is totally not acceptable as collider number grows. </p>
+<p>Well… we still need to talk about it. Firstly, $n*n$ collision detect results need to be calculated, second, we need to calculate those results by brute force even if no collider moves. Finally, physics system always calculates using a fixed timestep. This means we need to calculate those results multiple times even if collider only moves in one frame. </p>
+<p><img src="/naive-collision-detection.png" alt="Naive Collision Detection"></p>
+<h3 id="Nowadays-collision-detection-algorithm"><a href="#Nowadays-collision-detection-algorithm" class="headerlink" title="Nowadays collision detection algorithm"></a>Nowadays collision detection algorithm</h3><p>In current physics engine, collision detection is split into multiple stages. We always split it into <code>broad phase</code> and <code>narrow phase</code> stage. </p>
+<p><img src="/stage-split.png" alt="Stage Split"></p>
+<p><code>Broad phase</code> is used to try to exclude those pairs of colliders that never collides with each other. For example, a guy in Beijing and a guy in New York. We never need to calculate whether they collides with each other because there exists no possibility for that. </p>
+<p>It needs to be concerned that **it is not our goal to exclude all non-collide pairs, we just try to exclude those pairs that are most not likely to collide with each other **. </p>
+<p>After <code>Broad phase</code>, lots of pairs that are <strong>most likely</strong> to collide are left. We do those actual collision detection calculation in <code>Narrow phase</code> stage. </p>
+<p>So that is how nowadays physics system works. </p>
+<h2 id="SAP-Basic-Idea"><a href="#SAP-Basic-Idea" class="headerlink" title="SAP Basic Idea"></a>SAP Basic Idea</h2><p>The basic idea behind the algorithm is: </p>
+<blockquote>
+<p> Two AABBs overlap <strong>iff</strong> their projections on the X, Y and Z coordinate axes overlap. </p>
+</blockquote>
+<p>Pretty much like a simplified separate-axis theorem. The projection on a certain axis of each AABB gives a [min, max] intervals and each interval is defined by two “end points”: one min, one max. We can check out <code>SapBox1D</code> in physX source code. </p>
+<p>Each <code>EndPoint</code> has been generated form an initial box, and we keep a reference to this box inside the <code>EndPoint</code> structure. </p>
+<p>Each box needs to keep track of its 6 endpoints. And each endpoints should have an ID for the box. </p>
+<p>On the other hand, we can use one bit to determine whether this endpoint is min or max point. As a result, the <code>EndPoint</code> is like this: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">EndPoint</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> 		mData; 		<span class="comment">// Owner box ID | Min or Max flag</span></span><br><span class="line">    <span class="type">float</span>		mValue; 	<span class="comment">// Min or Max value</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>This is the real code in physX: </p>
+<p><img src="/BpHandle.png" alt="Bp Handle"></p>
+<p>We need a sorted container to store those <code>EndPoint</code> structures. We can choose to use array or linked list. PhysX use array for this, because this would save a lot of memory. Since two pointers consume 4-byte in a 32-bit system, which doubles the memory cost per-<code>EndPoint</code>. </p>
+<p>Since this container needs to be kept sorted. As we all know it always costs a lot to move elements when we sort an array. This means a lot of memory has to be touched, and <strong>implementing this as efficiently as possible is key to SAP performance</strong>. </p>
+<p>And we will have a pair manager to keep track of overlapping pairs of boxes. See <code>BroadPhasePair</code> in PhysX. </p>
+<h3 id="SAP-Update-rules"><a href="#SAP-Update-rules" class="headerlink" title="SAP Update rules"></a>SAP Update rules</h3><p>SAP provide <em>direct</em> and <em>incremental</em> result. We can use <em>direct</em> to calculate the full result of overlapping pairs. And <em>incremental</em> result to detect overlapping start&amp;end. </p>
+<p>So, <code>SAP</code> is much better for cases with many static objects in a scene.  Because there is no need to do updating operation if no box updates. </p>
+<p>Update algorithm is like this: </p>
+<p>When a dynamic object with interval [min, max] moves in an axis, if max passes the min of another greater endpoint’s min, an overlapping start is detected; if min passes the max of another greater endpoint’s max, an overlapping end is detected; if max passes the min of another smaller endpoint’s min, an overlapping end is detected; if min passes the max of another smaller endpoint’s max, an overlapping start is detected. </p>
+<h3 id="SAP-Optimization"><a href="#SAP-Optimization" class="headerlink" title="SAP Optimization"></a>SAP Optimization</h3><p>As for SAP optimization, it is a really big topic. And I might want to write another blog about it someday… </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/08/sweep-and-prune/" data-id="cm2qzvapn004705475de5fh0o" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/09/11/a-deep-look-into-animation-framework-in-ue4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          A deep look into animation framework in ue4
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/07/24/gjk-collision-detection/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

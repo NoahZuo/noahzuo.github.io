@@ -1,23 +1,289 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Tool Tips About UE4 Cooking | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article simply records some issues about UE4 cooking that I encountered these days.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tool Tips About UE4 Cooking">
+<meta property="og:url" content="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article simply records some issues about UE4 cooking that I encountered these days.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/image_001.png">
+<meta property="og:image" content="http://yoursite.com/image_002.png">
+<meta property="og:image" content="http://yoursite.com/image_003.png">
+<meta property="article:published_time" content="2021-09-12T07:10:03.000Z">
+<meta property="article:modified_time" content="2021-11-19T11:22:23.000Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="UE4">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/image_001.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-tool-tips-about-ue4-cooking" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/09/12/tool-tips-about-ue4-cooking/" class="article-date">
+  <time datetime="2021-09-12T07:10:03.000Z" itemprop="datePublished">2021-09-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/UE4/">UE4</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Tool Tips About UE4 Cooking
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="How-To-Debug-UE4-Cooking-Stage"><a href="#How-To-Debug-UE4-Cooking-Stage" class="headerlink" title="How To Debug UE4 Cooking Stage?"></a>How To Debug UE4 Cooking Stage?</h1><p>When an error is triggered during cooking, the break point would not be hit in your visual studio because another <code>UE4Editor</code> process is invoked to run cooking command. </p>
+<p>Without help of Visual Studio, it must be very hard to address and fix your cooking error. </p>
+<p>In Visual Studio, right-click on your project-&gt;Properties: </p>
+<p><img src="/image_001.png" alt="image_001"></p>
+<p>Set the configuration to <code>Development_Editor</code> or <code>Debug_Editor</code>, and you can find the <code>Command Arguments</code> in the <code>Debugging</code> tab: </p>
+<p><img src="/image_002.png" alt="img"></p>
+<p>Usually the default value should be <code>&quot;$(SolutionDir)$(ProjectName).uproject&quot; -skipcompile</code>. And change it to <code>&quot;$(SolutionDir)$(ProjectName).uproject&quot; -run=Cook -TargetPlatform=WindowsNoEditor -unversioned -CookAll</code>: </p>
+<p><img src="/image_003.png" alt="image_001"></p>
+<p>And it’s done. Hit <code>Local Windows Debugger</code>, and start debuging your cooking stage! </p>
+<h1 id="How-To-Cook-A-Single-Asset"><a href="#How-To-Cook-A-Single-Asset" class="headerlink" title="How To Cook A Single Asset?"></a>How To Cook A Single Asset?</h1><p>It seems that the <code>HotPatcher</code> plugin has already provided us a <code>OnCookPlatform</code> function, which cooks our selected assets in <code>BrowserContent</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">FHotPatcherEditorModule::OnCookPlatform</span><span class="params">(ETargetPlatform Platform)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        TArray&lt;FAssetData&gt; AssetsData = <span class="built_in">GetSelectedAssetsInBrowserContent</span>();</span><br><span class="line">        TArray&lt;UPackage*&gt; AssetsPackage;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; AssetData:AssetsData)</span><br><span class="line">        &#123;</span><br><span class="line">                AssetsPackage.<span class="built_in">AddUnique</span>(AssetData.<span class="built_in">GetPackage</span>());</span><br><span class="line">                <span class="built_in">UE_LOG</span>(LogHotPatcher,Log,<span class="built_in">TEXT</span>(<span class="string">&quot;Cook Package %s Platform %s&quot;</span>),*AssetData.PackagePath.<span class="built_in">ToString</span>(),*UFlibPatchParserHelper::<span class="built_in">GetEnumNameByValue</span>(Platform));</span><br><span class="line">        &#125;</span><br><span class="line">        FString CookedDir = FPaths::<span class="built_in">ConvertRelativePathToFull</span>(FPaths::<span class="built_in">Combine</span>(FPaths::<span class="built_in">ProjectSavedDir</span>(),<span class="built_in">TEXT</span>(<span class="string">&quot;Cooked&quot;</span>)));</span><br><span class="line">        FString CookForPlatform = UFlibPatchParserHelper::<span class="built_in">GetEnumNameByValue</span>(Platform);</span><br><span class="line">        TArray&lt;FString&gt; CookForPlatforms&#123;CookForPlatform&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> <span class="keyword">auto</span>&amp; AssetPacakge:AssetsPackage)</span><br><span class="line">        &#123;</span><br><span class="line">                FString CookedSavePath = UFlibHotPatcherEditorHelper::<span class="built_in">GetCookAssetsSaveDir</span>(CookedDir,AssetPacakge, CookForPlatform);</span><br><span class="line">                </span><br><span class="line">            <span class="type">bool</span> bCookStatus = UFlibHotPatcherEditorHelper::<span class="built_in">CookPackage</span>(AssetPacakge,CookForPlatforms,CookedDir);</span><br><span class="line">                <span class="keyword">auto</span> Msg = FText::<span class="built_in">Format</span>(</span><br><span class="line">            <span class="built_in">LOCTEXT</span>(<span class="string">&quot;CookAssetsNotify&quot;</span>, <span class="string">&quot;Cook Platform &#123;1&#125; for &#123;0&#125; &#123;2&#125;!&quot;</span>),</span><br><span class="line">            UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(AssetPacakge-&gt;FileName.<span class="built_in">ToString</span>()),</span><br><span class="line">            UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(UFlibPatchParserHelper::<span class="built_in">GetEnumNameByValue</span>(Platform)),</span><br><span class="line">            bCookStatus ? UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;Successfuly&quot;</span>)):UKismetTextLibrary::<span class="built_in">Conv_StringToText</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;Faild&quot;</span>))</span><br><span class="line">            );</span><br><span class="line">                SNotificationItem::ECompletionState CookStatus = bCookStatus ? SNotificationItem::CS_Success:SNotificationItem::CS_Fail;</span><br><span class="line">                UFlibHotPatcherEditorHelper::<span class="built_in">CreateSaveFileNotify</span>(Msg,CookedSavePath,CookStatus);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>We can easily create an <code>FAutoConsoleCommand</code> to manually achieve this feature. </p>
+<h1 id="How-To-Get-Rid-Of-Property-When-Cooking"><a href="#How-To-Get-Rid-Of-Property-When-Cooking" class="headerlink" title="How To Get Rid Of Property When Cooking?"></a>How To Get Rid Of Property When Cooking?</h1><p>We might want to get rid of some properties during cooking stage. For example, <code>RawAnimationData</code> is supposed to be stripped for cooked builds in consideration of memory.  </p>
+<h2 id="For-A-Non-UPROPERTY-Member"><a href="#For-A-Non-UPROPERTY-Member" class="headerlink" title="For A Non-UPROPERTY Member"></a>For A Non-UPROPERTY Member</h2><p>It might get really complicated to manage since we need to handle <code>PostLoad</code> and <code>Serialize</code> function manually, but we can get more flexibility. </p>
+<p>If you want to remove this property, use <code>FPlatformProperties::RequiresCookedData()</code> function to determine if you need it or not. </p>
+<h2 id="For-A-UPROPERTY-Member"><a href="#For-A-UPROPERTY-Member" class="headerlink" title="For A UPROPERTY Member"></a>For A UPROPERTY Member</h2><p>In a more complicated situation if you still need to handle this property during cooking stage, and frankly speaking, this is exactly what I needed these days. We might need a hook to get rid of this property. </p>
+<p>Sadly, I cannot tell you what precisely I needed to do because of secrecy. </p>
+<p>We can remove its content in <code>UObject::PreSave</code> function. </p>
+<p>In a cooked build, <code>PreSave</code> function would be called before save-serializing happens. That is a wonderful hook for you to modify this data. </p>
+<h1 id="About-Anim-Sequence-Compression"><a href="#About-Anim-Sequence-Compression" class="headerlink" title="About Anim Sequence Compression"></a>About Anim Sequence Compression</h1><p>When an anim sequence get compressed because of any reason. A <code>FString</code> called <code>FinalDDCKey</code> is generated, and it is used by <code>DDC</code> to find whether there has already been a compressed sequence. </p>
+<p>You can check out <code>UAnimSequence::RequestAnimCompression</code> for details. </p>
+<h2 id="AssetDDCKey"><a href="#AssetDDCKey" class="headerlink" title="AssetDDCKey"></a><code>AssetDDCKey</code></h2><p>We can get a <code>AssetDDCKey</code> by <code>GetAnimSequenceSpecificCacheKeySuffix</code> function. For example, anim sequence <code>ThirdPersonWalk</code> has a <code>AssetDDCKey</code> like: </p>
+<blockquote>
+<p>BE37EBBAFBBA3750CECFF71FCA0778E996BD3AFA415DB49D91DC3799835471D700000000000000000000000000000000_000_NoAdditiveGuid_0000803F00000000CDCCCC3D000000000004000004CD5841CCCCCC3E9A99993E9A99993EA3623BAFF72E0049A52AAC206838CFE9000000000000000001000000000070429A99993E9A99993E</p>
+</blockquote>
+<p>You can figure out how this key is generated by checking out <code>GetAnimSequenceSpecificCacheKeySuffix</code> function. But there is something needs to be mentioned about <code>Bone Compression Setting</code>. </p>
+<p>A <code>UAnimBoneCompressionSettings</code> populates its <code>DDC Keys</code> while <code>AssetDDCKey</code> of an anim sequence is generated. And for each compression method would also populates its <code>DDC Key</code>, too. </p>
+<p>This is needed because of we might adjust compression parameters. If any compression parameter is changed, a different key is generated so that the engine can decide whether to re-compress the anim sequence. </p>
+<h2 id="What-Happens-If-A-DDC-Key-Is-Too-Long"><a href="#What-Happens-If-A-DDC-Key-Is-Too-Long" class="headerlink" title="What Happens If A DDC Key Is Too Long?"></a>What Happens If A <code>DDC Key</code> Is Too Long?</h2><p>Let’s still take <code>ThirdPersonWalk</code> for example. Its <code>FinalDDCKey</code> is like: </p>
+<blockquote>
+<p>AnimSeq_EFB2D82D0DDA4A4E9D0D9AC41A9C557A_0_BE37EBBAFBBA3750CECFF71FCA0778E996BD3AFA415DB49D91DC3799835471D700000000000000000000000000000000_000_NoAdditiveGuid_0000803F00000000CDCCCC3D000000000004000004CD5841CCCCCC3E9A99993E9A99993EA3623BAFF72E0049A52AAC206838CFE9000000000000000001000000000070429A99993E9A99993E</p>
+</blockquote>
+<p>If you continue digging into how <code>DDC</code> get its cached data in <code>FDerivedDataLimitKeyLengthWrapper::GetCachedData</code> function. You should find <code>GetShortenKey()</code> is called if the Cache Key is too long. </p>
+<p>A hash string is calculated and appended at the tail of a new shorten key, whose max length is defined by <code>MAX_BACKEND_KEY_LENGTH</code>. Now the shorten key is like: </p>
+<blockquote>
+<p>AnimSeq_EFB2D82D0DDA4A4E9D0D9AC41A9C557A_0_BE37EBBAFBBA3750CECFF71FCA0778E996B__43B4BAB8FB89DFD6EDC705E28B6B0F9F69E8D7D6</p>
+</blockquote>
+<p>But becareful! Since a hash value is used. Hash collide can still happens. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/" data-id="cm2qzvapn004a0547hlkv3x5i" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/11/27/better-profile-physx-in-ue4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Better Way To Profile PhysX In UE4
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/31/build-physx-on-windows-for-ue4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Build PhysX For UE4 On Windows</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

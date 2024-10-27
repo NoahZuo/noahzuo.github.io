@@ -1,23 +1,279 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Sub Anim Input Issue in UE 4.23, part I | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article briefly tells you some issues I discovered about sub anim input node in UE 4.23.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sub Anim Input Issue in UE 4.23, part I">
+<meta property="og:url" content="http://yoursite.com/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article briefly tells you some issues I discovered about sub anim input node in UE 4.23.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-09-17T09:40:12.000Z">
+<meta property="article:modified_time" content="2024-10-27T02:26:24.036Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="Animation">
+<meta property="article:tag" content="UE4">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-sub-anim-issue-in-ue-4-23-part-I" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/" class="article-date">
+  <time datetime="2019-09-17T09:40:12.000Z" itemprop="datePublished">2019-09-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/UE4/">UE4</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Sub Anim Input Issue in UE 4.23, part I
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Some issues about animation blueprint have just been discovered when I try to upgrade my 4.20 project to 4.23. And it turned out that those issues had caused some trouble to us. </p>
+<p>As a result, it took me several days to dig into this issue, and something seems should be recorded. Hope this could help you some day. </p>
+<h2 id="What-Is-This-Issue"><a href="#What-Is-This-Issue" class="headerlink" title="What Is This Issue?"></a>What Is This Issue?</h2><p>When you try to open an <code>Animation Blueprint</code> <strong>with a <code>Sub Anim Instance</code> node in it</strong>, you may notice that the engine is frozen. And while you check the editor log, you see lots of: </p>
+<blockquote>
+<p> FAnimNode_StateMachine: Bad machine ptr </p>
+</blockquote>
+<p>And you may notice that the engine takes much more time to compile the <code>Animation Blueprint</code> that have a <code>Sub Anim Instance</code> node in it. </p>
+<p>Now you may get the point: This issue is all about the <code>Sub Anim Instance</code> node. </p>
+<h2 id="If-You-Simply-Want-a-Solution"><a href="#If-You-Simply-Want-a-Solution" class="headerlink" title="If You Simply Want a Solution"></a>If You Simply Want a Solution</h2><h3 id="Method-1-Modify-the-engine-code"><a href="#Method-1-Modify-the-engine-code" class="headerlink" title="Method 1: Modify the engine code"></a>Method 1: Modify the engine code</h3><p>By modify the engine code, you can fix the issue once and for all. </p>
+<p>Modify the  <code>FAnimInstanceProxy::InitializeRootNode</code>  function in the <code>AnimInstanceProxy.cpp</code> file. </p>
+<p>You need to move </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (UStructProperty* Property : AnimClassInterface-&gt;<span class="built_in">GetAnimNodeProperties</span>())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (Property-&gt;Struct-&gt;<span class="built_in">IsChildOf</span>(FAnimNode_StateMachine::<span class="built_in">StaticStruct</span>()))</span><br><span class="line">    &#123;</span><br><span class="line">        FAnimNode_StateMachine* StateMachine = Property-&gt;<span class="built_in">ContainerPtrToValuePtr</span>&lt;FAnimNode_StateMachine&gt;(AnimInstanceObject);</span><br><span class="line">        StateMachine-&gt;<span class="built_in">CacheMachineDescription</span>(AnimClassInterface);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>to the top of the <code>if</code> block. </p>
+<p>The final code looks like: </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(AnimClassInterface)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// cache any state machine descriptions we have</span></span><br><span class="line">        <span class="keyword">for</span> (UStructProperty* Property : AnimClassInterface-&gt;<span class="built_in">GetAnimNodeProperties</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (Property-&gt;Struct-&gt;<span class="built_in">IsChildOf</span>(FAnimNode_StateMachine::<span class="built_in">StaticStruct</span>()))</span><br><span class="line">            &#123;</span><br><span class="line">                FAnimNode_StateMachine* StateMachine = Property-&gt;<span class="built_in">ContainerPtrToValuePtr</span>&lt;FAnimNode_StateMachine&gt;(AnimInstanceObject);</span><br><span class="line">                StateMachine-&gt;<span class="built_in">CacheMachineDescription</span>(AnimClassInterface);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// cache any state machine descriptions we have</span></span><br><span class="line">        <span class="keyword">for</span> (UStructProperty* Property : AnimClassInterface-&gt;<span class="built_in">GetAnimNodeProperties</span>())</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (Property-&gt;Struct-&gt;<span class="built_in">IsChildOf</span>(FAnimNode_Base::<span class="built_in">StaticStruct</span>()))</span><br><span class="line">            &#123;</span><br><span class="line">                FAnimNode_Base* AnimNode = Property-&gt;<span class="built_in">ContainerPtrToValuePtr</span>&lt;FAnimNode_Base&gt;(AnimInstanceObject);</span><br><span class="line">                <span class="keyword">if</span> (AnimNode)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">InitializeNode</span>(AnimNode);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//if (Property-&gt;Struct-&gt;IsChildOf(FAnimNode_StateMachine::StaticStruct()))</span></span><br><span class="line">                    <span class="comment">//&#123;</span></span><br><span class="line">                    <span class="comment">//	FAnimNode_StateMachine* StateMachine = static_cast&lt;FAnimNode_StateMachine*&gt;(AnimNode);</span></span><br><span class="line">                    <span class="comment">//	StateMachine-&gt;CacheMachineDescription(AnimClassInterface);</span></span><br><span class="line">                    <span class="comment">//&#125;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Cache default sub-input </span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">const</span> FAnimBlueprintFunction&amp; AnimBlueprintFunction : AnimClassInterface-&gt;<span class="built_in">GetAnimBlueprintFunctions</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(AnimBlueprintFunction.Name == NAME_AnimGraph)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">check</span>(AnimBlueprintFunction.InputPoseNames.<span class="built_in">Num</span>() == AnimBlueprintFunction.InputPoseNodeProperties.<span class="built_in">Num</span>());</span><br><span class="line">                <span class="keyword">for</span>(int32 InputIndex = <span class="number">0</span>; InputIndex &lt; AnimBlueprintFunction.InputPoseNames.<span class="built_in">Num</span>(); ++InputIndex)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span>(AnimBlueprintFunction.InputPoseNames[InputIndex] == FAnimNode_SubInput::DefaultInputPoseName &amp;&amp; AnimBlueprintFunction.InputPoseNodeProperties[InputIndex] != <span class="literal">nullptr</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        DefaultSubInstanceInputNode = AnimBlueprintFunction.InputPoseNodeProperties[InputIndex]-&gt;<span class="built_in">ContainerPtrToValuePtr</span>&lt;FAnimNode_SubInput&gt;(<span class="built_in">CastChecked</span>&lt;UAnimInstance&gt;(<span class="built_in">GetAnimInstanceObject</span>()));</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//We have a custom root node, so get the associated nodes and initialize them</span></span><br><span class="line">        TArray&lt;FAnimNode_Base*&gt; CustomNodes;</span><br><span class="line">        <span class="built_in">GetCustomNodes</span>(CustomNodes);</span><br><span class="line">        <span class="keyword">for</span>(FAnimNode_Base* Node : CustomNodes)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(Node)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">InitializeNode</span>(Node);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Method-2-Modify-the-Resource"><a href="#Method-2-Modify-the-Resource" class="headerlink" title="Method 2: Modify the Resource"></a>Method 2: Modify the Resource</h3><p>If you tend to keep consistent with the official engine, you need to follow these steps: </p>
+<ol>
+<li>Add following lines to your <code>DefaultEngine.ini</code> file.</li>
+</ol>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[Core.Log]</span></span><br><span class="line"><span class="attr">LogAnimation</span>=Error</span><br></pre></td></tr></table></figure>
+
+<p>This would prevent the engine from printing endless log to your console, which causing freeze. </p>
+<ol start="2">
+<li>Open the Animation Blueprint, and locate the <code>Sub Anim Input</code> node. This might take some time… </li>
+<li>Create a new <code>Sub Anim Input</code> node and replace the old node with the new one. </li>
+<li>Revert those modifications from the <code>DefaultEngine.ini</code> file.</li>
+</ol>
+<p>So that’s how we should fix this issue. Another blog would be post to record how I dig into this issue. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/17/sub-anim-issue-in-ue-4-23-part-I/" data-id="cm2qzvapn00400547hxb05afy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/08/how-to-get-refpose-bone-position-in-component-space-in-ue4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Get Ref Pose Bone Position in Component Space in UE4
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/13/digging-into-skeletal-mesh-in-ue4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Get Access to SkeletalMesh Vertices in UE4</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,23 +1,293 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+  
+  <title>Fast Inv-Sqrt Algorithm In Quake III | Noah Zuo&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="This article tells you something about fast inv-sqrt algorithm implemented in Quake III Arena.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fast Inv-Sqrt Algorithm In Quake III">
+<meta property="og:url" content="http://yoursite.com/2016/06/01/fast-invsqrt-algorithm-in-quake-iii/index.html">
+<meta property="og:site_name" content="Noah Zuo&#39;s Blog">
+<meta property="og:description" content="This article tells you something about fast inv-sqrt algorithm implemented in Quake III Arena.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/Float_example.png">
+<meta property="og:image" content="http://yoursite.com/20160601151326617">
+<meta property="og:image" content="http://yoursite.com/NewtonIteration_Ani.gif">
+<meta property="article:published_time" content="2016-06-01T10:39:12.000Z">
+<meta property="article:modified_time" content="2021-03-29T05:59:28.000Z">
+<meta property="article:author" content="Noah Zuo">
+<meta property="article:tag" content="Math">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/Float_example.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Noah Zuo&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-{% block page_class %}page-post-detail{% endblock %}
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-{% block content %}
-
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Noah Zuo&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-fast-invsqrt-algorithm-in-quake-iii" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/06/01/fast-invsqrt-algorithm-in-quake-iii/" class="article-date">
+  <time datetime="2016-06-01T10:39:12.000Z" itemprop="datePublished">2016-06-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Math/">Math</a>
   </div>
 
-{% endblock %}
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Fast Inv-Sqrt Algorithm In Quake III
+    </h1>
+  
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>This article introduces the fast inv-sqrt algorithm, which is firstly used in <em><a href="https://en.wikipedia.org/wiki/Quake_III_Arena">Quake III Arena</a></em>. </p>
+<p>And btw, this article is simply translated from the blog I wrote on CSDN: <a href="https://blog.csdn.net/noahzuo/article/details/51555161">https://blog.csdn.net/noahzuo/article/details/51555161</a></p>
+<h1 id="The-Source-Code"><a href="#The-Source-Code" class="headerlink" title="The Source Code"></a>The Source Code</h1><p>So here is the source code: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">float</span> <span class="title">Q_rsqrt</span><span class="params">( <span class="type">float</span> number )</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="type">long</span> i; </span><br><span class="line">    <span class="type">float</span> x2, y; </span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> threehalfs = <span class="number">1.5F</span> ;</span><br><span class="line">    x2 = number * <span class="number">0.5F</span> ; </span><br><span class="line">    y = number ; </span><br><span class="line">    i = * ( <span class="type">long</span> * ) &amp;y; <span class="comment">// evil floating point bit level hacking </span></span><br><span class="line">    i = <span class="number">0x5f3759df</span> - ( i &gt;&gt; <span class="number">1</span> ); <span class="comment">// what the fuck? </span></span><br><span class="line">    y = * ( <span class="type">float</span> * ) &amp;i; </span><br><span class="line">    y = y * ( threehalfs - ( x2 * y * y ) ); <span class="comment">// 1st iteration </span></span><br><span class="line"><span class="comment">//  y = y * ( threehalfs - ( x2 * y * y ) ); // 2nd iteration, this can be removed</span></span><br><span class="line">    <span class="keyword">return</span> y ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+<p>And this function takes a 32-bit floating-point number $x$, and output the reciprocal of the square root $\frac{1}{\sqrt{x}}$of this number. </p>
+<h1 id="32-bit-Floating-Point-Number"><a href="#32-bit-Floating-Point-Number" class="headerlink" title="32-bit Floating-Point Number"></a>32-bit Floating-Point Number</h1><p>Since this algorithm was designed with the  <a href="https://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754-1985</a> 32-bit floating-point specification in mind, it is necessary for us to get to know the structure of a floating-point number. </p>
+<p><img src="/Float_example.png" alt="Float_example"></p>
+<p>You can refer to <a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format">Single-precision floating-point format</a> for more information and I’ll skip the explanation since this is not the point of this article. </p>
+<p>In short, for a positive floating-point number $x$, we have </p>
+<p>$$ x &#x3D; 2^{e_x}(1 + m_{x}) $$</p>
+<p>which $e_x$ is the 8-bit exponent and $m_x$ is the fraction part. </p>
+<p>Moreover, to convert a floating-point number to a integer, we have </p>
+<p>$$ I_{x} &#x3D; E_{X}L + M_{x} &#x3D; L(e_{x} + B + m_{x})  $$</p>
+<p>which L is $2^{23}$ and B is $127$. </p>
+<h1 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h1><h2 id="Newton’s-Method"><a href="#Newton’s-Method" class="headerlink" title="Newton’s Method"></a>Newton’s Method</h2><p>We can find successively better approximations to the roots of a real-valued function using <code>Newton&#39;s method</code>. </p>
+<p>Suppose a single-variable function $ f $ defined for a real variable $ x $, if the function satisfied sufficient assumptions and the initial guess is close, then </p>
+<p>$$x_{1} &#x3D; x_{0} - \frac{f(x_{0})}{f^{‘}(x_{n})}$$</p>
+<p>is a better approximation of the root than $x_{0}$. </p>
+<p>The process is repeated as</p>
+<p>$$x_{n + 1} &#x3D; x_{n} - \frac{f(x_{n})}{f^{‘}(x_{n})}$$</p>
+<p>until a sufficiently precise value is reached. </p>
+<p><img src="/20160601151326617" alt="img"></p>
+<p>The process iteration is like: </p>
+<p><img src="/NewtonIteration_Ani.gif" alt="Illustration of Newton&#39;s method"></p>
+<h2 id="Black-Magic"><a href="#Black-Magic" class="headerlink" title="Black Magic"></a>Black Magic</h2><p>The magic is <code>i = 0x5f3759df - ( i &gt;&gt; 1 )</code>, but how does it work? </p>
+<p>For function </p>
+<p>$$y &#x3D; \frac{1}{\sqrt{x}}$$</p>
+<p>, firstly we have: </p>
+<p>$$f(y) &#x3D; \frac{1}{y^{2}} - x &#x3D; 0$$</p>
+<p>then we convert it to <code>Newton&#39;s method</code> style: </p>
+<p>$$y_{n+1} &#x3D; \frac{y_{n}(3 - xy^{2}_{n})}{2}$$</p>
+<p>So for $ x &#x3D; 2^{e_{x}}(1 + m_{x}) $, we have:<br>$$ log_{2}{x} &#x3D;  e_{x} + \log{2}{1 + m_{x}}$$</p>
+<p>and since $m_{x} \in [0, 1)$, we have: </p>
+<p>$$ log_{x}{1 + m_{x}} \approx m_{x} + \sigma $$</p>
+<p>where $\sigma \approx 0.0430357$ yields the optimal approximation. </p>
+<p>Thus there is the approximation<br>$$ log_{2}{x} \approx e_{x} + m_{x} + \sigma $$</p>
+<p>Finally we have:<br>$$I_{x} &#x3D; E_{x}L + M_{x} &#x3D; L(e_{x} + m_{x} + \sigma + B - \sigma) <br>\approx Llog_{2}{(x)} + L(B - \sigma)$$. </p>
+<p>So:<br>$$I_{y} \approx \frac{3}{2}L(B -sigma) - \frac{1}{2}I_{x}$$, </p>
+<p>which is, in the form of code:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0x5f3759df</span> - ( i &gt;&gt; <span class="number">1</span> );</span><br></pre></td></tr></table></figure>
+
+<p>$$\frac{3}{2}L(B - \sigma) &#x3D; 0x5f3759df$$</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/06/01/fast-invsqrt-algorithm-in-quake-iii/" data-id="cm2qzvapk002n05476kmnbw34" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Math/" rel="tag">Math</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/11/11/how-to-get-spline-length-using-guassian-legendre-quadrature/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          How To Get A Spline&#39;s Length Using Gauss–Legendre Quadrature?
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/04/12/optimize-c++-performance-using-template/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Optimize C++ Using Template</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Animation/">Animation</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Houdini/">Houdini</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning-notes/">Learning notes</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Math/">Math</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Physics/">Physics</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UE4/">UE4</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unity/">Unity</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/" rel="tag">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Control-Rig/" rel="tag">Control Rig</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Coursera/" rel="tag">Coursera</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cyber-Security/" rel="tag">Cyber Security</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game-Physics/" rel="tag">Game Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/" rel="tag">IK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Learning-notes/" rel="tag">Learning notes</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Math/" rel="tag">Math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCG/" rel="tag">PCG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhysX/" rel="tag">PhysX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Physics/" rel="tag">Physics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Programming/" rel="tag">Programming</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Skinning/" rel="tag">Skinning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UE4/" rel="tag">UE4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Unity/" rel="tag">Unity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/physX/" rel="tag">physX</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Animation/" style="font-size: 18.57px;">Animation</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Control-Rig/" style="font-size: 11.43px;">Control Rig</a> <a href="/tags/Coursera/" style="font-size: 10px;">Coursera</a> <a href="/tags/Cyber-Security/" style="font-size: 10px;">Cyber Security</a> <a href="/tags/Game-Physics/" style="font-size: 11.43px;">Game Physics</a> <a href="/tags/Houdini/" style="font-size: 10px;">Houdini</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/Learning-notes/" style="font-size: 10px;">Learning notes</a> <a href="/tags/Math/" style="font-size: 17.14px;">Math</a> <a href="/tags/PCG/" style="font-size: 10px;">PCG</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/PhysX/" style="font-size: 12.86px;">PhysX</a> <a href="/tags/Physics/" style="font-size: 15.71px;">Physics</a> <a href="/tags/Programming/" style="font-size: 14.29px;">Programming</a> <a href="/tags/Skinning/" style="font-size: 10px;">Skinning</a> <a href="/tags/UE4/" style="font-size: 20px;">UE4</a> <a href="/tags/Unity/" style="font-size: 14.29px;">Unity</a> <a href="/tags/physX/" style="font-size: 10px;">physX</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">November 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/06/an-out-dated-introduction-to-volume-caching-in-physx/">An Out-dated Introduction To Volume Caching In PhysX</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/18/an-issue-about-closestpointontriangletopoint-function-in-ue4/">An Issue About FMath::ClosestPointOnTriangleToPoint Function In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/12/digging-into-the-bindpose-scale-issue-in-ue4/">Digging Into The Bind Pose Scale Issue In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/21/try-read-and-write-lock-in-ue4/">TryReadLock And TryWriteLock In UE4</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/">A Tiny Performance Issue In UE4 Camera View</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2024 Noah Zuo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

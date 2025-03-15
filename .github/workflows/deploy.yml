@@ -1,0 +1,39 @@
+name: Deploy Hexo Blog
+
+on:
+  push:
+    branches:
+      - RawContent
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '12'
+        
+    - name: Generate Static Files
+      run: |
+        npx hexo clean
+        npx hexo generate
+        
+    - name: Deploy to GitHub Pages
+      run: |
+        cd public
+        touch .nojekyll
+        git init
+        git config user.name "noahzuo"
+        git config user.email "noahzuo@users.noreply.github.com"
+        git add .
+        git commit -m "Site updated via GitHub Actions"
+        git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/NoahZuo/noahzuo.github.io.git
+        git push -f origin HEAD:master 

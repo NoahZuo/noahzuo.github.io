@@ -4,9 +4,8 @@ tags:
  - Unity
  - 微信小游戏
 category: Unity
-date: 2025-03-31 16:58:14
-
-description: 这篇文章记录了Unity的微信小游戏平台工程中，针对在`Timeline`里控制的粒子系统的CPU热点进行优化的流程介绍。
+date: 2025-03-31 16:58:14 
+description: 这篇文章记录了Unity的微信小游戏平台工程中，针对在Timeline里控制的粒子系统的CPU热点进行优化的流程介绍。
 
 ---
 

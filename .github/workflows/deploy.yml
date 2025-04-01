@@ -18,8 +18,8 @@ jobs:
 
     - name: Clean
       run: |
-      rm -rf public
-      rm -rf node_modules
+        rm -rf public
+        rm -rf node_modules
         
     - name: Setup Node.js
       uses: actions/setup-node@v3

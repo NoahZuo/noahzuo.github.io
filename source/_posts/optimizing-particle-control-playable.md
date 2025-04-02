@@ -13,7 +13,7 @@ description: 这篇文章记录了Unity的微信小游戏平台工程中，针�
 
 Unity官方提供了[Timeline工具](https://docs.unity3d.com/Packages/com.unity.timeline@1.2/manual/index.html)，用于进行场景内物件的控制，对标于Unreal Engine的[Level Sequence](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-sequencer-movie-tool-overview)。
 
-但是当Timeline中出现了太多Particle时，则很容易出现Simulate的性能瓶颈，该问题在微信小游戏平台中更为严重，本文记录了针对该性能热点进行优化的思考和流程。
+但是当Timeline中出现了太多Particle时，则很容易出现Simulate的性能瓶颈。由于微信小游戏不适配Unity原生多线程方案，该问题在微信小游戏平台中更为严重，本文记录了针对该性能热点进行优化的思考和流程。
 
 # 热点介绍
 

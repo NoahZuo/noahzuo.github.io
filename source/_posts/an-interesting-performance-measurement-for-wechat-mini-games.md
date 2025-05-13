@@ -89,8 +89,8 @@ const clientPerfAdapter = Object.assign({}, {
 
 假设我们需要分析`Animator::BatchedIKPass`的开销，由于`Update`函数的每帧执行时间是稳定的，可以列出以下方程：
 
-$$ \frac {UIEventManager.Update}{Animator.BatchedIKPass} = \frac{10ms}{x_{batched_ik_pass}} $$
+$$ \frac {UIEventManager.Update}{Animator.BatchedIKPass} = \frac{10ms}{x_{batchedikpass}} $$
 
-解得 $x_{batched_ik_pass} = 4.1$ms。
+解得 $x_{batchedikpass} = 4.1$ms。
 
 通过这种方式，我们可以在采样Profiling体系下获取目标函数的平均开销，同时避免单帧数据的偶然性。

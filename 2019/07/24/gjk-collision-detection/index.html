@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells you how GJK algorithm is applied for collision detection.">
+<meta name="keywords" content="Math,Game Physics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection">
+<meta property="og:url" content="http://yoursite.com/2019/07/24/gjk-collision-detection/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tells you how GJK algorithm is applied for collision detection.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/minkowski%20sum.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/minkowski%20diff.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/supporting%20point.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/separation%20distance.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/algorithm%20figure.png">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.913Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection">
+<meta name="twitter:description" content="This article tells you how GJK algorithm is applied for collision detection.">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/24/gjk-collision-detection/minkowski%20sum.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/24/gjk-collision-detection/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/24/gjk-collision-detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GJK(Gilbert-Johnson-Keerthi) Algorithm for Collision Detection
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-24 17:40:12" itemprop="dateCreated datePublished" datetime="2019-07-24T17:40:12+00:00">2019-07-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells you how GJK algorithm is applied for collision detection.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="What-is-GJK-Algorithm"><a href="#What-is-GJK-Algorithm" class="headerlink" title="What is GJK Algorithm?"></a>What is GJK Algorithm?</h2><p>GJK algorithm is proposed by Gilbert, Johnson and Keerthi for determining intersection between two polyhedra. It is one of the most effective methods. </p>
+<p>As originally described, GJK is a simplex-based descent algorithm that, given two sets of vertices as iputs, finds the Euclidean distance(and closest points) between the convex hulls of these sets. </p>
+<p>But actually the GJK algorithm can also be applied to arbitrary convex point sets, not just polyhedra. </p>
+<p>An important point is that the GJK algorithm does not actually operate on the two input objects per se, but on the Minkowski difference between the objects. In short, GJK algorithm searches the Minkowski difference object iteratively, a subvolume at a time, each such volume being a simplex. </p>
+<h2 id="Minkowski-Difference-and-Sum"><a href="#Minkowski-Difference-and-Sum" class="headerlink" title="Minkowski Difference and Sum"></a>Minkowski Difference and Sum</h2><h3 id="For-Point-Sets"><a href="#For-Point-Sets" class="headerlink" title="For Point Sets"></a>For Point Sets</h3><p>It is quite important to understand Minkowski sum and Minkowski difference of point sets for eventually understanding GJK algorithm. Let <code>A</code> and <code>B</code> be two point sets and let <code>a</code> and <code>b</code> be the position vectors corresponding to pairs of points in <code>A</code> and <code>B</code>. So the Minkowski sum, $A \oplus B$ is then defined as the set: </p>
+<p>$$\begin{equation}<br>\begin{aligned}<br>A \oplus B =  \lbrace a + b : a \in A, b \in B  \rbrace<br>\end{aligned}<br>\end{equation}$$</p>
+<p>In this equation, $a + b$ is the vector sum of the position vectors <code>a</code> and <code>b</code>. Visually the Minkowski sum can be seen as the region swept by <code>A</code> translated to every point in B(or vice versa). An illustration of the Minkowski sum is like this: </p>
+<p><img src="minkowski sum.png" alt="&quot;Minkowski Sum of a triangle and a Square&quot;"></p>
+<p>As for the Minkowski difference, it is defined analogously to the Minkowski sum: </p>
+<p>$$\begin{equation}<br>\begin{aligned}<br>A \ominus B = \lbrace a - b : a \in A, b \in B  \rbrace<br>\end{aligned}<br>\end{equation}$$</p>
+<p>To make it more understandable, the Minkowski difference is obtained by adding <code>A</code> to the reflection of <code>B</code> about the origin. $A \ominus B = A \oplus ( - B)$：</p>
+<p><img src="minkowski diff.png" alt="Minkowski Difference"></p>
+<h3 id="For-Convex-Polyhedra"><a href="#For-Convex-Polyhedra" class="headerlink" title="For Convex Polyhedra"></a>For Convex Polyhedra</h3><p>The Minkowski sum of two convex polyhedra $R = P \oplus Q$ has the property that <code>R</code> is a convex polygon and the vertices of <code>R</code> are sums of vertices of <code>P</code> and <code>Q</code>. </p>
+<p>Minkowski difference is important for collision detection. If they intersect with each other, the origin must be contained in their Minkowski difference. </p>
+<p>And in fact, it is possible to establish an even stronger result: computing the minimum distance between <code>A</code> and <code>B</code> is equivalent to computing the minimum distance between <code>C</code> and the origin: </p>
+<p>$$\begin{equation}<br>\begin{aligned}<br>distance(A, B)  &amp; =  min \lbrace \left\| a - b \right\| : a \in A, b \in B \rbrace \\<br>\ &amp; = min \lbrace  \left\| c \right\| : c \in A \ominus B \rbrace<br>\end{aligned}<br>\end{equation}$$</p>
+<h2 id="Supporting-Point-of-a-Simplex"><a href="#Supporting-Point-of-a-Simplex" class="headerlink" title="Supporting Point of a Simplex"></a>Supporting Point of a Simplex</h2><p>Support point is very important for GJK-based collision detection. But what is the support point of a simplex? </p>
+<p>For a given direction $d$ and a general convex set $C$, the point $P$ that has the most distant along $d$ is called a supporting point of $C$. More specifically, $P$ is a supporting point of $C$ if $d \dot P = max \lbrace d \dot V : V \in C \rbrace$, that is $P$ is a point for which $d \dot P$ is maximal like this: </p>
+<p><img src="supporting point.png" alt="Supporting Point"></p>
+<p>And we also need to know something called <em>Support mapping</em>. It is a function, $S_C(d)$, that maps the direction $d$ into a supporting point of $C$ of the convex set $C$. </p>
+<p>We can have such mappings in a closed form for some simple shapes like boxes, spheres, cylinders and etc. For example, for a sphere $C$ centered at $O$ and with a radius of $r$, the support mapping is given by $S_C(d) = O + r \frac{d}{ \| d \d } $. And btw, this can lead to the <code>separate axis theorem</code>. </p>
+<p>But for a polytope of n vertices, a supporting vertex is trivially found in $O(n)$ times by searching over all vertices. For performance optimization, we can find the extreme vertex through a simple hill-climbing algorithm. Since we only care about a simplex, we could gain so many performance using this method. </p>
+<h2 id="Core-Algorithm"><a href="#Core-Algorithm" class="headerlink" title="Core Algorithm"></a>Core Algorithm</h2><p>Just as we mentioned, the GJK algorithm effectively determines intersection between polyhedra by computing the Euclidean distance between them. To be more specific, The separation distance between two polyhedra $A$ and $B$ is equivalent to the shortest distance between their Minkowski difference $C$, $C = A \ominus B$, and the origin. </p>
+<p><img src="separation distance.png" alt="Separation Distance"></p>
+<p>So, what we need to do is to find the point on C closest to origin. If we only want collision detection, we just need to determine whether the origin is located in the convex hull of $C$. </p>
+<p>It seems we don’t gain so much performance using this method. However, a key point of the GJK algorithm is that it does not explicitly compute the Minkowski difference C. It only samples the Minkowski difference point set using a support mapping of $C = A \ominus B$. In short, we can use $s_{A \ominus B} (d) = s_{A}(d) - s_{B}(-d)$. </p>
+<p>We still need to use <em>Carathéodory’s theorem</em>: For a convex body $H$ of $R^d$, each point of $H$ can be expressed as the convex combination of no more than $d + 1$ points from $H$. This means we only need to maintain a set up to $d + 1$ points. </p>
+<p>So the core algorithm is: </p>
+<ol>
+<li>Initialize the simplex set $Q$ to one or more points(up to $d + 1$ points, where $d$ is the dimension) from the Minkowski difference of $A$ and $B$. </li>
+<li>Compute the point $P$ of minimum norm in the convex hull of $Q$(let’s call it $CH(Q)$). </li>
+<li>If $P$ is already the origin, we can terminate the algorithm and return $A$ and $B$ as intersecting. </li>
+<li>If the point $P$ is not the origin, we need to remove those points from $Q$ that does not determine the subsimplex of $Q$ in which $P$ lies. </li>
+<li>And we need to move further to get the next point. Let $V = s_{A \ominus B}(-P) = s_{A}(-P) - s_{B}(P)$ be a supporting point in direction $-P$. </li>
+<li>If there is not more distant point along the direction $-P$ than $P$, we simply stop and return $A$ and $B$ as not intersecting. And the separation distance is the length of the vector from the origin to $P$. </li>
+<li>If there is such point $V$, add $V$ to $Q$ and go to stage 2. </li>
+</ol>
+<p>Just check out the algorithm figure: </p>
+<p><img src="algorithm figure.png" alt="Algorithm Figure"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Math/" rel="tag"># Math</a>
+          
+            <a href="/tags/Game-Physics/" rel="tag"># Game Physics</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/17/physx-scratch-buffer-in-unity/" rel="next" title="PhysX Scratch Buffer in Unity">
+                <i class="fa fa-chevron-left"></i> PhysX Scratch Buffer in Unity
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/08/sweep-and-prune/" rel="prev" title="Sweep and Prune for Scene Collision Detection">
+                Sweep and Prune for Scene Collision Detection <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-GJK-Algorithm"><span class="nav-number">1.</span> <span class="nav-text">What is GJK Algorithm?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Minkowski-Difference-and-Sum"><span class="nav-number">2.</span> <span class="nav-text">Minkowski Difference and Sum</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#For-Point-Sets"><span class="nav-number">2.1.</span> <span class="nav-text">For Point Sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#For-Convex-Polyhedra"><span class="nav-number">2.2.</span> <span class="nav-text">For Convex Polyhedra</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supporting-Point-of-a-Simplex"><span class="nav-number">3.</span> <span class="nav-text">Supporting Point of a Simplex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Algorithm"><span class="nav-number">4.</span> <span class="nav-text">Core Algorithm</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

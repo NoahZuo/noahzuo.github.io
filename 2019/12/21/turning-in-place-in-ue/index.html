@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.">
+<meta name="keywords" content="Animation,UE4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Turning in Place in UE4">
+<meta property="og:url" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-curve.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-curve.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/custom-curve.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-position.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/turn-anim.gif">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.994Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Turning in Place in UE4">
+<meta name="twitter:description" content="This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/21/turning-in-place-in-ue/anim-curve.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/12/21/turning-in-place-in-ue/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Turning in Place in UE4 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/21/turning-in-place-in-ue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Turning in Place in UE4
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-12-21 21:45:12" itemprop="dateCreated datePublished" datetime="2019-12-21T21:45:12+00:00">2019-12-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells you how to make a good turning in place motion in UE4, especially for a server-client environment.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>It remains a huge challenge to turn a character in place for game animation development nowadays. Especially for shooting games with character aiming actions which might causing character turning in any angle. And network replication makes it even more complicated to handle server-client rotation synchronization. </p>
+<p>A good <del>and expensive</del> example is <a href="https://www.unrealengine.com/marketplace/en-US/product/advanced-locomotion-system-v1" target="_blank" rel="noopener">Advanced Locomotion</a> in unreal marketplace. I’ve learned a lot from this project. After breaking down everything in this project, I’ve managed to implement our own character turning system in a UE4 project.  </p>
+<p>There are lots of ways to implement a character turning system in UE4. You can choose to rotate the character directly without applying any animations to the leg. This method is easy to implement, but it might looks fine a decade ago, but it is totally not acceptable for nowadays game. </p>
+<p>A more acceptable method is to apply an animation to character legs. But still, we have several options for this. </p>
+<h2 id="Root-motion-vs-Custom-curve"><a href="#Root-motion-vs-Custom-curve" class="headerlink" title="Root-motion vs Custom curve"></a>Root-motion vs Custom curve</h2><h3 id="Root-motion-method"><a href="#Root-motion-method" class="headerlink" title="Root-motion method"></a>Root-motion method</h3><p>We can create multiple rotation animation with <code>rootmotion for everything</code> enabled for animation blueprint. Thus we can blend between multiple rotation animations to make it work for an arbitrary turning angle. </p>
+<p>Easy enough to implement though, it is not recommended to enable <code>root-motion for everything</code>. Performance would be an issue, but what the most important is that there exists too many bugs about <code>root-motion for everything</code>! </p>
+<p>On the other hand, animation blending between multiple good animation poses does not guarantee a good final pose. Footsteps and character rotation may not match that well. It might be a better option to make your character always turn fixed angles. </p>
+<h3 id="Custom-curve-method"><a href="#Custom-curve-method" class="headerlink" title="Custom curve method"></a>Custom curve method</h3><h4 id="Animation-Curve"><a href="#Animation-Curve" class="headerlink" title="Animation Curve"></a>Animation Curve</h4><p>It is an optional method to rotate character using a custom curve. I used to make it an animation curve like this: </p>
+<p><img src="anim-curve.png" alt="anim-curve"></p>
+<p>But it seems not to be a good choice, well, for a game that <strong>need to keep server-client  synchronization</strong>. The very reason is that <strong>animation curves are evaluated in animation post-evaluation stage, which means you need to have skeleton bones’ transform refreshed on the server.</strong> And this, as we all know, is totally not acceptable. </p>
+<p>You can find following code in <code>USkeletalMeshComponent::PostAnimEvaluation</code> function: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">if</span> (EvaluationContext.bDoEvaluation || EvaluationContext.bDoInterpolation)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// clear morphtarget curve sets since we're going to apply new changes</span></span><br><span class="line">		ResetMorphTargetCurves();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(AnimScriptInstance)</span><br><span class="line">		&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> WITH_EDITOR</span></span><br><span class="line">			GetEditableAnimationCurves() = AnimCurves;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> </span></span><br><span class="line">			<span class="comment">// curve update happens first</span></span><br><span class="line">			AnimScriptInstance-&gt;UpdateCurvesPostEvaluation();</span><br><span class="line"></span><br><span class="line">			<span class="comment">// this is same curves, and we don't have to process same for everything. </span></span><br><span class="line">			<span class="comment">// we just copy curves from main for the case where GetCurveValue works in that instance</span></span><br><span class="line">			<span class="keyword">for</span>(UAnimInstance* SubInstance : SubInstances)</span><br><span class="line">			&#123;</span><br><span class="line">				SubInstance-&gt;CopyCurveValues(*AnimScriptInstance);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+<p>Enable bone transforms on the server is truly not a good choice. </p>
+<p>But if you don’t need a server-client  synchronization, anim curve would be a great way! </p>
+<h4 id="Custom-curve-amp-Notify-state-method"><a href="#Custom-curve-amp-Notify-state-method" class="headerlink" title="Custom curve&amp;Notify state method"></a>Custom curve&amp;Notify state method</h4><p>I choose to use a notify state with a custom curve to accomplish my turning system. </p>
+<p>Firstly, I created a notify state that has a custom curve parameter that indicates turning weight between start and target rotator: </p>
+<p><img src="anim-curve.png" alt="anim-curve"></p>
+<p><img src="custom-curve.png" alt="custom-curve"></p>
+<p>We need to get the current position while playing this animation. There are two ways to get the result: </p>
+<ol>
+<li>Add an <code>Elapse_Time</code> variable to this notify state, and calculate <code>Elapse_Time / Anim_Length</code> every tick to get the current position. But since <strong>a blueprint notify state can only implement const functions, you need to write this notify state in c++. </strong></li>
+<li>If you are lazy enough like me who don’t like writing c++ code, you can have a montage playing this animation. You need to only get current montage position by <code>AnimInstance-&gt;GetMontagePosition()</code>, then you can easily calculated the current anim position: </li>
+</ol>
+<p><img src="anim-position.png" alt="anim-position"></p>
+<p>In this way you can easily get the current turning weight, and calculate current character rotation value using lerp between rotators. </p>
+<p>As for the animation, we need a character animation that is facing front, but playing a rotation animation at the same time: </p>
+<p><img src="turn-anim.gif" alt="turn-anim"></p>
+<h2 id="Gameplay-Logic"><a href="#Gameplay-Logic" class="headerlink" title="Gameplay Logic"></a>Gameplay Logic</h2><p>We still needs some gameplay logic to make it work on a client-server mode. If you want the character to perform a turning action, you need to call a multi-cast function on the server, to play montage both on ds and client side. </p>
+<p>While playing a turning animation, the ds character rotation is set directly, and character rotation would be replicated to the clients. </p>
+<p>Of course you can also choose to set character rotation both on server and client side. And leave character rotation synchronization after montage has ended. </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/28/leg-ik-in-ue4/" rel="next" title="Leg IK in UE4">
+                <i class="fa fa-chevron-left"></i> Leg IK in UE4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/29/better-animation-transition-using-sync-group-in-ue4/" rel="prev" title="Better Animation Transition Using Sync Group in Paragon">
+                Better Animation Transition Using Sync Group in Paragon <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Root-motion-vs-Custom-curve"><span class="nav-number">1.</span> <span class="nav-text">Root-motion vs Custom curve</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Root-motion-method"><span class="nav-number">1.1.</span> <span class="nav-text">Root-motion method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Custom-curve-method"><span class="nav-number">1.2.</span> <span class="nav-text">Custom curve method</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Animation-Curve"><span class="nav-number">1.2.1.</span> <span class="nav-text">Animation Curve</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Custom-curve-amp-Notify-state-method"><span class="nav-number">1.2.2.</span> <span class="nav-text">Custom curve&amp;Notify state method</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gameplay-Logic"><span class="nav-number">2.</span> <span class="nav-text">Gameplay Logic</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

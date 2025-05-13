@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article simply records some issues about UE4 cooking that I encountered these days.">
+<meta name="keywords" content="UE4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tool Tips About UE4 Cooking">
+<meta property="og:url" content="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article simply records some issues about UE4 cooking that I encountered these days.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/image_001.png">
+<meta property="og:image" content="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/image_002.png">
+<meta property="og:image" content="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/image_003.png">
+<meta property="og:updated_time" content="2021-11-19T19:22:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tool Tips About UE4 Cooking">
+<meta name="twitter:description" content="This article simply records some issues about UE4 cooking that I encountered these days.">
+<meta name="twitter:image" content="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/image_001.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Tool Tips About UE4 Cooking | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/09/12/tool-tips-about-ue4-cooking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Tool Tips About UE4 Cooking
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-09-12 15:10:03" itemprop="dateCreated datePublished" datetime="2021-09-12T15:10:03+00:00">2021-09-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-11-19 19:22:23" itemprop="dateModified" datetime="2021-11-19T19:22:23+00:00">2021-11-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article simply records some issues about UE4 cooking that I encountered these days.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="How-To-Debug-UE4-Cooking-Stage"><a href="#How-To-Debug-UE4-Cooking-Stage" class="headerlink" title="How To Debug UE4 Cooking Stage?"></a>How To Debug UE4 Cooking Stage?</h1><p>When an error is triggered during cooking, the break point would not be hit in your visual studio because another <code>UE4Editor</code> process is invoked to run cooking command. </p>
+<p>Without help of Visual Studio, it must be very hard to address and fix your cooking error. </p>
+<p>In Visual Studio, right-click on your project-&gt;Properties: </p>
+<p><img src="image_001.png" alt="image_001"></p>
+<p>Set the configuration to <code>Development_Editor</code> or <code>Debug_Editor</code>, and you can find the <code>Command Arguments</code> in the <code>Debugging</code> tab: </p>
+<p><img src="image_002.png" alt="img"></p>
+<p>Usually the default value should be <code>&quot;$(SolutionDir)$(ProjectName).uproject&quot; -skipcompile</code>. And change it to <code>&quot;$(SolutionDir)$(ProjectName).uproject&quot; -run=Cook -TargetPlatform=WindowsNoEditor -unversioned -CookAll</code>: </p>
+<p><img src="image_003.png" alt="image_001"></p>
+<p>And it’s done. Hit <code>Local Windows Debugger</code>, and start debuging your cooking stage! </p>
+<h1 id="How-To-Cook-A-Single-Asset"><a href="#How-To-Cook-A-Single-Asset" class="headerlink" title="How To Cook A Single Asset?"></a>How To Cook A Single Asset?</h1><p>It seems that the <code>HotPatcher</code> plugin has already provided us a <code>OnCookPlatform</code> function, which cooks our selected assets in <code>BrowserContent</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FHotPatcherEditorModule::OnCookPlatform</span><span class="params">(ETargetPlatform Platform)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        TArray&lt;FAssetData&gt; AssetsData = GetSelectedAssetsInBrowserContent();</span><br><span class="line">        TArray&lt;UPackage*&gt; AssetsPackage;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span>&amp; AssetData:AssetsData)</span><br><span class="line">        &#123;</span><br><span class="line">                AssetsPackage.AddUnique(AssetData.GetPackage());</span><br><span class="line">                UE_LOG(LogHotPatcher,Log,TEXT(<span class="string">"Cook Package %s Platform %s"</span>),*AssetData.PackagePath.ToString(),*UFlibPatchParserHelper::GetEnumNameByValue(Platform));</span><br><span class="line">        &#125;</span><br><span class="line">        FString CookedDir = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectSavedDir(),TEXT(<span class="string">"Cooked"</span>)));</span><br><span class="line">        FString CookForPlatform = UFlibPatchParserHelper::GetEnumNameByValue(Platform);</span><br><span class="line">        TArray&lt;FString&gt; CookForPlatforms&#123;CookForPlatform&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span>&amp; AssetPacakge:AssetsPackage)</span><br><span class="line">        &#123;</span><br><span class="line">                FString CookedSavePath = UFlibHotPatcherEditorHelper::GetCookAssetsSaveDir(CookedDir,AssetPacakge, CookForPlatform);</span><br><span class="line">                </span><br><span class="line">            <span class="keyword">bool</span> bCookStatus = UFlibHotPatcherEditorHelper::CookPackage(AssetPacakge,CookForPlatforms,CookedDir);</span><br><span class="line">                <span class="keyword">auto</span> Msg = FText::Format(</span><br><span class="line">            LOCTEXT(<span class="string">"CookAssetsNotify"</span>, <span class="string">"Cook Platform &#123;1&#125; for &#123;0&#125; &#123;2&#125;!"</span>),</span><br><span class="line">            UKismetTextLibrary::Conv_StringToText(AssetPacakge-&gt;FileName.ToString()),</span><br><span class="line">            UKismetTextLibrary::Conv_StringToText(UFlibPatchParserHelper::GetEnumNameByValue(Platform)),</span><br><span class="line">            bCookStatus ? UKismetTextLibrary::Conv_StringToText(TEXT(<span class="string">"Successfuly"</span>)):UKismetTextLibrary::Conv_StringToText(TEXT(<span class="string">"Faild"</span>))</span><br><span class="line">            );</span><br><span class="line">                SNotificationItem::ECompletionState CookStatus = bCookStatus ? SNotificationItem::CS_Success:SNotificationItem::CS_Fail;</span><br><span class="line">                UFlibHotPatcherEditorHelper::CreateSaveFileNotify(Msg,CookedSavePath,CookStatus);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We can easily create an <code>FAutoConsoleCommand</code> to manually achieve this feature. </p>
+<h1 id="How-To-Get-Rid-Of-Property-When-Cooking"><a href="#How-To-Get-Rid-Of-Property-When-Cooking" class="headerlink" title="How To Get Rid Of Property When Cooking?"></a>How To Get Rid Of Property When Cooking?</h1><p>We might want to get rid of some properties during cooking stage. For example, <code>RawAnimationData</code> is supposed to be stripped for cooked builds in consideration of memory.  </p>
+<h2 id="For-A-Non-UPROPERTY-Member"><a href="#For-A-Non-UPROPERTY-Member" class="headerlink" title="For A Non-UPROPERTY Member"></a>For A Non-UPROPERTY Member</h2><p>It might get really complicated to manage since we need to handle <code>PostLoad</code> and <code>Serialize</code> function manually, but we can get more flexibility. </p>
+<p>If you want to remove this property, use <code>FPlatformProperties::RequiresCookedData()</code> function to determine if you need it or not. </p>
+<h2 id="For-A-UPROPERTY-Member"><a href="#For-A-UPROPERTY-Member" class="headerlink" title="For A UPROPERTY Member"></a>For A UPROPERTY Member</h2><p>In a more complicated situation if you still need to handle this property during cooking stage, and frankly speaking, this is exactly what I needed these days. We might need a hook to get rid of this property. </p>
+<p>Sadly, I cannot tell you what precisely I needed to do because of secrecy. </p>
+<p>We can remove its content in <code>UObject::PreSave</code> function. </p>
+<p>In a cooked build, <code>PreSave</code> function would be called before save-serializing happens. That is a wonderful hook for you to modify this data. </p>
+<h1 id="About-Anim-Sequence-Compression"><a href="#About-Anim-Sequence-Compression" class="headerlink" title="About Anim Sequence Compression"></a>About Anim Sequence Compression</h1><p>When an anim sequence get compressed because of any reason. A <code>FString</code> called <code>FinalDDCKey</code> is generated, and it is used by <code>DDC</code> to find whether there has already been a compressed sequence. </p>
+<p>You can check out <code>UAnimSequence::RequestAnimCompression</code> for details. </p>
+<h2 id="AssetDDCKey"><a href="#AssetDDCKey" class="headerlink" title="AssetDDCKey"></a><code>AssetDDCKey</code></h2><p>We can get a <code>AssetDDCKey</code> by <code>GetAnimSequenceSpecificCacheKeySuffix</code> function. For example, anim sequence <code>ThirdPersonWalk</code> has a <code>AssetDDCKey</code> like: </p>
+<blockquote>
+<p>BE37EBBAFBBA3750CECFF71FCA0778E996BD3AFA415DB49D91DC3799835471D700000000000000000000000000000000_000_NoAdditiveGuid_0000803F00000000CDCCCC3D000000000004000004CD5841CCCCCC3E9A99993E9A99993EA3623BAFF72E0049A52AAC206838CFE9000000000000000001000000000070429A99993E9A99993E</p>
+</blockquote>
+<p>You can figure out how this key is generated by checking out <code>GetAnimSequenceSpecificCacheKeySuffix</code> function. But there is something needs to be mentioned about <code>Bone Compression Setting</code>. </p>
+<p>A <code>UAnimBoneCompressionSettings</code> populates its <code>DDC Keys</code> while <code>AssetDDCKey</code> of an anim sequence is generated. And for each compression method would also populates its <code>DDC Key</code>, too. </p>
+<p>This is needed because of we might adjust compression parameters. If any compression parameter is changed, a different key is generated so that the engine can decide whether to re-compress the anim sequence. </p>
+<h2 id="What-Happens-If-A-DDC-Key-Is-Too-Long"><a href="#What-Happens-If-A-DDC-Key-Is-Too-Long" class="headerlink" title="What Happens If A DDC Key Is Too Long?"></a>What Happens If A <code>DDC Key</code> Is Too Long?</h2><p>Let’s still take <code>ThirdPersonWalk</code> for example. Its <code>FinalDDCKey</code> is like: </p>
+<blockquote>
+<p>AnimSeq_EFB2D82D0DDA4A4E9D0D9AC41A9C557A_0_BE37EBBAFBBA3750CECFF71FCA0778E996BD3AFA415DB49D91DC3799835471D700000000000000000000000000000000_000_NoAdditiveGuid_0000803F00000000CDCCCC3D000000000004000004CD5841CCCCCC3E9A99993E9A99993EA3623BAFF72E0049A52AAC206838CFE9000000000000000001000000000070429A99993E9A99993E</p>
+</blockquote>
+<p>If you continue digging into how <code>DDC</code> get its cached data in <code>FDerivedDataLimitKeyLengthWrapper::GetCachedData</code> function. You should find <code>GetShortenKey()</code> is called if the Cache Key is too long. </p>
+<p>A hash string is calculated and appended at the tail of a new shorten key, whose max length is defined by <code>MAX_BACKEND_KEY_LENGTH</code>. Now the shorten key is like: </p>
+<blockquote>
+<p>AnimSeq_EFB2D82D0DDA4A4E9D0D9AC41A9C557A_0_BE37EBBAFBBA3750CECFF71FCA0778E996B__43B4BAB8FB89DFD6EDC705E28B6B0F9F69E8D7D6</p>
+</blockquote>
+<p>But becareful! Since a hash value is used. Hash collide can still happens. </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/31/build-physx-on-windows-for-ue4/" rel="next" title="Build PhysX For UE4 On Windows">
+                <i class="fa fa-chevron-left"></i> Build PhysX For UE4 On Windows
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/11/27/better-profile-physx-in-ue4/" rel="prev" title="Better Way To Profile PhysX In UE4">
+                Better Way To Profile PhysX In UE4 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#How-To-Debug-UE4-Cooking-Stage"><span class="nav-number">1.</span> <span class="nav-text">How To Debug UE4 Cooking Stage?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-To-Cook-A-Single-Asset"><span class="nav-number">2.</span> <span class="nav-text">How To Cook A Single Asset?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-To-Get-Rid-Of-Property-When-Cooking"><span class="nav-number">3.</span> <span class="nav-text">How To Get Rid Of Property When Cooking?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#For-A-Non-UPROPERTY-Member"><span class="nav-number">3.1.</span> <span class="nav-text">For A Non-UPROPERTY Member</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For-A-UPROPERTY-Member"><span class="nav-number">3.2.</span> <span class="nav-text">For A UPROPERTY Member</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#About-Anim-Sequence-Compression"><span class="nav-number">4.</span> <span class="nav-text">About Anim Sequence Compression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AssetDDCKey"><span class="nav-number">4.1.</span> <span class="nav-text">AssetDDCKey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-Happens-If-A-DDC-Key-Is-Too-Long"><span class="nav-number">4.2.</span> <span class="nav-text">What Happens If A DDC Key Is Too Long?</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

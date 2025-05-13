@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article briefly introduce the Leg IK in UE4, mainly focusing on the underlying logic.">
+<meta name="keywords" content="Animation,UE4,IK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leg IK in UE4">
+<meta property="og:url" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article briefly introduce the Leg IK in UE4, mainly focusing on the underlying logic.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/initial.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/align-legs.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/footboneforwardaxis.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/limit-in-plane.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/planeNormal.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/strange-leg.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/flipping-plane-normal.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/forwardpass.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/childAxisYC.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/angle-limit.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/angle-limit.png">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.968Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Leg IK in UE4">
+<meta name="twitter:description" content="This article briefly introduce the Leg IK in UE4, mainly focusing on the underlying logic.">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/28/leg-ik-in-ue4/initial.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/11/28/leg-ik-in-ue4/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Leg IK in UE4 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/28/leg-ik-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Leg IK in UE4
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-11-28 21:39:33" itemprop="dateCreated datePublished" datetime="2019-11-28T21:39:33+00:00">2019-11-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article briefly introduce the Leg IK in UE4, mainly focusing on the underlying logic.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>It seems that Leg IK has been existed in UE4 for quite a long time, and it seems necessary to dig into the code and try to understand what is going on underneath. </p>
+<p>And btw, it seems to be very convenient to use <a href="https://www.geogebra.org/3d?lang=en" target="_blank" rel="noopener">geogebra</a> to draw 3D diagrams. This article would use diagrams created by this website. </p>
+<h2 id="Leg-bones"><a href="#Leg-bones" class="headerlink" title="Leg bones"></a>Leg bones</h2><p>Since this node is designed for multi-bone legs IK calculation, but how does it handle multi-bone legs? <code>CCD</code> or <code>FABRIK</code>? Or some other black magic? </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FIKChain::ReachTarget</span><span class="params">(<span class="keyword">const</span> FVector&amp; InTargetLocation, <span class="keyword">float</span> InReachPrecision, int32 InMaxIterations)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!bInitialized)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> FVector RootLocation = Links.Last().Location;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// If we can't reach, we just go in a straight line towards the target,</span></span><br><span class="line">	<span class="keyword">if</span> ((NumLinks &lt;= <span class="number">2</span>) || (FVector::DistSquared(RootLocation, InTargetLocation) &gt;= FMath::Square(GetMaximumReach())))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">const</span> FVector Direction = (InTargetLocation - RootLocation).GetSafeNormal();</span><br><span class="line">		OrientAllLinksToDirection(Direction);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Two Bones, we can figure out solution instantly</span></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (NumLinks == <span class="number">3</span> &amp;&amp; (CVarAnimLegIKTwoBone.GetValueOnAnyThread() == <span class="number">1</span>))</span><br><span class="line">	&#123;</span><br><span class="line">		SolveTwoBoneIK(InTargetLocation);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Do iterative approach based on FABRIK</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		SolveFABRIK(InTargetLocation, InReachPrecision, InMaxIterations);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>It is easy to tell that for a three-bone(thigh-&gt;leg-&gt;foot) leg, this solver would eventually fallback to a simple two-bone IK. </p>
+<p>But as for a leg that has more than 3 bones(spider leg or octopus leg), it would perform a <a href="http://www.andreasaristidou.com/FABRIK.html" target="_blank" rel="noopener">FABRIK</a>. Since I’ve already wrote a <a href="https://blog.csdn.net/noahzuo/article/details/80188366" target="_blank" rel="noopener">blog about FABRIK on csdn</a> and I am not going to rewrite it again. </p>
+<h2 id="How-does-Leg-IK-work"><a href="#How-does-Leg-IK-work" class="headerlink" title="How does Leg IK work?"></a>How does Leg IK work?</h2><p>You can define your legs in this node. Each leg can be defined using <code>FKFoot Bone</code> and <code>Num Bones in Limb</code>, which defines a leg from toe to hip. </p>
+<p>And you need an <code>IKFoot Bone</code> in your skeleton if you want to use this node. And during evaluation, this node would try to put your toe(in another word, <code>FKFoot Bone</code>) to the <code>IKFoot Bone</code>. </p>
+<p>!<img src="initial.png" alt="initial"></p>
+<p>let’s check out the whole algorithm: </p>
+<ol>
+<li>Leg transforms would firstly be aligned with the ik target. Delta normal is calculated between <code>InitialDir(From Hip to FootFKLocation)</code> and <code>TargetDir(From Hip to FootIKLocation)</code>. </li>
+</ol>
+<p><img src="align-legs.png" alt="align-legs"></p>
+<ol start="2">
+<li>After being aligned with <code>IKFoot Bone</code>, try to reach for ik effector. Either <code>Two bone IK</code> or <code>FABRIK</code> is used for this purpose. For a <code>Two bone IK</code>, <code>Hinge Rotation Axis</code> is used for bending direction, and for a <code>FABRIK</code>, <code>Min Rotation Angle</code> is used for rotation limit, if enabled. </li>
+<li>Knee twist would be adjusted if <code>Enable Knee Twist Correction</code> is checked. You need to define the <code>Foot Bone Forward Axis</code> for this feature. This axis is used for determining how much angle the foot has been twisted. By <code>Bone Forward Axis</code> it means <strong>the axis pointing to the ground</strong>. </li>
+</ol>
+<p><img src="footboneforwardaxis.png" alt="footboneforwardaxis"></p>
+<h2 id="Rotation-limit-for-FABRIK"><a href="#Rotation-limit-for-FABRIK" class="headerlink" title="Rotation limit for FABRIK"></a>Rotation limit for FABRIK</h2><p>Something still needs to be done for constraints in FABRIK, when used for leg ik calculation. And hence we would go through those extra work here. </p>
+<h3 id="Plane-normal-amp-LinkAxisZ"><a href="#Plane-normal-amp-LinkAxisZ" class="headerlink" title="Plane normal&amp;LinkAxisZ"></a>Plane normal&amp;LinkAxisZ</h3><p>Since we have just mentioned that legs would be aligned to the target effector, thus bone rotation limits are calculated in a 2-D space. </p>
+<p><img src="limit-in-plane.png" alt="limit-in-plane"></p>
+<p>First thing that needs to be done is to get a valid plane normal for the whole leg. </p>
+<p>By traverse vector<code>A-&gt;B&#39;</code>, <code>A-&gt;C&#39;</code> and <code>A-&gt;FKFootBone&#39;</code> until we get a valid cross product result with vector <code>A-&gt;IKFootBone</code>. </p>
+<p><img src="planeNormal.png" alt="planeNormal"></p>
+<p>After getting a valid plane normal, we still need a valid <code>LinkAxisZ</code> vector for each leg bone. The reason is that sometimes we may have a leg inner angle larger than <code>pi</code>. </p>
+<p><img src="strange-leg.png" alt="strange-leg"></p>
+<p>In this case, we need to flip plane normal, and this is what <code>LinkAxisZ</code> do during limiting rotation, See <code>LinkAxisZVector</code> in the following image: </p>
+<p><img src="flipping-plane-normal.png" alt="flipping-plane-normal"></p>
+<h3 id="Apply-rotation-limitation"><a href="#Apply-rotation-limitation" class="headerlink" title="Apply rotation limitation"></a>Apply rotation limitation</h3><p>For a simple FABRIK without rotation limitation, the whole leg would loot like this after a forwardpass: </p>
+<p><img src="forwardpass.png" alt="forwardpass"></p>
+<p>As for a leg, it looks terrible. Thus we need to apply rotation limit to it. Rotation limit is applied after each bone’s reaching stage, both forward and backward. </p>
+<p>Let’s take a look at bone <code>C&#39;&#39;</code> rotation limit as an example: </p>
+<ol>
+<li>First <code>childAxisYC&#39;&#39;</code> is calculated using  a cross product between <code>LinkAxisZ</code> and <code>childAxisXC&#39;&#39;</code>, which point from <code>C&#39;&#39;</code> to its child bone. </li>
+</ol>
+<p><img src="childAxisYC.png" alt="childAxisYC"></p>
+<ol start="2">
+<li>Then dot product between <code>parentAxisC&#39;&#39;</code>, which points from <code>C&#39;&#39;</code> to its parent bone, and <code>childAxisXC&#39;&#39;</code> and <code>childAxisYC&#39;&#39;</code> is calculated. By this we could get the <code>cos</code> and <code>sin</code> value of current angle.   We use this to determine whether current angle has already reached the limit. </li>
+</ol>
+<p><img src="angle-limit.png" alt="angle-limit"></p>
+<ol start="3">
+<li><p>If the  <code>sin</code> value if less than <code>0</code>(which means the the leg inner angle is larger than <code>pi</code> and the leg needs to be flipped), or the <code>cos</code> value is larger than the <code>cos(MinRotationAngleRadians)</code>(which means that the angle has already reached the angle limit), a rotation limitation should be performed. The current angle in the image above is <code>56.15</code> degrees, and our <code>MinRotationAngleRadians</code> is 60 degrees, which is larger than current degree. </p>
+</li>
+<li><p>As a result, we need to apply rotation limitation now. Since this is a <code>forward reach pass</code>, we need to adjust the parent bone location by code like this:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ParentLink.Location = CurrentLink.Location + CurrentLink.Length * (FMath::Cos(IKChain.MinRotationAngleRadians) * ChildAxisX + FMath::Sin(IKChain.MinRotationAngleRadians) * ChildAxisY);</span><br></pre></td></tr></table></figure>
+<p>And here is the result. </p>
+<p><img src="angle-limit.png" alt="angle-limit"></p>
+</li>
+</ol>
+<h2 id="Some-extra-work"><a href="#Some-extra-work" class="headerlink" title="Some extra work"></a>Some extra work</h2><p>There is still some extra work that this anim node does for a better effect. </p>
+<h3 id="Distribute-pull-to-re-position-limb"><a href="#Distribute-pull-to-re-position-limb" class="headerlink" title="Distribute pull to re-position limb"></a>Distribute pull to re-position limb</h3><p>The relevant code is: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Re-position limb to distribute pull</span></span><br><span class="line"><span class="keyword">const</span> FVector PullDistributionOffset = PullDistributionAlpha * (InTargetLocation - Links[<span class="number">0</span>].Location) + (<span class="number">1.f</span> - PullDistributionAlpha) * (RootTargetLocation - Links.Last().Location);</span><br><span class="line"><span class="keyword">for</span> (int32 LinkIndex = <span class="number">0</span>; LinkIndex &lt; NumLinks; LinkIndex++)</span><br><span class="line">&#123;</span><br><span class="line">	Links[LinkIndex].Location += PullDistributionOffset;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>There is a <code>CVarAnimLegIKPullDistribution</code>(Console variable <code>a.AnimNode.LegIK.PullDistribution</code>), whose default value is <code>0.5f</code>. </p>
+<p>And this value means whether we care more about the foot, or the hip. </p>
+<p>As a result, the bone in the whole leg seems to move a delta offset. </p>
+<p>But <code>RootTargetLocation</code> is totally the same as <code>Links.Last().Location</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> FVector RootTargetLocation = Links.Last().Location;</span><br></pre></td></tr></table></figure>
+<p>So what are you exactly trying to do? </p>
+<h3 id="Average-pull"><a href="#Average-pull" class="headerlink" title="Average pull"></a>Average pull</h3><p>The relevant code is: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">			<span class="comment">// Pull averaging only has a visual impact when we have more than 2 bones (3 links).</span></span><br><span class="line">			<span class="keyword">if</span> ((NumLinks &gt; <span class="number">3</span>) &amp;&amp; (CVarAnimLegIKAveragePull.GetValueOnAnyThread() == <span class="number">1</span>) &amp;&amp; (Slop &gt; <span class="number">1.f</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				FIKChain ForwardPull = *<span class="keyword">this</span>;</span><br><span class="line">				FABRIK_ForwardReach(InTargetLocation, ForwardPull);</span><br><span class="line"></span><br><span class="line">				FIKChain BackwardPull = *<span class="keyword">this</span>;</span><br><span class="line">				FABRIK_BackwardReach(RootTargetLocation, BackwardPull);</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Average pulls</span></span><br><span class="line">				<span class="keyword">for</span> (int32 LinkIndex = <span class="number">0</span>; LinkIndex &lt; NumLinks; LinkIndex++)</span><br><span class="line">				&#123;</span><br><span class="line">					Links[LinkIndex].Location = <span class="number">0.5f</span> * (ForwardPull.Links[LinkIndex].Location + BackwardPull.Links[LinkIndex].Location);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> ENABLE_ANIM_DEBUG</span></span><br><span class="line">				<span class="keyword">if</span> (bDrawDebug)</span><br><span class="line">				&#123;</span><br><span class="line">					DrawDebugIKChain(ForwardPull, FColor::Green);</span><br><span class="line">					DrawDebugIKChain(BackwardPull, FColor::Blue);</span><br><span class="line">				&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">			&#125;</span><br></pre></td></tr></table></figure>
+<p>To be honest, I truly have no idea how pull averaging eventually work somehow(cannot find any paper about it). Nor do I know why does pull averaging only has a visual impact when we have more than 2 bones. </p>
+<p>If average pull is enabled, instead of modify the original location directly, forward and backward pass would be stored separately in two <code>FIKChain</code>. The final location would be the average value of the forward and the backward value. </p>
+<h2 id="Can-it-be-better"><a href="#Can-it-be-better" class="headerlink" title="Can it be better?"></a>Can it be better?</h2><ul>
+<li>Currently there is only a <code>MinRotationAngleRadians</code> for us to control the leg constraint. But a <code>MaxRotationAngleRadians</code> should always be concerned. </li>
+<li>It would be much better if we can set the <code>MinRotationAngleRadians</code> and <code>MaxRotationAngleRadians</code> for each joint. </li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+            <a href="/tags/IK/" rel="tag"># IK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/18/sub-anim-issue-in-ue-4-23-part-II/" rel="next" title="Sub Anim Input Issue in UE 4.23, part II">
+                <i class="fa fa-chevron-left"></i> Sub Anim Input Issue in UE 4.23, part II
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/21/turning-in-place-in-ue/" rel="prev" title="Turning in Place in UE4">
+                Turning in Place in UE4 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Leg-bones"><span class="nav-number">1.</span> <span class="nav-text">Leg bones</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-does-Leg-IK-work"><span class="nav-number">2.</span> <span class="nav-text">How does Leg IK work?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rotation-limit-for-FABRIK"><span class="nav-number">3.</span> <span class="nav-text">Rotation limit for FABRIK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Plane-normal-amp-LinkAxisZ"><span class="nav-number">3.1.</span> <span class="nav-text">Plane normal&amp;LinkAxisZ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apply-rotation-limitation"><span class="nav-number">3.2.</span> <span class="nav-text">Apply rotation limitation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Some-extra-work"><span class="nav-number">4.</span> <span class="nav-text">Some extra work</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Distribute-pull-to-re-position-limb"><span class="nav-number">4.1.</span> <span class="nav-text">Distribute pull to re-position limb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Average-pull"><span class="nav-number">4.2.</span> <span class="nav-text">Average pull</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Can-it-be-better"><span class="nav-number">5.</span> <span class="nav-text">Can it be better?</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

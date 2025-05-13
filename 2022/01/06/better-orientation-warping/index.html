@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieved.">
+<meta name="keywords" content="Animation,UE4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Better Orientation Warping Implementation In UE4">
+<meta property="og:url" content="http://yoursite.com/2022/01/06/better-orientation-warping/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieved.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110205610176.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/nioh2_pose_switch_2.gif">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/blending_issue.gif">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110212427236.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110214652142.gif">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110220121478.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220111131730974.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220111134249796.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/orientation_warping_3.gif">
+<meta property="og:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image.png">
+<meta property="og:updated_time" content="2022-01-06T21:34:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Better Orientation Warping Implementation In UE4">
+<meta name="twitter:description" content="This article tells you how to implement a better orientation warping feature than what Paragon has achieved.">
+<meta name="twitter:image" content="http://yoursite.com/2022/01/06/better-orientation-warping/image-20220110205610176.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2022/01/06/better-orientation-warping/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Better Orientation Warping Implementation In UE4 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/06/better-orientation-warping/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Better Orientation Warping Implementation In UE4
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2022-01-06 21:34:03" itemprop="dateCreated datePublished" datetime="2022-01-06T21:34:03+00:00">2022-01-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells you how to implement a better orientation warping feature than what Paragon has achieved.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Orientation warping is an animation technique that is used in <code>Paragon</code>. You can find more information about it here. </p>
+<p>There are already a bunch of implementation methods provided by <code>Epic</code> or <a href="https://www.unrealengine.com/marketplace/en-US/product/animgraphnode" target="_blank" rel="noopener">SeanChen</a>. None of them really suits our project, though. And I’ve eventually implemented orientation warping in a brand new way, which works brilliantly in our project. </p>
+<h1 id="About-Orientation-Warping"><a href="#About-Orientation-Warping" class="headerlink" title="About Orientation Warping"></a>About Orientation Warping</h1><p>You may wonder what on earth orientation warping is or why and when I should use this feature. </p>
+<p>There are two types of locomotion style: <code>forward move</code> and <code>sideway move(aka. strafe move)</code>. Orientation warping is typically used for <code>sideway move</code>, which means that the character aims forward while moving in all directions. You can find more information about it <a href="https://en.wikipedia.org/wiki/Strafing_(video_games" target="_blank" rel="noopener">here</a>). </p>
+<h2 id="A-Naive-Strafe-Move-Implementation"><a href="#A-Naive-Strafe-Move-Implementation" class="headerlink" title="A Naive Strafe Move Implementation"></a>A Naive <code>Strafe Move</code> Implementation</h2><p>A naive but common implementation is simply applying a looping animation sequence for a certain range of moving directions: </p>
+<p><img src="image-20220110205610176.png" alt="image-20220110205610176"></p>
+<p>Straightforward but effective. The main problem is that it always causes foot-sliding. To my surprise, I can still find it in some so-called modern games(yes, I mean <code>Nioh 2</code>): </p>
+<p><img src="nioh2_pose_switch_2.gif" alt="nioh2_pose_switch_2"></p>
+<h2 id="Blending-Another-Naive-Strafe-Move-Method"><a href="#Blending-Another-Naive-Strafe-Move-Method" class="headerlink" title="Blending:  Another Naive Strafe Move Method"></a>Blending:  Another Naive <code>Strafe Move</code> Method</h2><p>It naturally comes to my mind that I can use a <code>2-D Blend Space</code> in UE4, or <code>Blend tree</code> in Unity to achieve this feature. </p>
+<p>And I have to admit, sometimes this method works pretty nice. But strange pose can still be found since it’s hard to control animation blending: </p>
+<p><img src="blending_issue.gif" alt="blending_issue"></p>
+<p>As can be seen from the image above, character legs get crossed with each other for some certain input: </p>
+<p><img src="image-20220110212427236.png" alt="image-20220110212427236"></p>
+<p>This issue is even worse for stylized character because animation resource can vary dramatically in different moving directions. </p>
+<h2 id="What-Is-Orientation-Warping"><a href="#What-Is-Orientation-Warping" class="headerlink" title="What Is Orientation Warping?"></a>What Is Orientation Warping?</h2><p>Orientation warping solves this problem once and for all. </p>
+<p>The main idea of this method is rotating the whole character first, so that foot-sliding is prevented. And then rotating the upper body to the front. </p>
+<p>In this case, I can get a controllable and non foot-sliding character strafing pose. </p>
+<p><img src="image-20220110214652142.gif" alt="image-20220110214652142"></p>
+<p>In addition, orientation warping requires far less anim resources. In <code>Paragon</code>, only 4-direction anim resources are required to produce a pretty nice locomotion effect. </p>
+<h1 id="Three-Imperfect-Implementation-Methods"><a href="#Three-Imperfect-Implementation-Methods" class="headerlink" title="Three Imperfect Implementation Methods"></a>Three Imperfect Implementation Methods</h1><h2 id="Blend-Space-Aim-Offset-Rotate-Root-Bone"><a href="#Blend-Space-Aim-Offset-Rotate-Root-Bone" class="headerlink" title="Blend Space + Aim Offset + Rotate Root Bone"></a>Blend Space + Aim Offset + Rotate Root Bone</h2><p>An earlier implementation method proposed by Laurent Delayen can be found <a href="https://www.youtube.com/watch?v=1UOY-FMm-xo" target="_blank" rel="noopener">here</a>.  </p>
+<p>And it seems that <code>Paragon</code> simply use a blend space that handles one direction, an <code>AimOffset</code> node that reverse-rotates the upper body, and a <code>rotate root bone</code> node to prevent foot-sliding as well as rotate upper body back to forward: </p>
+<p><img src="image-20220110220121478.png" alt="image-20220110220121478"></p>
+<p>This works, in price of a complex anim graph structure and many aim offset resources. </p>
+<p>Moreover, this implementation has bad performance since an <code>AimOffset</code> node is expensive! </p>
+<h2 id="State-Machine-Based-Orientation-Warping"><a href="#State-Machine-Based-Orientation-Warping" class="headerlink" title="State-Machine Based Orientation Warping"></a>State-Machine Based Orientation Warping</h2><p>This implementation method can be found in <a href="https://www.unrealengine.com/marketplace/en-US/product/advanced-locomotion-system-v1" target="_blank" rel="noopener"><code>Advanced Locomotion System V4</code></a>: </p>
+<p><img src="image-20220111131730974.png" alt="image-20220111131730974"></p>
+<p>Since this is a free project that is available on Unreal Marketplace. You can download this project and play with it. And I am pretty sure that most of you can be overwhelmed by its complexity. And btw, I hate Animation Layers. </p>
+<p>The performance can also be a big issue. So it would be a better choice to considered this project as reference only. </p>
+<h2 id="Orientation-Warping-Anim-Node"><a href="#Orientation-Warping-Anim-Node" class="headerlink" title="Orientation Warping Anim Node"></a>Orientation Warping Anim Node</h2><p>This should be the most well-known orientation warping implementation method. For more information, check <a href="https://www.youtube.com/watch?v=YlKA22Hzerk" target="_blank" rel="noopener">this</a> out. </p>
+<p><img src="image-20220111134249796.png" alt="image-20220111134249796"></p>
+<p>And <a href="https://www.unrealengine.com/marketplace/en-US/product/animgraphnode" target="_blank" rel="noopener">SeanChen</a> has already shared his or her implementation on Unreal Marketplace. You can play with these anim nodes and use them in your project. </p>
+<p>Actually I’ve tried this method in our project at the very beginning. I’ve encountered several severe problems and as a result,I decided to implement our own orientation warping implementation method, which I will talk about later. </p>
+<p>But it is much more valuable, in my opinion, to share those problems I just encountered using this method. </p>
+<h3 id="Switch-Direction-Pose-Problem"><a href="#Switch-Direction-Pose-Problem" class="headerlink" title="Switch Direction Pose Problem"></a>Switch Direction Pose Problem</h3><p>It looks nice in general. But sometimes it looks not smooth enough when switching from one direction to another direction. </p>
+<p><img src="orientation_warping_3.gif" alt="orientation_warping_3"></p>
+<p>The <code>Anim Graph</code> looks like: </p>
+<p><img src="image.png" alt="img"></p>
+<p>When active child index changes, animation blending can still happen. And moreover, a <code>Blend List</code> node looks bad when blending interruption happens. You can use <code>Inertialization</code> transition type to ease this problem(well, sometimes this problem can be aggravated). </p>
+<p>This problem can be eased even more if <code>sync marker</code> is properly used. But frankly speaking, it is hard to manage sync marker, especially when a blend-space is involved with sync groups. </p>
+<h1 id="Our-Final-Solution"><a href="#Our-Final-Solution" class="headerlink" title="Our Final Solution"></a>Our Final Solution</h1><p>It turned out that our animators loves how animation sequence play rate is handled inside a single blend space. It is smooth enough so that switching direction looks wonderful! </p>
+<p>And we’ve integrate the bone modification feature into a <code>BlendSpacePlayer</code>. To be more specific, we can rewrite <code>UBlendSpaceBase::GetAnimationPose</code> function. </p>
+<p>Since it is not possible for me to paste any relevant code here because of secrecy. But I believe that is simply enough–All you need to do is applying orientation warping to each sample pose, and then blend those poses together. </p>
+<p>This method works perfectly! And eventually this method is adopted in our project! </p>
+<p>It’s a pity that I cannot share more details(maybe later?). Go for <a href="https://play.google.com/store/apps/details?id=com.ea.gp.apexlegendsmobilefps&amp;hl=en&amp;gl=US" target="_blank" rel="noopener">Apex Legends Mobile</a> now and check how this looks like!  </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/12/06/dive-into-physx-broad-phase-in-ue4/" rel="next" title="Dive Into PhysX Broad Phase In UE4">
+                <i class="fa fa-chevron-left"></i> Dive Into PhysX Broad Phase In UE4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/18/a-tiny-performance-issue-in-ue4-cameraview/" rel="prev" title="A Tiny Performance Issue In UE4 Camera View">
+                A Tiny Performance Issue In UE4 Camera View <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#About-Orientation-Warping"><span class="nav-number">2.</span> <span class="nav-text">About Orientation Warping</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Naive-Strafe-Move-Implementation"><span class="nav-number">2.1.</span> <span class="nav-text">A Naive Strafe Move Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Blending-Another-Naive-Strafe-Move-Method"><span class="nav-number">2.2.</span> <span class="nav-text">Blending:  Another Naive Strafe Move Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-Is-Orientation-Warping"><span class="nav-number">2.3.</span> <span class="nav-text">What Is Orientation Warping?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Three-Imperfect-Implementation-Methods"><span class="nav-number">3.</span> <span class="nav-text">Three Imperfect Implementation Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Blend-Space-Aim-Offset-Rotate-Root-Bone"><span class="nav-number">3.1.</span> <span class="nav-text">Blend Space + Aim Offset + Rotate Root Bone</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State-Machine-Based-Orientation-Warping"><span class="nav-number">3.2.</span> <span class="nav-text">State-Machine Based Orientation Warping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Orientation-Warping-Anim-Node"><span class="nav-number">3.3.</span> <span class="nav-text">Orientation Warping Anim Node</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Switch-Direction-Pose-Problem"><span class="nav-number">3.3.1.</span> <span class="nav-text">Switch Direction Pose Problem</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Our-Final-Solution"><span class="nav-number">4.</span> <span class="nav-text">Our Final Solution</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

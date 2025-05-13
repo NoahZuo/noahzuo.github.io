@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells you underlying logic about animation pose space.">
+<meta name="keywords" content="Animation,UE4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deeper Dive into Anim Pose Space in UE4">
+<meta property="og:url" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tells you underlying logic about animation pose space.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/node_Rotate_Root_Bone-Base_Pose_callout.webp">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/node_Spring_Controller-Component_Pose_callout.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812203116357.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812205515711.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812205629263.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812210115997.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812211328059.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812211347973.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/pose_blending_local.gif">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/pose_blending_component.gif">
+<meta property="og:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/image-20210812213459097.png">
+<meta property="og:updated_time" content="2021-08-12T21:49:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Deeper Dive into Anim Pose Space in UE4">
+<meta name="twitter:description" content="This article tells you underlying logic about animation pose space.">
+<meta name="twitter:image" content="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/node_Rotate_Root_Bone-Base_Pose_callout.webp">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Deeper Dive into Anim Pose Space in UE4 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/08/11/deep-dive-into-anim-pose-space-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Deeper Dive into Anim Pose Space in UE4
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-08-11 15:38:03" itemprop="dateCreated datePublished" datetime="2021-08-11T15:38:03+00:00">2021-08-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-08-12 21:49:28" itemprop="dateModified" datetime="2021-08-12T21:49:28+00:00">2021-08-12</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells you underlying logic about animation pose space.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Anim Pose Space, which is widely used across the Anim Graph. </p>
+<p>Generally speaking, most nodes, except <code>Aim Offset</code> and <code>Layered Bone Blend</code> node, work in <code>local space</code> if its <code>pose pins</code> are shaded white: </p>
+<p><img src="node_Rotate_Root_Bone-Base_Pose_callout.webp" alt="node_Rotate_Root_Bone-Base_Pose_callout.webp"></p>
+<p> and in <code>component space</code> if its <code>pose pins</code> are shaded blue: </p>
+<p><img src="node_Spring_Controller-Component_Pose_callout.jpg" alt="Pose Input Pins"></p>
+<p>But what’s the key difference between a <code>local space pose</code> and a <code>component space pose</code>? What is happening deep inside when a space conversion is performed? </p>
+<h1 id="Local-amp-Component-Space-Pose"><a href="#Local-amp-Component-Space-Pose" class="headerlink" title="Local&amp;Component Space Pose"></a>Local&amp;Component Space Pose</h1><h2 id="Local-Pose"><a href="#Local-Pose" class="headerlink" title="Local Pose"></a>Local Pose</h2><p>You should override <code>Evaluate_AnyThread(FPoseContext&amp; Output)</code> function if the node is calculated in local space. A <code>FPoseContext</code>, a struct containing a pose and a curve, is passed across animation nodes in Anim Graph Tree: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Evaluation context passed around during animation tree evaluation */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FPoseContext</span> :</span> <span class="keyword">public</span> FAnimationBaseContext</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">/* These Pose/Curve is stack allocator. You should not use it outside of stack. */</span></span><br><span class="line">	FCompactPose	Pose;</span><br><span class="line">	FBlendedCurve	Curve;</span><br></pre></td></tr></table></figure>
+<p>This pose is in local space, which means that each bone’s transformation matrix is in relation to its parent bone. </p>
+<h2 id="Component-Pose"><a href="#Component-Pose" class="headerlink" title="Component Pose"></a>Component Pose</h2><p>You should override <code>EvaluateComponentSpace_AnyThread(FComponentSpacePoseContext&amp; Output)</code> function if the node is calculated in component space. </p>
+<p>A <code>FComponentSpacePoseContext</code> contains a <code>FCSPose&lt;FCompactPose&gt;</code> instead of a <code>FCompactPose</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Evaluation context passed around during animation tree evaluation */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FComponentSpacePoseContext</span> :</span> <span class="keyword">public</span> FAnimationBaseContext</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	FCSPose&lt;FCompactPose&gt;	Pose;</span><br><span class="line">	FBlendedCurve			Curve;</span><br></pre></td></tr></table></figure>
+<p>The key difference between a <code>FCSPose&lt;FCompactPose&gt;</code> and a <code>FCompactPose</code>, in my opinion, is the <code>ComponentSpaceFlags</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Flags to track each bones current state (0 means local pose, 1 means component space pose)</span></span><br><span class="line">TCustomBoneIndexArray&lt;uint8, BoneIndexType&gt; ComponentSpaceFlags;</span><br></pre></td></tr></table></figure>
+<p>This is an array to track each bone’s current state (0 means local pose, 1 means component space pose). </p>
+<h1 id="Space-Conversion"><a href="#Space-Conversion" class="headerlink" title="Space Conversion"></a>Space Conversion</h1><h2 id="Local-To-Component"><a href="#Local-To-Component" class="headerlink" title="Local To Component"></a>Local To Component</h2><p><code>FAnimNode_ConvertLocalToComponentSpace</code> is used to convert pose from local space to component space: </p>
+<p><img src="image-20210812203116357.png" alt="image-20210812203116357"></p>
+<p>This is a cheap node because no matrix calculation is actually performed. UE4 use lazy calculation for <code>FCSPose&lt;FCompactPose&gt;</code>. In other words, a bone’s component space transform is calculated only when needed. </p>
+<h2 id="Lazy-Calculation"><a href="#Lazy-Calculation" class="headerlink" title="Lazy Calculation"></a>Lazy Calculation</h2><p>Think about a pose like this: </p>
+<p><img src="image-20210812205515711.png" alt="image-20210812205515711"></p>
+<p>It can be easily see that all bone’s transform are in local space. Now, after a <code>FAnimNode_ConvertLocalToComponentSpace</code> node is evaluated, this transformation matrix is not changed at all. </p>
+<p>When we need to use a <code>Skeletal Control Node</code>, let’s say, a <code>Transform (Modify) Bone</code> to process bone <code>D</code> in component space: </p>
+<p><img src="image-20210812205629263.png" alt="image-20210812205629263"></p>
+<p>During evaluation of this node, <code>FA2CSPose::CalculateComponentSpaceTransform</code> function would be called to recursively calculate component space transform of bone <code>D</code>, <code>C</code>, <code>B</code> and<code>A</code>: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Calculate all transform till parent **/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FA2CSPose::CalculateComponentSpaceTransform</span><span class="params">(int32 BoneIndex)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	check( ComponentSpaceFlags[BoneIndex] == <span class="number">0</span> );</span><br><span class="line">	checkSlow( IsValid() );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// root is already verified, so root should not come here</span></span><br><span class="line">	<span class="comment">// check AllocateLocalPoses</span></span><br><span class="line">	<span class="keyword">const</span> int32 ParentIndex = BoneContainer-&gt;GetParentBoneIndex(BoneIndex);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// if Parent already has been calculated, use it</span></span><br><span class="line">	<span class="keyword">if</span>( ComponentSpaceFlags[ParentIndex] == <span class="number">0</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// if Parent hasn't been calculated, also calculate parents</span></span><br><span class="line">		CalculateComponentSpaceTransform(ParentIndex);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// current Bones(Index) should contain LocalPoses.</span></span><br><span class="line">	Bones[BoneIndex] = Bones[BoneIndex] * Bones[ParentIndex];</span><br><span class="line">	Bones[BoneIndex].NormalizeRotation();</span><br><span class="line">	ComponentSpaceFlags[BoneIndex] = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>And the bone transformation matrix and <code>ComponentSpaceFlags</code> is like:  </p>
+<p><img src="image-20210812210115997.png" alt="image-20210812210115997"></p>
+<p>As a result, space transform calculation would be performed only when needed. </p>
+<h2 id="Component-To-Local"><a href="#Component-To-Local" class="headerlink" title="Component To Local"></a>Component To Local</h2><p>As for <code>Component To Local</code> space conversion node. Bones would be traversed from leaf to root to finally get the relative transform matrix. </p>
+<h1 id="Pose-Blending-In-Different-Space"><a href="#Pose-Blending-In-Different-Space" class="headerlink" title="Pose Blending In Different Space"></a>Pose Blending In Different Space</h1><p>Think about two poses: </p>
+<p><img src="image-20210812211328059.png" alt="image-20210812211328059"></p>
+<p><img src="image-20210812211347973.png" alt="image-20210812211347973"></p>
+<p>Pose blending looks different in different space. </p>
+<h2 id="Local-Space-Pose-Blending"><a href="#Local-Space-Pose-Blending" class="headerlink" title="Local Space Pose Blending"></a>Local Space Pose Blending</h2><p>In local space, pose blending is like: </p>
+<p><img src="pose_blending_local.gif" alt="pose_blending_local"></p>
+<h2 id="Component-Space-Pose-Blending"><a href="#Component-Space-Pose-Blending" class="headerlink" title="Component Space Pose Blending"></a>Component Space Pose Blending</h2><p>In component space, pose blending is like: </p>
+<p><img src="pose_blending_component.gif" alt="pose_blending_component"></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>In order to avoid those unnecessary space-conversion calculations, please put those <code>Skeletal Control Node</code> together. </p>
+<p>Moreover, you can modify or add your own anim node to get rid of those space-conversion node. You can refer to <a href="/2021/06/25/component-space-save-cached-pose-node-in-ue4">this blog</a>  for more info. </p>
+<p>And, we have our own blend list node to support blending in different spaces: </p>
+<p><img src="image-20210812213459097.png" alt="image-20210812213459097"></p>
+<p>You can try to implement this node because it’s not difficult at all. </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/25/component-space-save-cached-pose-node-in-ue4/" rel="next" title="Component Space Based Save&Use Cached Pose node In UE4">
+                <i class="fa fa-chevron-left"></i> Component Space Based Save&Use Cached Pose node In UE4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/08/31/build-physx-on-windows-for-ue4/" rel="prev" title="Build PhysX For UE4 On Windows">
+                Build PhysX For UE4 On Windows <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Local-amp-Component-Space-Pose"><span class="nav-number">2.</span> <span class="nav-text">Local&amp;Component Space Pose</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Local-Pose"><span class="nav-number">2.1.</span> <span class="nav-text">Local Pose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Component-Pose"><span class="nav-number">2.2.</span> <span class="nav-text">Component Pose</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Space-Conversion"><span class="nav-number">3.</span> <span class="nav-text">Space Conversion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Local-To-Component"><span class="nav-number">3.1.</span> <span class="nav-text">Local To Component</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lazy-Calculation"><span class="nav-number">3.2.</span> <span class="nav-text">Lazy Calculation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Component-To-Local"><span class="nav-number">3.3.</span> <span class="nav-text">Component To Local</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Pose-Blending-In-Different-Space"><span class="nav-number">4.</span> <span class="nav-text">Pose Blending In Different Space</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Local-Space-Pose-Blending"><span class="nav-number">4.1.</span> <span class="nav-text">Local Space Pose Blending</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Component-Space-Pose-Blending"><span class="nav-number">4.2.</span> <span class="nav-text">Component Space Pose Blending</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">5.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

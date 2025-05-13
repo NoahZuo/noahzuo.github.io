@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells what is happening when you try to get a rotation that rotate a vector so that it eventually aligns to another vector.">
+<meta name="keywords" content="Math">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to get rotation from two vectors?">
+<meta property="og:url" content="http://yoursite.com/2021/02/10/how-to-get-rotation-from-two-vectors/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tells what is happening when you try to get a rotation that rotate a vector so that it eventually aligns to another vector.">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2021-02-11T12:12:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How to get rotation from two vectors?">
+<meta name="twitter:description" content="This article tells what is happening when you try to get a rotation that rotate a vector so that it eventually aligns to another vector.">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/02/10/how-to-get-rotation-from-two-vectors/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>How to get rotation from two vectors? | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/02/10/how-to-get-rotation-from-two-vectors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">How to get rotation from two vectors?
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-02-10 16:40:12" itemprop="dateCreated datePublished" datetime="2021-02-10T16:40:12+00:00">2021-02-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-02-11 12:12:28" itemprop="dateModified" datetime="2021-02-11T12:12:28+00:00">2021-02-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells what is happening when you try to get a rotation that rotate a vector so that it eventually aligns to another vector.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>It is fairly common to calcualte a rotator that rotate a vector $v$ to another vector $u$, especially when we handle something like animation IK. </p>
+<p>Game engines should have their own method for this feature. <code>Quaternion.FromToRotation()</code> in Unity, and <code>FQuat::FindBetweenNormals()</code> in UE4. But it is always good to know what is actually happending deep inside. </p>
+<p>There are already some really goot posts about this issue you might want to read as well:<br><a href="http://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final" target="_blank" rel="noopener">http://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final</a><br><a href="http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/index.htm" target="_blank" rel="noopener">http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/index.htm</a></p>
+<h1 id="Math-Logic"><a href="#Math-Logic" class="headerlink" title="Math Logic"></a>Math Logic</h1><h2 id="A-Naive-Method"><a href="#A-Naive-Method" class="headerlink" title="A Naive Method"></a>A Naive Method</h2><p>As we all know, a quaternion can be presented by rotating $\theta$ angle around an axis $w$: </p>
+<p>$$q = (\theta, w)$$</p>
+<p>Angle can be easily calculated by dot production: </p>
+<p>$$u \cdot v = |u| \cdot |v| \cdot \cos{\theta}$$</p>
+<p>$$ || u \times v || = |u| \cdot |v| \cdot \sin{\theta}  $$</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> cos_theta = dot(normalize(u), normalize(v));</span><br><span class="line">    <span class="keyword">float</span> angle = <span class="built_in">acos</span>(cos_theta);</span><br><span class="line">    vec3 w = normalize(cross(u, v));</span><br><span class="line">    <span class="keyword">return</span> quat::fromaxisangle(angle, w);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>It works, in a naive way, though. </p>
+<h2 id="How-To-Build-a-Quaternion"><a href="#How-To-Build-a-Quaternion" class="headerlink" title="How To Build a Quaternion?"></a>How To Build a Quaternion?</h2><p>It is worth mentioning how a quaterion is built by an axis and an angle. </p>
+<p>Quaternion is constructed by: </p>
+<p>$$ q = \cos{\frac{\theta}{2}} + i\sin{\frac{\theta}{2}}v_{x} + j\sin{\frac{\theta}{2}}v_y + k\sin{\frac{\theta}{2}}v_z$$</p>
+<p>So the code for <code>quat::fromaxisangle</code> is like this:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromaxisangle</span><span class="params">(<span class="keyword">float</span> angle, vec3 axis)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> half_sin = <span class="built_in">sin</span>(<span class="number">0.5f</span> * angle);</span><br><span class="line">    <span class="keyword">float</span> half_cos = <span class="built_in">cos</span>(<span class="number">0.5f</span> * angle);</span><br><span class="line">    <span class="keyword">return</span> quat(half_cos,</span><br><span class="line">                half_sin * axis.x,</span><br><span class="line">                half_sin * axis.y,</span><br><span class="line">                half_sin * axis.z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h1><h2 id="Avoiding-Trigonometry"><a href="#Avoiding-Trigonometry" class="headerlink" title="Avoiding Trigonometry"></a>Avoiding Trigonometry</h2><p>Trigonometry is expensive. Thus we need to avoid trigonometry if we can. Inigo Quilez has wrote an article about this: <a href="https://www.iquilezles.org/www/articles/noacos/noacos.htm" target="_blank" rel="noopener">https://www.iquilezles.org/www/articles/noacos/noacos.htm</a></p>
+<p>Sadly, in our naive method, we firstly compute $\theta$ by $\cos{\theta}$, then we compute $\cos{\frac{\theta}{2}}$ and $\sin{\frac{\theta}{2}}$. This is, as a matter of fact,  really expensive. </p>
+<p>Thus we can save performance by <a href="https://en.wikipedia.org/wiki/Double-angle_formula#Double-angle.2C_triple-angle.2C_and_half-angle_formulae" target="_blank" rel="noopener">half-angle</a> by:<br>$$\sin{\frac{\theta}{2}} = \sqrt{\frac{1 - \cos{\theta}}{2}}$$<br>$$\cos{\frac{\theta}{2}} = \sqrt{\frac{1 + \cos{\theta}}{2}}$$</p>
+<p>So we can save these performance by: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> cos_theta = dot(normalize(u), normalize(v));</span><br><span class="line">    <span class="keyword">float</span> half_cos = <span class="built_in">sqrt</span>(<span class="number">0.5f</span> * (<span class="number">1.f</span> + cos_theta));</span><br><span class="line">    <span class="keyword">float</span> half_sin = <span class="built_in">sqrt</span>(<span class="number">0.5f</span> * (<span class="number">1.f</span> - cos_theta));</span><br><span class="line">    vec3 w = normalize(cross(u, v));</span><br><span class="line">    <span class="keyword">return</span> quat(half_cos,</span><br><span class="line">                half_sin * w.x,</span><br><span class="line">                half_sin * w.y,</span><br><span class="line">                half_sin * w.z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Avoid-One-Square-Root"><a href="#Avoid-One-Square-Root" class="headerlink" title="Avoid One Square Root"></a>Avoid One Square Root</h2><p>Still, we can do better. We need to normalize 3 vectors: <code>u</code>, <code>v</code> and<code>cross(u, v)</code>. But we can get the norm of <code>w</code> through:<br>$$||u \times v|| = |u| \cdot |v| \cdot |\sin{\theta}| $$<br>And we know $\sin{\theta}$ by:<br>$$\sin{\theta} = 2\sin{\frac{\theta}{2}}\cos{\theta}{2}$$<br>And we also have :<br>$$\sqrt{a} \cdot \sqrt{b} = \sqrt{a \cdot b}$$<br>So we can save 2 square roots:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> norm_u_norm_v = <span class="built_in">sqrt</span>(sqlength(u) * sqlength(v));</span><br><span class="line">    <span class="keyword">float</span> cos_theta = dot(u, v) / norm_u_norm_v;</span><br><span class="line">    <span class="keyword">float</span> half_cos = <span class="built_in">sqrt</span>(<span class="number">0.5f</span> * (<span class="number">1.f</span> + cos_theta));</span><br><span class="line">    <span class="keyword">float</span> half_sin = <span class="built_in">sqrt</span>(<span class="number">0.5f</span> * (<span class="number">1.f</span> - cos_theta));</span><br><span class="line">    vec3 w = cross(u, v) / (norm_u_norm_v * <span class="number">2.f</span> * half_sin * half_cos);</span><br><span class="line">    <span class="keyword">return</span> quat(half_cos,</span><br><span class="line">                half_sin * w.x,</span><br><span class="line">                half_sin * w.y,</span><br><span class="line">                half_sin * w.z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Avoid-One-More-Square-Root"><a href="#Avoid-One-More-Square-Root" class="headerlink" title="Avoid One More Square Root"></a>Avoid One More Square Root</h2><p>And we can simplify this by get rid of $\sin{\theta / 2}$:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> norm_u_norm_v = <span class="built_in">sqrt</span>(sqlength(u) * sqlength(v));</span><br><span class="line">    <span class="keyword">float</span> cos_theta = dot(u, v) / norm_u_norm_v;</span><br><span class="line">    <span class="keyword">float</span> half_cos = <span class="built_in">sqrt</span>(<span class="number">0.5f</span> * (<span class="number">1.f</span> + cos_theta));</span><br><span class="line">    vec3 w = cross(u, v) / (norm_u_norm_v * <span class="number">2.f</span> * half_cos);</span><br><span class="line">    <span class="keyword">return</span> quat(half_cos, w.x, w.y, w.z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>This is basically code used by <code>ORGE3D</code></p>
+<h2 id="Consider-SIMD"><a href="#Consider-SIMD" class="headerlink" title="Consider SIMD"></a>Consider SIMD</h2><p>On many SIMD architectures, normalizing a quaterion can be very fast. </p>
+<p>So we should take this advantage:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> norm_u_norm_v = <span class="built_in">sqrt</span>(sqlength(u) * sqlength(v));</span><br><span class="line">    <span class="keyword">float</span> cos_theta = dot(u, v) / norm_u_norm_v;</span><br><span class="line">    <span class="keyword">float</span> half_cos = <span class="built_in">sqrt</span>(<span class="number">0.5f</span> * (<span class="number">1.f</span> + cos_theta));</span><br><span class="line">    vec3 w = cross(u, v) / norm_u_norm_v;</span><br><span class="line">    <span class="keyword">return</span> normalize(quat(<span class="number">2.f</span> * half_cos * half_cos, w.x, w.y, w.z));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>More over, <code>half_cos</code> comes from a <code>sqrt</code>, thus we can get rid of this square root :<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> norm_u_norm_v = <span class="built_in">sqrt</span>(sqlength(u) * sqlength(v));</span><br><span class="line">    <span class="keyword">float</span> cos_theta = dot(u, v) / norm_u_norm_v;</span><br><span class="line">    vec3 w = cross(u, v) / norm_u_norm_v;</span><br><span class="line">    <span class="keyword">return</span> normalize(quat(<span class="number">1.f</span> + cos_theta, w.x, w.y, w.z));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>And for the same reason, we can have:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> norm_u_norm_v = <span class="built_in">sqrt</span>(sqlength(u) * sqlength(v));</span><br><span class="line">    vec3 w = cross(u, v);</span><br><span class="line">    quat q = quat(norm_u_norm_v + dot(u, v), w.x, w.y, w.z);</span><br><span class="line">    <span class="keyword">return</span> normalize(q);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Unit-Vector"><a href="#Unit-Vector" class="headerlink" title="Unit Vector"></a>Unit Vector</h2><p>If vector <code>u</code> and <code>v</code> are unit vectors, we can have:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vec3 w = cross(u, v);</span><br><span class="line">    quat q = quat(<span class="number">1.f</span> + dot(u, v), w.x, w.y, w.z);</span><br><span class="line">    <span class="keyword">return</span> normalize(q);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="For-Non-Unit-Vector"><a href="#For-Non-Unit-Vector" class="headerlink" title="For Non-Unit Vector"></a>For Non-Unit Vector</h2><p>Because we need to calculate $dot(u, v)$ and $cross(u, v)$ no matter what, thus <code>norm_u_norm_v</code> can be calculated in a different way: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">quat <span class="title">quat::fromtwovectors</span><span class="params">(vec3 u, vec3 v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vec3 w = cross(u, v);</span><br><span class="line">    quat q = quat(dot(u, v), w.x, w.y, w.z);</span><br><span class="line">    q.w += length(q);</span><br><span class="line">    <span class="keyword">return</span> normalize(q);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We can get rid of at least 3 multiplications in this way. </p>
+<h1 id="Final-Version"><a href="#Final-Version" class="headerlink" title="Final Version"></a>Final Version</h1><p>I just copy code from : <a href="http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/index.htm" target="_blank" rel="noopener">http://www.euclideanspace.com/maths/algebra/vectors/angleBetween/index.htm</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** note v1 and v2 dont have to be nomalised, thanks to minorlogic for telling me about this:</span></span><br><span class="line"><span class="comment">* https://www.euclideanspace.com/maths/algebra/vectors/angleBetween/minorlogic.htm</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">sfquat <span class="title">angleBetween</span><span class="params">(sfvec3f v1,sfvec3f v2)</span> </span>&#123; </span><br><span class="line">	<span class="keyword">float</span> d = sfvec3f.dot(v1,v2); </span><br><span class="line">	sfvec3f axis = v1;</span><br><span class="line">	axis.cross(v2);</span><br><span class="line">    <span class="keyword">float</span> qw = (<span class="keyword">float</span>)Math.<span class="built_in">sqrt</span>(v1.len_squared()*v2.len_squared()) + d;</span><br><span class="line">	<span class="keyword">if</span> (qw &lt; <span class="number">0.0001</span>) &#123; <span class="comment">// vectors are 180 degrees apart</span></span><br><span class="line">		<span class="keyword">return</span> (<span class="keyword">new</span> sfquat(<span class="number">0</span>,-v1.z,v1.y,v1.x)).norm;</span><br><span class="line">	&#125; </span><br><span class="line">	sfquat q= <span class="keyword">new</span> sfquat(qw,axis.x,axis.y,axis.z); </span><br><span class="line">    <span class="keyword">return</span> q.norm();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Math/" rel="tag"># Math</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/11/extending-two-bone-ik-for-left-hand-holding-guns/" rel="next" title="Extending Two-bone IK for Left Hand Holding Guns">
+                <i class="fa fa-chevron-left"></i> Extending Two-bone IK for Left Hand Holding Guns
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/05/blend-to-target-in-unity/" rel="prev" title="Blend to Target In Unity">
+                Blend to Target In Unity <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Math-Logic"><span class="nav-number">2.</span> <span class="nav-text">Math Logic</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Naive-Method"><span class="nav-number">2.1.</span> <span class="nav-text">A Naive Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-To-Build-a-Quaternion"><span class="nav-number">2.2.</span> <span class="nav-text">How To Build a Quaternion?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Optimization"><span class="nav-number">3.</span> <span class="nav-text">Optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Avoiding-Trigonometry"><span class="nav-number">3.1.</span> <span class="nav-text">Avoiding Trigonometry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Avoid-One-Square-Root"><span class="nav-number">3.2.</span> <span class="nav-text">Avoid One Square Root</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Avoid-One-More-Square-Root"><span class="nav-number">3.3.</span> <span class="nav-text">Avoid One More Square Root</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Consider-SIMD"><span class="nav-number">3.4.</span> <span class="nav-text">Consider SIMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unit-Vector"><span class="nav-number">3.5.</span> <span class="nav-text">Unit Vector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For-Non-Unit-Vector"><span class="nav-number">3.6.</span> <span class="nav-text">For Non-Unit Vector</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Final-Version"><span class="nav-number">4.</span> <span class="nav-text">Final Version</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

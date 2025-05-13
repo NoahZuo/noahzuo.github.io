@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tell you how axis division number effect blendspace in Unreal Engine 4.">
+<meta name="keywords" content="Animation,UE4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does Axis Division Number Matter for UE4 BlendSpace">
+<meta property="og:url" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tell you how axis division number effect blendspace in Unreal Engine 4.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/traditional-8-directional-locomotion.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/barycentricCoordinates.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/gridPoint-info.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/complex-8-directional-locomotion.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/axis2x2.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/axis4x4.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/UE4_4x4.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/UE_2x2.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/2x2-4x4.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/2x2-8x8.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/BlendTreeInUnity.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/blendtreeweightinunity.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/4x4-Unity.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/8x8-unity.png">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.864Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Does Axis Division Number Matter for UE4 BlendSpace">
+<meta name="twitter:description" content="This article tell you how axis division number effect blendspace in Unreal Engine 4.">
+<meta name="twitter:image" content="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/traditional-8-directional-locomotion.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Does Axis Division Number Matter for UE4 BlendSpace | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/24/does-axis-num-matter-for-ue4-blendspace/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Does Axis Division Number Matter for UE4 BlendSpace
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-06-24 20:45:12" itemprop="dateCreated datePublished" datetime="2019-06-24T20:45:12+00:00">2019-06-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tell you how axis division number effect blendspace in Unreal Engine 4.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>So… I believe that most animators know how to use blendspace in Unreal Engine 4. But there is still something most animators may not know. </p>
+<h2 id="Blendspace-Setup"><a href="#Blendspace-Setup" class="headerlink" title="Blendspace Setup"></a>Blendspace Setup</h2><p>An 8-directional walking blendspace, for instance, would require a two blend parameters that drive animation blending by direction X and Y: </p>
+<p><img src="traditional-8-directional-locomotion.png" alt="traditional-8-directional-locomotion"></p>
+<p>We place 8 directional animations  (<code>walkForward</code> , <code>walkLeftForward</code> or <code>walkBackward</code>, etc… ) in grid points. And UE4 would calculate animation weight info for each grid point using Barycentric Coordinate: </p>
+<p><img src="barycentricCoordinates.png" alt="Grid Info"></p>
+<p>For a blend position provided by gameplay, UE4 first finds which grid the position locates, and perform bi-linear interpolation inside this rectangle. </p>
+<p><img src="gridPoint-info.png" alt="Grid Info2"></p>
+<p>More complex blendspace would require larger division number like this: </p>
+<p><img src="complex-8-directional-locomotion.png" alt="Complex Locomotion"></p>
+<h2 id="Difference-Evaluation"><a href="#Difference-Evaluation" class="headerlink" title="Difference Evaluation"></a>Difference Evaluation</h2><p>So… You might believe those two different blend setup below should behave completely the same: </p>
+<p>Axis Division <code>2x2</code>: </p>
+<p><img src="axis2x2.png" alt="2x2"></p>
+<p>Axis Division 4x4: </p>
+<p><img src="axis4x4.png" alt="4x4"></p>
+<p>But actually, they don’t. </p>
+<p>I have tested points from <code>(-1, -1)</code> to <code>(1, 1)</code> with step of <code>0.01</code>. And I wrote some python code to visualize the weight of each animation for each point using <code>matplotlib</code>. This is the image for <code>4x4</code> division: </p>
+<p><img src="UE4_4x4.png" alt="UE 4x4"></p>
+<p><code>2x2</code> division: </p>
+<p><img src="UE_2x2.png" alt="UE 2x2"></p>
+<p>It is time to compare weight value between <code>2x2</code> and <code>4x4</code>, this is the visualization image for <code>2x2</code> - <code>4x4</code>: </p>
+<p><img src="2x2-4x4.png" alt="2x2-4x4"></p>
+<p>Indeed, they are different. And let’s take a look at the result of <code>2x2</code> - <code>8x8</code>: </p>
+<p><img src="2x2-8x8.png" alt="2x2-8x8"></p>
+<h2 id="Deep-Thinking"><a href="#Deep-Thinking" class="headerlink" title="Deep Thinking"></a>Deep Thinking</h2><p>Why does Epic design their blendspace like this? </p>
+<p><strong>I think it is for performance issue. </strong></p>
+<p>Since we can pre-compute barycentric coordinate for each grid point in the editor, and we just need to find this certain grid, and bilinear interpolate between each grid point. </p>
+<p>So we can save lots of runtime performance. And that is great! </p>
+<p>But the key question is: How should we handle this axis division number? </p>
+<p>In short, increasing the number of axis division result in a more precise interpolation inside a triangle, at the cost of some animation memory. </p>
+<h2 id="Comparison-With-Freeform-Cartesian-in-Unity"><a href="#Comparison-With-Freeform-Cartesian-in-Unity" class="headerlink" title="Comparison With Freeform Cartesian in Unity"></a>Comparison With Freeform Cartesian in Unity</h2><p>So I have also do the same thing in Unity, with the same motion position setup.  </p>
+<p><img src="BlendTreeInUnity.png" alt="blend tree in Unity"></p>
+<p>So here is the visualization image: </p>
+<p><img src="blendtreeweightinunity.png" alt="Blend Tree Weight in Unity"></p>
+<p>This is <code>4x4</code> - <code>Blend Tree</code>: </p>
+<p><img src="4x4-Unity.png" alt="4x4 - Unity"></p>
+<p><code>8x8</code> - <code>Blend Tree</code>：</p>
+<p><img src="8x8-unity.png" alt="8x8 - unity"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/23/2d-blend-types-in-unity/" rel="next" title="2D Blend Types in Unity">
+                <i class="fa fa-chevron-left"></i> 2D Blend Types in Unity
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/08/learning-notes-smashing-the-stack-for-fun-and-profit/" rel="prev" title="Learning Notes about Smashing the Stack for Fun and Profit">
+                Learning Notes about Smashing the Stack for Fun and Profit <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Blendspace-Setup"><span class="nav-number">1.</span> <span class="nav-text">Blendspace Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Difference-Evaluation"><span class="nav-number">2.</span> <span class="nav-text">Difference Evaluation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deep-Thinking"><span class="nav-number">3.</span> <span class="nav-text">Deep Thinking</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Comparison-With-Freeform-Cartesian-in-Unity"><span class="nav-number">4.</span> <span class="nav-text">Comparison With Freeform Cartesian in Unity</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

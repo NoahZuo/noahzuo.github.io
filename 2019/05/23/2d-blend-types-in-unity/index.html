@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article give details about 2D blend types in Unity animation blend tree node.">
+<meta name="keywords" content="Unity,Animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2D Blend Types in Unity">
+<meta property="og:url" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article give details about 2D blend types in Unity animation blend tree node.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/simple%20directional.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/simple%20directional2.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/simple%20directional5.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/simple%20directional3.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/simple%20directional4.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/Freeform%20Directional.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/Freeform%20Directional2.png">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.316Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2D Blend Types in Unity">
+<meta name="twitter:description" content="This article give details about 2D blend types in Unity animation blend tree node.">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/simple%20directional.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>2D Blend Types in Unity | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/23/2d-blend-types-in-unity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2D Blend Types in Unity
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-05-23 21:45:12" itemprop="dateCreated datePublished" datetime="2019-05-23T21:45:12+00:00">2019-05-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article give details about 2D blend types in Unity animation blend tree node.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Unity has already provided <a href="https://docs.unity3d.com/Manual/BlendTree-2DBlending.html" target="_blank" rel="noopener">documentations about 2D blend types of Blend Tree</a>. But frankly speaking, the documentation delivers too little information. </p>
+<p>This article will give more details about those blend types. Our editor images will not be provided because of confidentiality. </p>
+<h2 id="What-is-a-Blend-Type"><a href="#What-is-a-Blend-Type" class="headerlink" title="What is a Blend Type?"></a>What is a Blend Type?</h2><p>Blend type serves as a <em>weight calculator</em> in Unity. Different blend type results in different weight if a 2D parameter is given. The different 2D Blend Types have different uses that they are suitable<br>for. They differ in how the influence of each motion is calculated. </p>
+<p>I am pretty sure that some developers are confused about differences between those 2D Blend Types. And I was once one of them… </p>
+<p>So I’ll provide detailed algorithms for each blend type. Hopefully, this will be helpful to you. </p>
+<h2 id="Simple-Directional"><a href="#Simple-Directional" class="headerlink" title="Simple Directional"></a>Simple Directional</h2><p>Let’s take a look at how Unity tell us about Simple Directional: </p>
+<blockquote>
+<p><strong>2D Simple Directional</strong>: Best used when your motions represent different directions, such as<br>“walk forward”, “walk backward”, “walk left”, and “walk right”, or “aim<br>up”, “aim down”, “aim left”, and “aim right”. Optionally a single motion<br>at position (0, 0) can be included, such as “idle” or “aim straight”.<br>In the Simple Directional type there should <em>not</em> be multiple motions in the same direction, such as “walk forward” and “run forward”.</p>
+</blockquote>
+<h3 id="If-the-blend-position-is-0-0"><a href="#If-the-blend-position-is-0-0" class="headerlink" title="If the blend position is (0, 0)"></a>If the blend position is <em>(0, 0)</em></h3><p><strong>A motion position in (0, 0) makes a huge difference. </strong></p>
+<p>If your blend position is <em>(0, 0)</em>, and there is a motion field at position <em>(0, 0)</em>. Then this motion field would be full-weight. </p>
+<p><img src="simple directional.png" alt="Simple Directional"></p>
+<p>If there is not a motion at position <em>(0, 0)</em>. Then all motion would have an averaged weight. No matter what the motion position is. </p>
+<p><img src="simple directional2.png" alt="Simple Directional 2"></p>
+<p>Surprised, huh? Some developers might believe that a motion closer to the origin point would have a larger weight, but actually… it’s not. </p>
+<p><strong>Also… Do not place more than 1 motion in position <em>(0, 0)</em>, function would directly return and all weight would be 0.</strong> </p>
+<h3 id="If-the-blend-position-is-not-0-0"><a href="#If-the-blend-position-is-not-0-0" class="headerlink" title="If the blend position is not (0, 0)"></a>If the blend position is not <em>(0, 0)</em></h3><p>If the blend position is not <em>(0, 0)</em>, all motion field would be traversed. The clockwise-closest and anti-clockwise-closest motion field(A and B) would be found. </p>
+<p><img src="simple directional5.png" alt="Simple directional 5"></p>
+<p>And a triangle with points (A, B and origin point) would be formed, weight of each point would be calculated through <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">Barycentric Coordinate System</a>. </p>
+<h4 id="If-there-is-a-motion-field-in-position-0-0"><a href="#If-there-is-a-motion-field-in-position-0-0" class="headerlink" title="If there is a motion field in position (0, 0)"></a>If there is a motion field in position <em>(0, 0)</em></h4><p>This would be the common case. Barycentric coordinate of triangle points would be the weights of these three motion fields. </p>
+<p><img src="simple directional3.png" alt="Simple Directional 3"></p>
+<h4 id="If-there-is-not-a-motion-field-in-position-0-0"><a href="#If-there-is-not-a-motion-field-in-position-0-0" class="headerlink" title="If there is not a motion field in position (0, 0)"></a>If there is not a motion field in position <em>(0, 0)</em></h4><p>If there is not a motion field in position <em>(0, 0)</em>. Weight of point <em>A</em> and <em>B</em> would be kept, and the weight of the point <em>O</em> would be given to every point. </p>
+<p>That means, a shared weight would be add to every motion field (including point A and B). </p>
+<p><img src="simple directional4.png" alt="Simple Directional 4"></p>
+<h2 id="Freeform-Directional"><a href="#Freeform-Directional" class="headerlink" title="Freeform Directional"></a>Freeform Directional</h2><p>The Freeform stuff is much more complicated. And frankly speaking, it is too complicate to describe the whole algorithm in this article. </p>
+<p>Well… In short, every motion field has a neighbor list which contains what is so called <em>neighborhoods</em> of each  motion field. </p>
+<p>Unity has its complicate algorithm about weight&amp;neighborhood calculation. And I am not sure whether I am allowed to write it down in an article. Let’s make vector from the origin to the blend position <em>v0</em>, and make vectors from the origin to the motion fields <em>v1</em>,<em>v2</em>, <em>v3</em> and <em>v4</em> like this: </p>
+<p><img src="Freeform Directional.png" alt="Freeform Directional"></p>
+<p>In general, the final result heavily depends on not only the angle between vectors, but also the magnitude of each vector. As a result, this blend type allows multiple existences of motion field in the same direction: </p>
+<p><img src="Freeform Directional2.png" alt="Freeform Directional 2"></p>
+<h2 id="Freeform-Cartesian"><a href="#Freeform-Cartesian" class="headerlink" title="Freeform Cartesian"></a>Freeform Cartesian</h2><p>Freeform Cartesian blend type also has neighbor list stuff. But Unity does not care about angle with this blend type. Instead, only positions are concerned. </p>
+<p>This is much the same as 2D Blend Space in Unreal Engine 4. And it is the most frequently-used blend type in our Unity project. </p>
+<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><p>As for performance, the <code>simple directional</code> should be the cheapest and the <code>freeform directional</code> should be the most expensive. You can choose what you need most to achieve what you want. </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Unity/" rel="tag"># Unity</a>
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/21/crash-when-opening-a-control-rig-file-in-ue4/" rel="next" title="Crash When Opening a Control Rig File in UE4">
+                <i class="fa fa-chevron-left"></i> Crash When Opening a Control Rig File in UE4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/24/does-axis-num-matter-for-ue4-blendspace/" rel="prev" title="Does Axis Division Number Matter for UE4 BlendSpace">
+                Does Axis Division Number Matter for UE4 BlendSpace <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-a-Blend-Type"><span class="nav-number">1.</span> <span class="nav-text">What is a Blend Type?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Simple-Directional"><span class="nav-number">2.</span> <span class="nav-text">Simple Directional</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#If-the-blend-position-is-0-0"><span class="nav-number">2.1.</span> <span class="nav-text">If the blend position is (0, 0)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#If-the-blend-position-is-not-0-0"><span class="nav-number">2.2.</span> <span class="nav-text">If the blend position is not (0, 0)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#If-there-is-a-motion-field-in-position-0-0"><span class="nav-number">2.2.1.</span> <span class="nav-text">If there is a motion field in position (0, 0)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#If-there-is-not-a-motion-field-in-position-0-0"><span class="nav-number">2.2.2.</span> <span class="nav-text">If there is not a motion field in position (0, 0)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Freeform-Directional"><span class="nav-number">3.</span> <span class="nav-text">Freeform Directional</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Freeform-Cartesian"><span class="nav-number">4.</span> <span class="nav-text">Freeform Cartesian</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performance"><span class="nav-number">5.</span> <span class="nav-text">Performance</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

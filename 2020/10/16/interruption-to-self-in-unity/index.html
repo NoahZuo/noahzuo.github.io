@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article records how I refactored interruption transition, when transition is interrupted back to source state, in Unity.">
+<meta name="keywords" content="Unity,Animation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Refactor Interruption Transition In Unity">
+<meta property="og:url" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article records how I refactored interruption transition, when transition is interrupted back to source state, in Unity.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/image04.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/pre_interrupt.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/interruption_occurred.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/normal_transition_ends.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/interruption_to_self_after_official_interruption.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/normal_transition_ends.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/transition%20time.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/transition%20time%20interrupted.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/interruption_occurred.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/interruption_to_self_after_official_interruption.png">
+<meta property="og:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/Interruption%20to%20self.gif">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.963Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Refactor Interruption Transition In Unity">
+<meta name="twitter:description" content="This article records how I refactored interruption transition, when transition is interrupted back to source state, in Unity.">
+<meta name="twitter:image" content="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/image04.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Refactor Interruption Transition In Unity | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/16/interruption-to-self-in-unity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Refactor Interruption Transition In Unity
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-10-16 18:38:01" itemprop="dateCreated datePublished" datetime="2020-10-16T18:38:01+00:00">2020-10-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article records how I refactored interruption transition, when transition is interrupted back to source state, in Unity.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Interrupted-transition-in-Unity"><a href="#Interrupted-transition-in-Unity" class="headerlink" title="Interrupted transition in Unity"></a>Interrupted transition in Unity</h1><p>It remains complicated and difficult to handle when it comes to animation transition, both in UE4 and Unity.  Since Unity has its own way, not perfect though, to handle animation interruption. </p>
+<p>You can see how Unity handle animation interruption by reading this <a href="https://blogs.unity3d.com/2016/07/13/wait-ive-changed-my-mind-state-machine-transition-interruptions/?_ga=2.133008842.596806288.1600245191-1713254392.1599574392" target="_blank" rel="noopener">blog</a>. In short: </p>
+<blockquote>
+<p>Internally, the animation system records the pose at the time of the interruption, and will now blend between  that static pose (X) and the new destination animation. </p>
+</blockquote>
+<p><img src="image04.png" alt="img"></p>
+<h1 id="Why-refactor"><a href="#Why-refactor" class="headerlink" title="Why refactor?"></a>Why refactor?</h1><p>Unity mentioned that instead of a smoother blend between the current and new transitions, a static pose would be much better concerning performance. </p>
+<p>But what if we interrupted the transition so that the transition simply go back to the origin souce state? It would be over kill if we transite from a static pose to target state, let alone it is not smooth enough. </p>
+<p>In such case, we prefer to simply swap the current and next state, and let the transition continue. Thus a both smoother and performance-friendly transition could be performed. </p>
+<h1 id="Digging-into-interruption-transition"><a href="#Digging-into-interruption-transition" class="headerlink" title="Digging into interruption transition"></a>Digging into interruption transition</h1><h2 id="Official-interruption-transition"><a href="#Official-interruption-transition" class="headerlink" title="Official interruption transition"></a>Official interruption transition</h2><p>It is necessary to have some basic idea about what is actually happening deep inside the engine when an interrupted transition takes place. </p>
+<h3 id="When-a-transition-takes-place"><a href="#When-a-transition-takes-place" class="headerlink" title="When a transition takes place"></a>When a transition takes place</h3><p>When a transition, let’s say, from <code>state A</code> to <code>state B</code>, takes place. The <code>State Machine Mixer Playable</code> node looks like this: </p>
+<p><img src="pre_interrupt.png" alt="pre_interrupt"></p>
+<p>Where the first input node is the current state, the second input node is the next state. As for the third input node, this is the static pose node, which is zero-weighted when a regular transition takes place. </p>
+<h3 id="When-the-transition-is-interrupted"><a href="#When-the-transition-is-interrupted" class="headerlink" title="When the transition is interrupted"></a>When the transition is interrupted</h3><p>When the transition is interrupted and the state machine is about to go to, let’s say, <code>state C</code>. The <code>State Machine Mixer Playable</code> looks like this: </p>
+<p><img src="interruption_occurred.png" alt="interruption_occurred"></p>
+<p>It is easy to tell that final pose it blended by the static pose <code>P</code> and the next state <code>C</code>. And the original transition source state <code>A</code>, is connected to the third input node slot. </p>
+<h3 id="When-the-transition-ends"><a href="#When-the-transition-ends" class="headerlink" title="When the transition ends"></a>When the transition ends</h3><p>When transition ends, the <code>State Machine Mixer Playable</code> would re-organize its input nodes. </p>
+<h4 id="For-a-normal-transition"><a href="#For-a-normal-transition" class="headerlink" title="For a normal transition"></a>For a normal transition</h4><p>When a normal transition ends, the <code>State Machine Mixer Playable</code> would swap its first and second nodes. As a result, the next state <code>B</code> would become the current state. </p>
+<p><img src="normal_transition_ends.png" alt="normal_transition_ends"></p>
+<h4 id="For-a-interrupted-transition"><a href="#For-a-interrupted-transition" class="headerlink" title="For a interrupted transition"></a>For a interrupted transition</h4><p>When a interrupted transition ends, the <code>State Machine Mixer Playable</code> would connect the static pose node <code>P</code> to its third node slot, next state <code>C</code> to the first node slot and previous state <code>A</code> to the second node slot like this: </p>
+<p><img src="interruption_to_self_after_official_interruption.png" alt="interruption_to_self_after_official_interruption"></p>
+<h2 id="Our-goal"><a href="#Our-goal" class="headerlink" title="Our goal"></a>Our goal</h2><p>Our goal is to simply swap the source and target node, when the transition is interrupted back to the source state again. </p>
+<p>That is to say, we want the <code>State Machine Mixer Playable</code> looks like this when we found the state machine is about to interrupt back to self: </p>
+<p><img src="normal_transition_ends.png" alt="goal"></p>
+<h1 id="How-should-we-refactor"><a href="#How-should-we-refactor" class="headerlink" title="How should we refactor?"></a>How should we refactor?</h1><p>So here comes the most important part, that what should we do to achieve our goal. Well… to be honest, it is much much more complicated than what we used to suppose. And I am not allowed to give too much detail about it. Here is some important problems that I encounted and they just drove me crazy… </p>
+<h2 id="Transition-time-issue"><a href="#Transition-time-issue" class="headerlink" title="Transition time issue"></a>Transition time issue</h2><p>Because we want the transition to <em>go back</em>, which means that when the interruption begins, we need to set the transition time $t_{new} = 1.0 - t_{old}$. </p>
+<p>For example, we interrupt the transition when at 1s: </p>
+<p><img src="transition time.png" alt="transition time.png"></p>
+<p>When the transition begins, the current transition should be 3s: </p>
+<p><img src="transition time interrupted.png" alt="transition time interrupted.png"></p>
+<h2 id="State-normalize-time-current-play-time"><a href="#State-normalize-time-current-play-time" class="headerlink" title="State normalize time(current play time)"></a>State normalize time(current play time)</h2><p>When a new state is started, Unity would reset its normalize time. Interruption to self, however, cannot let it happen. </p>
+<p>As a result, we skipped <code>Start State</code> when <code>interruption to self</code> is detected. Moreover, the current playing time of both source and target state should be swapped as well. </p>
+<h2 id="Conflict-with-official-interruption-transition"><a href="#Conflict-with-official-interruption-transition" class="headerlink" title="Conflict with official interruption transition"></a>Conflict with official interruption transition</h2><p>Our animators are using official interruption for quite a long time. So <code>Interruption to self</code> is supposed to work well along with official interruption transition. </p>
+<p>Consider <code>interruption to self</code> just so happens interrupts the current official interruption, before interruption to self, the <code>State Machine Mixer Playable</code> looks like this: </p>
+<p><img src="interruption_occurred.png" alt="interruption_occurred"></p>
+<p>After <code>interruption to self</code>, the node became: </p>
+<p><img src="interruption_to_self_after_official_interruption.png" alt="interruption_to_self_after_official_interruption"></p>
+<p>And this cause crash because Unity would try to evaluate <code>P</code> as a blend tree. </p>
+<h2 id="Conflict-with-Animator-Play-and-Animator-Crossfade"><a href="#Conflict-with-Animator-Play-and-Animator-Crossfade" class="headerlink" title="Conflict with Animator.Play() and Animator.Crossfade()"></a>Conflict with <code>Animator.Play()</code> and <code>Animator.Crossfade()</code></h2><p>These functions are widely used in our project. And this is called <code>DynamicTransition</code> in Unity. </p>
+<p>A dynamic transition is actually a transition that goes to a specific state directly instead of following those transition rules we set up in an <code>Animator Controller</code>. But since a<code>Interruption to self</code> transition skips the <code>Start State</code> of the target state, which is necessary when a dynamic transition is considered <code>Interruption to self</code>. </p>
+<p>This conflict must be solved, or else it would cause a crash. </p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="Interruption to self.gif" alt="Interruption to self"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Unity/" rel="tag"># Unity</a>
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/13/deep-dive-into-blendspace-in-ue4/" rel="next" title="Deep Dive into Blend Space in UE4">
+                <i class="fa fa-chevron-left"></i> Deep Dive into Blend Space in UE4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/11/extending-two-bone-ik-for-left-hand-holding-guns/" rel="prev" title="Extending Two-bone IK for Left Hand Holding Guns">
+                Extending Two-bone IK for Left Hand Holding Guns <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Interrupted-transition-in-Unity"><span class="nav-number">1.</span> <span class="nav-text">Interrupted transition in Unity</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-refactor"><span class="nav-number">2.</span> <span class="nav-text">Why refactor?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Digging-into-interruption-transition"><span class="nav-number">3.</span> <span class="nav-text">Digging into interruption transition</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Official-interruption-transition"><span class="nav-number">3.1.</span> <span class="nav-text">Official interruption transition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#When-a-transition-takes-place"><span class="nav-number">3.1.1.</span> <span class="nav-text">When a transition takes place</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#When-the-transition-is-interrupted"><span class="nav-number">3.1.2.</span> <span class="nav-text">When the transition is interrupted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#When-the-transition-ends"><span class="nav-number">3.1.3.</span> <span class="nav-text">When the transition ends</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#For-a-normal-transition"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">For a normal transition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#For-a-interrupted-transition"><span class="nav-number">3.1.3.2.</span> <span class="nav-text">For a interrupted transition</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Our-goal"><span class="nav-number">3.2.</span> <span class="nav-text">Our goal</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-should-we-refactor"><span class="nav-number">4.</span> <span class="nav-text">How should we refactor?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Transition-time-issue"><span class="nav-number">4.1.</span> <span class="nav-text">Transition time issue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State-normalize-time-current-play-time"><span class="nav-number">4.2.</span> <span class="nav-text">State normalize time(current play time)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conflict-with-official-interruption-transition"><span class="nav-number">4.3.</span> <span class="nav-text">Conflict with official interruption transition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conflict-with-Animator-Play-and-Animator-Crossfade"><span class="nav-number">4.4.</span> <span class="nav-text">Conflict with Animator.Play() and Animator.Crossfade()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Result"><span class="nav-number">5.</span> <span class="nav-text">Result</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

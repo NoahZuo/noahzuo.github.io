@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这篇文章记录了Unity的微信小游戏平台工程中，针对在Timeline里控制的粒子系统的CPU热点进行优化的流程介绍。">
+<meta name="keywords" content="Unity,微信小游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优化Unity中ParticleControlPlayable在微信小游戏平台的CPU开销">
+<meta property="og:url" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="这篇文章记录了Unity的微信小游戏平台工程中，针对在Timeline里控制的粒子系统的CPU热点进行优化的流程介绍。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image01.png">
+<meta property="og:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image02.png">
+<meta property="og:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image03.png">
+<meta property="og:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image04.png">
+<meta property="og:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image05.png">
+<meta property="og:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image06.png">
+<meta property="og:updated_time" content="2025-05-13T13:19:12.972Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="优化Unity中ParticleControlPlayable在微信小游戏平台的CPU开销">
+<meta name="twitter:description" content="这篇文章记录了Unity的微信小游戏平台工程中，针对在Timeline里控制的粒子系统的CPU热点进行优化的流程介绍。">
+<meta name="twitter:image" content="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/image01.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>优化Unity中ParticleControlPlayable在微信小游戏平台的CPU开销 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2025/03/31/optimizing-particle-control-playable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">优化Unity中ParticleControlPlayable在微信小游戏平台的CPU开销
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2025-03-31 16:58:14" itemprop="dateCreated datePublished" datetime="2025-03-31T16:58:14+00:00">2025-03-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2025-05-13 13:19:12" itemprop="dateModified" datetime="2025-05-13T13:19:12+00:00">2025-05-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">这篇文章记录了Unity的微信小游戏平台工程中，针对在Timeline里控制的粒子系统的CPU热点进行优化的流程介绍。</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>Unity官方提供了<a href="https://docs.unity3d.com/Packages/com.unity.timeline@1.2/manual/index.html" target="_blank" rel="noopener">Timeline工具</a>，用于进行场景内物件的控制，对标于Unreal Engine的<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-sequencer-movie-tool-overview" target="_blank" rel="noopener">Level Sequence</a>。</p>
+<p>但是当Timeline中出现了太多Particle时，则很容易出现Simulate的性能瓶颈。由于微信小游戏不适配Unity原生多线程方案，该问题在微信小游戏平台中更为严重，本文记录了针对该性能热点进行优化的思考和流程。</p>
+<h1 id="热点介绍"><a href="#热点介绍" class="headerlink" title="热点介绍"></a>热点介绍</h1><p>构建一个Unity工程，在Timeline中添加20个<code>Control Track</code>，将其控制场景中的各类粒子：</p>
+<p><img src="image01.png" alt="Timeline设置"></p>
+<p>使用微信小游戏快适配插件构建小游戏包，记得勾选<code>Profiling Funcs</code>，方便我们查看CPU性能的开销：</p>
+<p><img src="image02.png" alt="Profiling Funcs"></p>
+<p>在安卓机上进行真机预览，点击<code>Start/Stop CPU Profile</code>进行性能录制，之后便可以在<code>Android/Data/com.tencent.mm/MicroMsg/appbrand/trace</code>目录下找到cpuprofile文件：</p>
+<p><img src="image03.png" alt="Start Or Stop CPU Profile"></p>
+<p>该文件可使用Google Chrome打开，我们看到，Particle开销如下：<br><img src="image04.png" alt="Particle Performance"></p>
+<h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><p>参考官方Timeline插件相关的代码：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">PrepareFrame</span>(<span class="params">Playable playable, FrameData data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (particleSystem == <span class="literal">null</span> || !particleSystem.gameObject.activeInHierarchy)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// case 1212943</span></span><br><span class="line">        m_LastPlayableTime = kUnsetTime;</span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> time = (<span class="keyword">float</span>)playable.GetTime();</span><br><span class="line">    <span class="keyword">var</span> particleTime = particleSystem.time;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// if particle system time has changed externally, a re-sync is needed</span></span><br><span class="line">    <span class="keyword">if</span> (m_LastPlayableTime &gt; time || !Mathf.Approximately(particleTime, m_LastParticleTime))</span><br><span class="line">        Simulate(time, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (m_LastPlayableTime &lt; time)</span><br><span class="line">        Simulate(time - m_LastPlayableTime, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    m_LastPlayableTime = time;</span><br><span class="line">    m_LastParticleTime = particleSystem.time;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Simulate</span>(<span class="params"><span class="keyword">float</span> time, <span class="keyword">bool</span> restart</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">bool</span> withChildren = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">bool</span> fixedTimeStep = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">float</span> maxTime = Time.maximumDeltaTime;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (restart)</span><br><span class="line">        particleSystem.Simulate(<span class="number">0</span>, withChildren, <span class="literal">true</span>, fixedTimeStep);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// simulating by too large a time-step causes sub-emitters not to work, and loops not to</span></span><br><span class="line">    <span class="comment">// simulate correctly</span></span><br><span class="line">    <span class="keyword">while</span> (time &gt; maxTime)</span><br><span class="line">    &#123;</span><br><span class="line">        particleSystem.Simulate(maxTime, withChildren, <span class="literal">false</span>, fixedTimeStep);</span><br><span class="line">        time -= maxTime;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (time &gt; <span class="number">0</span>)</span><br><span class="line">        particleSystem.Simulate(time, withChildren, <span class="literal">false</span>, fixedTimeStep);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，主要的开销最终还是落在了<code>particleSystem.Simulate</code>函数中。</p>
+<h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><p>既然已经定位到了性能热点来自<code>particleSystem.Simulate</code>，因此优化的方式便集中于怎样减少该函数的调用。以下提出若干种优化的方案，希望对于读者有帮助。</p>
+<h2 id="根据屏占比降低更新频率"><a href="#根据屏占比降低更新频率" class="headerlink" title="根据屏占比降低更新频率"></a>根据屏占比降低更新频率</h2><p>第一个想到的方案自然是根据Particle的屏占比来决定该粒子的更新频率。首先我们需要进行Particle System的屏占比计算。笔者提供了一个基于Bounding Sphere的屏占比计算方法：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">float</span> <span class="title">CalculateScreenCoverageRatio</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_MainCamera == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get particle system bounds</span></span><br><span class="line">    Bounds bounds = particleSystem.GetComponent&lt;Renderer&gt;().bounds;</span><br><span class="line">    Vector3 center = bounds.center;</span><br><span class="line">    <span class="keyword">float</span> radius = bounds.extents.magnitude;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Project bounding sphere to screen space</span></span><br><span class="line">    Vector3 screenCenter = m_MainCamera.WorldToViewportPoint(center);</span><br><span class="line">    <span class="keyword">if</span> (screenCenter.z &lt; <span class="number">0</span>) <span class="comment">// Behind camera</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Calculate screen space radius</span></span><br><span class="line">    Vector3 screenEdge = m_MainCamera.WorldToViewportPoint(center + m_MainCamera.transform.right * radius);</span><br><span class="line">    <span class="keyword">float</span> screenRadius = (screenEdge - screenCenter).magnitude;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Calculate coverage ratio (clamped to 0-1)</span></span><br><span class="line">    <span class="keyword">float</span> coverage = Mathf.Clamp01(screenRadius * <span class="number">2</span>); <span class="comment">// Diameter coverage</span></span><br><span class="line">    <span class="keyword">return</span> coverage * coverage; <span class="comment">// Square for non-linear response</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之后，我们只需要<code>PrepareFrame</code>函数中添加针对屏占比降频的操作即可。在此，我们根据屏占比分了三档——每帧更新、隔一帧更新和隔两帧更新：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> m_FrameCount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> m_SkipFrames = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">private</span> Camera m_MainCamera;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">float</span> HighThreshold = <span class="number">0.5f</span>;  <span class="comment">// Update every frame</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">float</span> MidThreshold = <span class="number">0.2f</span>;   <span class="comment">// Update every other frame</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">PrepareFrame</span>(<span class="params">Playable playable, FrameData data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (particleSystem == <span class="literal">null</span> || !particleSystem.gameObject.activeInHierarchy)</span><br><span class="line">    &#123;</span><br><span class="line">        m_LastPlayableTime = kUnsetTime;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get main camera if not cached</span></span><br><span class="line">    <span class="keyword">if</span> (m_MainCamera == <span class="literal">null</span>)</span><br><span class="line">        m_MainCamera = Camera.main;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> time = (<span class="keyword">float</span>)playable.GetTime();</span><br><span class="line">    <span class="keyword">var</span> particleTime = particleSystem.time;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Calculate screen coverage ratio</span></span><br><span class="line">    <span class="keyword">float</span> screenRatio = CalculateScreenCoverageRatio();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Determine update frequency based on screen coverage</span></span><br><span class="line">    <span class="keyword">int</span> requiredSkipFrames = screenRatio &gt; HighThreshold ? <span class="number">0</span> : </span><br><span class="line">                            screenRatio &gt; MidThreshold ? <span class="number">1</span> : <span class="number">2</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Reset frame count when frequency changes</span></span><br><span class="line">    <span class="keyword">if</span> (m_SkipFrames != requiredSkipFrames)</span><br><span class="line">    &#123;</span><br><span class="line">        m_SkipFrames = requiredSkipFrames;</span><br><span class="line">        m_FrameCount = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check if we need to update</span></span><br><span class="line">    <span class="keyword">bool</span> forceUpdate = m_LastPlayableTime &gt; time || !Mathf.Approximately(particleTime, m_LastParticleTime);</span><br><span class="line">    <span class="keyword">bool</span> shouldUpdate = forceUpdate || (m_FrameCount % (m_SkipFrames + <span class="number">1</span>)) == <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (shouldUpdate)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">float</span> deltaTime = forceUpdate ? time : time - m_LastPlayableTime;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (m_LastPlayableTime &gt; time || !Mathf.Approximately(particleTime, m_LastParticleTime))</span><br><span class="line">            Simulate(time, <span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (m_LastPlayableTime &lt; time)</span><br><span class="line">            Simulate(deltaTime, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">        m_LastPlayableTime = time;</span><br><span class="line">        m_LastParticleTime = particleSystem.time;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Increment frame counter (wrap to prevent overflow)</span></span><br><span class="line">    m_FrameCount = (m_FrameCount + <span class="number">1</span>) % <span class="keyword">int</span>.MaxValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用该方法进行性能分析，得到结果如下：</p>
+<p><img src="image05.png" alt="根据屏占比降频"></p>
+<p>这种做法实现简单，并且在低端机的优化效果也很明显，但是问题也依然明显：<strong>对视觉效果影响过大</strong>。</p>
+<p>举例：如果当前场景整体运算负载较低，足够游戏满帧运行，但是屏占比较低的粒子依然进行了降频，从而影响了视觉效果。</p>
+<h2 id="根据帧耗时进行动态频率控制"><a href="#根据帧耗时进行动态频率控制" class="headerlink" title="根据帧耗时进行动态频率控制"></a>根据帧耗时进行动态频率控制</h2><p>一种更好的做法则为根据帧耗时进行动态的粒子更新频率控制，也就是说只有在负载比较高的时候才进行频率的控制，参考代码如下：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">float</span> FrameTimeHigh = <span class="number">16f</span>; <span class="comment">// 60 FPS threshold</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">float</span> FrameTimeLow = <span class="number">25f</span>;  <span class="comment">// 40 FPS threshold</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">float</span> m_FrameTimeEMA; <span class="comment">// Exponential moving average of frame time</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">PrepareFrame</span>(<span class="params">Playable playable, FrameData data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (particleSystem == <span class="literal">null</span> || !particleSystem.gameObject.activeInHierarchy)</span><br><span class="line">    &#123;</span><br><span class="line">        m_LastPlayableTime = kUnsetTime;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get main camera if not cached</span></span><br><span class="line">    m_MainCamera ??= Camera.main;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> time = (<span class="keyword">float</span>)playable.GetTime();</span><br><span class="line">    <span class="keyword">var</span> particleTime = particleSystem.time;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 1. Calculate screen coverage base tier</span></span><br><span class="line">    <span class="keyword">float</span> coverage = CalculateScreenCoverageRatio();</span><br><span class="line">    <span class="keyword">int</span> baseSkipFrames = coverage <span class="keyword">switch</span></span><br><span class="line">    &#123;</span><br><span class="line">        &gt; <span class="number">0.5f</span> =&gt; <span class="number">0</span>,  <span class="comment">// High visibility</span></span><br><span class="line">        &gt; <span class="number">0.2f</span> =&gt; <span class="number">1</span>,  <span class="comment">// Medium visibility</span></span><br><span class="line">        _      =&gt; <span class="number">2</span>   <span class="comment">// Low visibility</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. Adjust by frame time</span></span><br><span class="line">    <span class="keyword">float</span> currentFrameTime = Time.unscaledDeltaTime * <span class="number">1000</span>; <span class="comment">// Current frame time in ms</span></span><br><span class="line">    m_FrameTimeEMA = <span class="number">0.8f</span> * m_FrameTimeEMA + <span class="number">0.2f</span> * currentFrameTime; <span class="comment">// EMA smoothing</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> adjustedSkipFrames = m_FrameTimeEMA <span class="keyword">switch</span></span><br><span class="line">    &#123;</span><br><span class="line">        &lt; FrameTimeHigh =&gt; Mathf.Max(baseSkipFrames - <span class="number">1</span>, <span class="number">0</span>), <span class="comment">// Good performance: higher quality</span></span><br><span class="line">        &gt; FrameTimeLow  =&gt; Mathf.Min(baseSkipFrames + <span class="number">1</span>, <span class="number">3</span>), <span class="comment">// Poor performance: lower quality</span></span><br><span class="line">        _               =&gt; baseSkipFrames                    <span class="comment">// Normal: use base setting</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. Update frequency control</span></span><br><span class="line">    <span class="keyword">if</span> (m_SkipFrames != adjustedSkipFrames)</span><br><span class="line">    &#123;</span><br><span class="line">        m_SkipFrames = adjustedSkipFrames;</span><br><span class="line">        m_FrameCount = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. Update logic</span></span><br><span class="line">    <span class="keyword">bool</span> needsForceUpdate = m_LastPlayableTime &gt; time || </span><br><span class="line">                          !Mathf.Approximately(particleTime, m_LastParticleTime);</span><br><span class="line">    <span class="keyword">bool</span> shouldUpdate = needsForceUpdate || </span><br><span class="line">                      (m_FrameCount % (m_SkipFrames + <span class="number">1</span>) == <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (shouldUpdate)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (needsForceUpdate)</span><br><span class="line">            Simulate(time, <span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (m_LastPlayableTime &lt; time)</span><br><span class="line">            Simulate(time - m_LastPlayableTime, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">        m_LastPlayableTime = time;</span><br><span class="line">        m_LastParticleTime = particleSystem.time;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. Maintain counters</span></span><br><span class="line">    m_FrameCount = (m_FrameCount + <span class="number">1</span>) % <span class="keyword">int</span>.MaxValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方案需要结合帧耗时与屏占比两个指标，从而实现起来较为复杂，并且效果也没有那么直观，性能优化结果如下：</p>
+<p><img src="image06.png" alt="帧耗时+屏占比"></p>
+<h2 id="Simulation-Budget系统"><a href="#Simulation-Budget系统" class="headerlink" title="Simulation Budget系统"></a>Simulation Budget系统</h2><p>有一种最为理想的做法则是Simulation Budget系统，该系统参考自Unreal Engine的<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-budget-allocator-in-unreal-engine" target="_blank" rel="noopener">Animation Budget系统</a>。</p>
+<p>简单来说，该系统针对某个模块在某一帧分配了一个相对固定的开销预算（该预算值可以针对不同档位的机器进行配置），并且维护了每个粒子的动态优先级，该优先级计算方案如下：</p>
+<ul>
+<li>如果屏占比越高，则优先级越高；</li>
+<li>如果该粒子上一帧没有进行Simulate操作，则本帧该粒子的优先级变高；</li>
+</ul>
+<p>使用这种方案有几种好处：</p>
+<ol>
+<li>管理成本较低，针对不同档位的机型只需要配置开销的预算即可。</li>
+<li>兼顾表现与性能，在负载较低时能确保表现，在负载较高时能减少卡顿。</li>
+<li>开销曲线较为平稳。</li>
+</ol>
+<p>该方案的实现需要通过<code>Stopwatch</code>获取到每个粒子的<code>Simulate</code>开销，从而判断剩余的性能开销预算是否足够支撑接下来的粒子模拟。</p>
+<p>但是由于微信小游戏环境中，高精度时间只能在安卓和iOS普通模式下起效，因此通常的<code>particleSystem.Simulate</code>方法的执行时间都会被判定为<code>0ms</code>，因此该方案理论上只能在安卓平台上起效。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Unity/" rel="tag"># Unity</a>
+          
+            <a href="/tags/微信小游戏/" rel="tag"># 微信小游戏</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/02/28/wechat-minigame-now-cost/" rel="next" title="微信小游戏中的时间戳">
+                <i class="fa fa-chevron-left"></i> 微信小游戏中的时间戳
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2025/05/12/an-interesting-performance-measurement-for-wechat-mini-games/" rel="prev" title="微信小游戏中函数开销评估的一种高效方法">
+                微信小游戏中函数开销评估的一种高效方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#热点介绍"><span class="nav-number">2.</span> <span class="nav-text">热点介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码分析"><span class="nav-number">3.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化方案"><span class="nav-number">4.</span> <span class="nav-text">优化方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#根据屏占比降低更新频率"><span class="nav-number">4.1.</span> <span class="nav-text">根据屏占比降低更新频率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据帧耗时进行动态频率控制"><span class="nav-number">4.2.</span> <span class="nav-text">根据帧耗时进行动态频率控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Simulation-Budget系统"><span class="nav-number">4.3.</span> <span class="nav-text">Simulation Budget系统</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

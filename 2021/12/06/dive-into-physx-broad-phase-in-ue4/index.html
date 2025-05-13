@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.">
+<meta name="keywords" content="UE4,PhysX,Physics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dive Into PhysX Broad Phase In UE4">
+<meta property="og:url" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/image-20211217174528727.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/image-20211223205231390.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/mbp-bound.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/image-20211224152518444.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/aggre-threshold.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/image-20211228143150896.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/image_16406844721012.png">
+<meta property="og:updated_time" content="2021-12-06T17:30:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dive Into PhysX Broad Phase In UE4">
+<meta name="twitter:description" content="This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.">
+<meta name="twitter:image" content="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/image-20211217174528727.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Dive Into PhysX Broad Phase In UE4 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/12/06/dive-into-physx-broad-phase-in-ue4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dive Into PhysX Broad Phase In UE4
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-12-06 17:30:03" itemprop="dateCreated datePublished" datetime="2021-12-06T17:30:03+00:00">2021-12-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/UE4/" itemprop="url" rel="index"><span itemprop="name">UE4</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">This article tells you something you might not notice about broad phase in the optimized version of PhysX that Epic provided along with ue4 source code.</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function like <code>BroadPhaseSAP::Update</code> or <code>BroadPhaseMBP::Update</code>can cost lots of performance, especially when there are millions of rigid bodies or fast-moving rigid bodies in your scene. </p>
+<p>And it is so common that the performance issue is even worse on a dedicated server because of <code>PhysX</code>‘s single-thread CPU-Dispatcher. </p>
+<h1 id="About-Broad-Phase"><a href="#About-Broad-Phase" class="headerlink" title="About Broad Phase"></a>About Broad Phase</h1><p>The <code>Broad Phase</code>‘s <code>Update</code> function is not always a performance hot-spot in most cases if you are not developing an open world game which contains lots of fast-moving objects. </p>
+<p>PhysX has provided us two broad-phase algorithms: <code>SAP</code> and <code>MBP</code>. Both of them use <code>AABB</code> to detect collision. </p>
+<p>The basic idea behind these algorithms is: </p>
+<blockquote>
+<p>two AABBs overlap <strong>iff</strong> their projections on the X, Y and Z coordinate axes overlap. </p>
+</blockquote>
+<p>That is to say, physX needs to keep three sorted arrays, one for each axis, to track the bounding box’s <code>min</code> and <code>max</code> value of each rigid body. </p>
+<p>And since we can play with those rigid bodies by interfaces that UE4 has provided.  As a result, physx needs to keep these arrays sorted–this is exactly what <code>Broad Phase</code>‘s <code>Update</code> function does. </p>
+<p><img src="image-20211217174528727.png" alt="image-20211217174528727"></p>
+<p>This function is called in the <code>TG_StartPhysics</code> tick group. After all those three tasks are completed, we’ve managed to get a sorted array for each axis. </p>
+<h1 id="Something-About-Sorting"><a href="#Something-About-Sorting" class="headerlink" title="Something About Sorting"></a>Something About Sorting</h1><p>It is known to all that we should choose different sorting algorithm for different cases. </p>
+<p>Instead of iterating the whole array, it would be a better choice to update only part of the array if number updated is sufficiently fewer than number of whole boxes. And this is how <code>PhysX</code> handle it: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> BroadPhaseSap::batchUpdate</span><br><span class="line">(<span class="keyword">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span><br><span class="line">&#123;</span><br><span class="line">        <span class="comment">//Nothin updated so don't do anything</span></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//If number updated is sufficiently fewer than number of boxes (say less than 20%)</span></span><br><span class="line">        <span class="keyword">if</span>((mUpdatedSize*<span class="number">5</span>) &lt; mBoxesSize)</span><br><span class="line">        &#123;</span><br><span class="line">                batchUpdateFewUpdates(Axis, pairs, pairsSize, pairsCapacity);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>Moreover, <code>QSort</code> is used if the updated box is fewer than 512. Or else, <code>Bucket Sort</code> is used: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">void</span> BroadPhaseSap::batchUpdateFewUpdates</span><br><span class="line">(<span class="keyword">const</span> PxU32 Axis, BroadPhasePair*&amp; pairs, PxU32&amp; pairsSize, PxU32&amp; pairsCapacity)</span><br><span class="line">&#123;</span><br><span class="line">    	...</span><br><span class="line">        <span class="comment">//There are no extents, just the sentinels, so exit early.</span></span><br><span class="line">        <span class="keyword">if</span>(isSentinel(BaseEPDatas[<span class="number">1</span>]))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 ind_ = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        PxU32 index = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(mUpdatedSize &lt; <span class="number">512</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is small, so use qsort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(PxU32 a = <span class="number">0</span>; a &lt; mUpdatedSize; ++a)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">                Ps::sort(mSortedUpdateElements, ind_);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">                <span class="comment">//The array of updated elements is large so use a bucket sort to sort them</span></span><br><span class="line">                <span class="keyword">for</span>(; index &lt; endPointSize; ++index)</span><br><span class="line">                &#123;</span><br><span class="line">                    ...</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Issue-Cause"><a href="#Issue-Cause" class="headerlink" title="Issue Cause"></a>Issue Cause</h1><p>Time to investigate what on earth eventually cause this issue. </p>
+<p>After millions of AABB projecting them self onto  three axis, we can eventually get three extremely dense arrays. </p>
+<p>Think about a moving rigid body moving from <code>(10, 0, 0)</code> to <code>(20, 0, 0)</code>. During sorting stage, it would be compared with colliders far far away: </p>
+<p><img src="image-20211223205231390.png" alt="image-20211223205231390"></p>
+<p>This leads to a large array sorting problem, a common but expensive problem. </p>
+<h1 id="How-To-Solve-This-Problem"><a href="#How-To-Solve-This-Problem" class="headerlink" title="How To Solve This Problem?"></a>How To Solve This Problem?</h1><h2 id="Level-Streaming"><a href="#Level-Streaming" class="headerlink" title="Level Streaming"></a>Level Streaming</h2><p>One common solution to this issue for non-server build is to streaming in or out those colliders dynamically. This method works really well since it leads to a much smaller array for each axis. </p>
+<p>This is a widely known solution so that I am not going to talk about its detail here since Epic has already provided tons of tutorials about it. </p>
+<h2 id="Multi-Pruning-Box"><a href="#Multi-Pruning-Box" class="headerlink" title="Multi Pruning Box"></a>Multi Pruning Box</h2><p>Also know as <code>MBP</code> algorithm. To use this algorithm, a level bound is needed. And you can set this value in the project setting: </p>
+<p><img src="mbp-bound.png" alt="img"></p>
+<p>In general, <code>MBP</code> simply divides the whole physics world into several regions:</p>
+<p><img src="image-20211224152518444.png" alt="image-20211224152518444"></p>
+<p> Thus interactions between far aways objects are skipped because they are not likely in the same <code>SAP</code> region. On the other hand, parallel computing can be used to boost performance. </p>
+<p>After all regions finish their updating task, found/lost pairs, compared to previous frame, is generated in its <code>PostUpdate</code> stage. What worth to be mentioned is that there is significant performance cost here since <code>pushback</code> and <code>remove</code> operations are called to <code>BroadPhaseMBP.mCreated</code> and <code>BroadPhaseMBP.mDeleted</code> array. </p>
+<p>In conclusion, <code>MBP</code> can save <code>Broad Phase</code> performance if the physics world is large enough. But since <code>PostUpdate</code>costs some performance, <code>MBP</code> can be more expensive than <code>SAP</code> when the scene is small or there is few moving object in the scene. </p>
+<h2 id="Aggregate"><a href="#Aggregate" class="headerlink" title="Aggregate"></a>Aggregate</h2><h3 id="Aggregate-Introduction"><a href="#Aggregate-Introduction" class="headerlink" title="Aggregate Introduction"></a>Aggregate Introduction</h3><p>Aside from dividing the whole scene into several regions, there is another way to save performance by putting some rigid bodies into one single aggregate to reducing the array size. </p>
+<p>A typical usage of aggregate is ragdoll. As we all know, a moving object is terribly expensive, not to mention a set of ragdoll, which is composed of a variety of simulating bones. </p>
+<p>Thus it is pretty obvious that we can put those bone rigid bodies into one single aggregate, which has only one entry during <code>Broad Phase</code> stage. It is even more efficient if collision detection is ignored among these rigid bodies. </p>
+<p>For the moment, or maybe forever, UE4 use aggregate with physics asset of a skeletal mesh. An configurable value is provided in the project settings to determine when to use aggregate, <code>4</code> by default: </p>
+<p><img src="aggre-threshold.png" alt="img"></p>
+<p>If there are more than 4 rigid bodies in a physics asset, an aggregate would be created to hold real rigid bodies. </p>
+<p>It is an optional optimization to use aggregate for a moving static mesh actor/component. And frankly speaking we’ve managed to achieve this feature in our customized engine. It’s fairly easy to implement and I sincerely suggest you try it. </p>
+<h3 id="Aggregate-Side-Effect"><a href="#Aggregate-Side-Effect" class="headerlink" title="Aggregate Side Effect"></a>Aggregate Side Effect</h3><p>There are several side effects about aggregate if you dive into physx source code. Two major issues are covered here. </p>
+<h4 id="Aggregate-Pair-Issue"><a href="#Aggregate-Pair-Issue" class="headerlink" title="Aggregate Pair Issue"></a>Aggregate Pair Issue</h4><p>A noticeable performance hot-spot called <code>ScScene.PostBroadPhase</code> would pop up if a large amount of aggregates are inserted into physics scene: </p>
+<p><img src="image-20211228143150896.png" alt="image-20211228143150896"></p>
+<p>After getting some more detailed profiling data by PVD, we’ve found that it is <code>SimpleAABBManager::postBroadPhase - process actor-aggregate pairs</code> that has eaten up more than <code>70%</code> performance: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	 PX_PROFILE_ZONE(<span class="string">"SimpleAABBManager::postBroadPhase - process actor-aggregate pairs"</span>, getContextId());</span><br><span class="line">	processAggregatePairs(mActorAggregatePairs, *<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Strange enough, huh? It shouldn’t be so expensive. Let’s check <code>processAggregatePairs</code> out: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">processAggregatePairs</span><span class="params">(AggPairMap&amp; <span class="built_in">map</span>, SimpleAABBManager&amp; manager)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> hmmm we have a list of dirty aggregates but we don't have a list of dirty pairs.</span></span><br><span class="line">        <span class="comment">// PT: not sure how the 3.4 trunk solves this but let's just iterate all pairs for now</span></span><br><span class="line">        <span class="comment">// PT: atm we reuse this loop to delete removed interactions</span></span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> in fact we could handle all the "lost pairs" stuff right there with extra aabb-abb tests</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// PT: <span class="doctag">TODO:</span> replace with decent hash map - or remove the hashmap entirely and use a linear array</span></span><br><span class="line">        Ps::Array&lt;AggPair&gt; removedEntries;</span><br><span class="line">        <span class="keyword">for</span>(AggPairMap::Iterator iter = <span class="built_in">map</span>.getIterator(); !iter.done(); ++iter)</span><br><span class="line">        &#123;</span><br><span class="line">                PersistentPairs* p = iter-&gt;second;</span><br><span class="line">                <span class="keyword">if</span>(p-&gt;update(manager))</span><br><span class="line">                &#123;</span><br><span class="line">                        removedEntries.pushBack(iter-&gt;first);</span><br><span class="line">                        PX_DELETE(p);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(PxU32 i=<span class="number">0</span>;i&lt;removedEntries.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="keyword">bool</span> status = <span class="built_in">map</span>.erase(removedEntries[i]);</span><br><span class="line">                PX_ASSERT(status);</span><br><span class="line">                PX_UNUSED(status);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Uh-huh… There you are! <strong>TODO! </strong> </p>
+<p>As a result, all existing aggregate pairs, both <code>actor-aggregate</code> pairs or <code>aggregate-aggregate</code> pairs, are fully iterated, even if most of those pairs are not updated. </p>
+<p>So, it is not recommended to have too many aggregates in our scene. </p>
+<h4 id="Static-Aggregate-Issue"><a href="#Static-Aggregate-Issue" class="headerlink" title="Static Aggregate Issue"></a>Static Aggregate Issue</h4><p>It firstly comes to my mind that we can put all rigid bodies of a <code>Static Mesh Actor</code> into an aggregate, like rigid bodies in a tree, a desk or even a building. In this way we can greatly optimize performance in <code>BpSAP.updateWork</code> or <code>BpMBP.updateWork</code>. </p>
+<p>It works, though. <code>updateWork</code> function is greatly optimized. But it turned out that <code>ScScene.PostBroadPhase</code> has cost too much CPU resources. Sometimes we get a <strong>NEGATIVE OPTIMIZATION</strong>. </p>
+<p>And yet btw, PhysX doesn’t have a benchmark for static aggregates. In my opinion, just don’t use aggregate for static mesh components: </p>
+<p><img src="image_16406844721012.png" alt="img"></p>
+<h1 id="A-Deeper-Thought"><a href="#A-Deeper-Thought" class="headerlink" title="A Deeper Thought"></a>A Deeper Thought</h1><p>In the old days, broad phase was hardly ever a performance hot-spot because we might not have too many rigid bodies in our scene. </p>
+<p>However, as the number of bodies grows, it becomes more and more expensive to handle those arrays. So it might be necessary for us to decline the number of rigid bodies, even if it can sometimes seem ridiculous for some ordinary cases. </p>
+<p>For example, you may think a triangle mesh collider is really expensive in any case. But for an open world game, a triangle mesh collider is preferred because of saving a considerable amount of rigid bodies. </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/UE4/" rel="tag"># UE4</a>
+          
+            <a href="/tags/PhysX/" rel="tag"># PhysX</a>
+          
+            <a href="/tags/Physics/" rel="tag"># Physics</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/27/better-profile-physx-in-ue4/" rel="next" title="Better Way To Profile PhysX In UE4">
+                <i class="fa fa-chevron-left"></i> Better Way To Profile PhysX In UE4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/06/better-orientation-warping/" rel="prev" title="Better Orientation Warping Implementation In UE4">
+                Better Orientation Warping Implementation In UE4 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">55</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#About-Broad-Phase"><span class="nav-number">2.</span> <span class="nav-text">About Broad Phase</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Something-About-Sorting"><span class="nav-number">3.</span> <span class="nav-text">Something About Sorting</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Issue-Cause"><span class="nav-number">4.</span> <span class="nav-text">Issue Cause</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#How-To-Solve-This-Problem"><span class="nav-number">5.</span> <span class="nav-text">How To Solve This Problem?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-Streaming"><span class="nav-number">5.1.</span> <span class="nav-text">Level Streaming</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multi-Pruning-Box"><span class="nav-number">5.2.</span> <span class="nav-text">Multi Pruning Box</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Aggregate"><span class="nav-number">5.3.</span> <span class="nav-text">Aggregate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregate-Introduction"><span class="nav-number">5.3.1.</span> <span class="nav-text">Aggregate Introduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregate-Side-Effect"><span class="nav-number">5.3.2.</span> <span class="nav-text">Aggregate Side Effect</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Aggregate-Pair-Issue"><span class="nav-number">5.3.2.1.</span> <span class="nav-text">Aggregate Pair Issue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Static-Aggregate-Issue"><span class="nav-number">5.3.2.2.</span> <span class="nav-text">Static Aggregate Issue</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#A-Deeper-Thought"><span class="nav-number">6.</span> <span class="nav-text">A Deeper Thought</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

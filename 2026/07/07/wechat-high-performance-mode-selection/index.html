@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="从高性能模式到高性能+模式，理解微信小游戏在 iOS 端的性能优化路径及其递进关系。">
+<meta name="keywords" content="Unity,微信小游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信小游戏高性能模式与高性能+模式">
+<meta property="og:url" content="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/index.html">
+<meta property="og:site_name" content="Zuo Junbo&#39;s Blog">
+<meta property="og:description" content="从高性能模式到高性能+模式，理解微信小游戏在 iOS 端的性能优化路径及其递进关系。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/compare.png">
+<meta property="og:image" content="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/perfdog.png">
+<meta property="og:image" content="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/XHR.png">
+<meta property="og:updated_time" content="2026-07-16T03:09:21.020Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信小游戏高性能模式与高性能+模式">
+<meta name="twitter:description" content="从高性能模式到高性能+模式，理解微信小游戏在 iOS 端的性能优化路径及其递进关系。">
+<meta name="twitter:image" content="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/compare.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>微信小游戏高性能模式与高性能+模式 | Zuo Junbo's Blog</title>
+  
+
+
+
+
+  <script async src="//www.googletagmanager.com/gtag/js?id=UA-152608997-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-152608997-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zuo Junbo's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2026/07/07/wechat-high-performance-mode-selection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zuo Junbo">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zuo Junbo's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微信小游戏高性能模式与高性能+模式
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2026-07-07 20:30:00" itemprop="dateCreated datePublished" datetime="2026-07-07T20:30:00+00:00">2026-07-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2026-07-16 03:09:21" itemprop="dateModified" datetime="2026-07-16T03:09:21+00:00">2026-07-16</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/微信小游戏/" itemprop="url" rel="index"><span itemprop="name">微信小游戏</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            <div class="post-description">从高性能模式到高性能+模式，理解微信小游戏在 iOS 端的性能优化路径及其递进关系。</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在现在的团队待了两年多，对接过的开发商名字颇攒了一些。</p>
+<p>有件事说来意外，却确实普遍：很多开发者，不乏一些收益颇丰的团队，并不了解游戏在 iOS 上到底跑的是哪个模式。</p>
+<p>帧率低了、卡顿率高了来咨询。我问高性能模式开了没有。回答或是不清楚什么是高性能模式，或是不知道有什么坑所以没开。</p>
+<p>回答多了甚至有近似膝跳反射的感受，因此以个人视角写下这篇文章来介绍一下这三种模式，希望或多或少能帮助开发者。</p>
+<p>如果读者非技术出身，可以直接跳到最后一章；如果读者是技术出身，那么建议逐章向下读；</p>
+<h1 id="历史的进程"><a href="#历史的进程" class="headerlink" title="历史的进程"></a>历史的进程</h1><h2 id="普通模式的痛"><a href="#普通模式的痛" class="headerlink" title="普通模式的痛"></a>普通模式的痛</h2><p>时间拨回到好几年前，那会还是跳一跳刚上线的时候。</p>
+<p>iOS 上 App 内嵌的网页都跑在 WKWebView 里，底层引擎是 JavaScriptCore。引擎本身其实支持 JIT，能把热点编译成机器码。</p>
+<p>但苹果自有他安全方面的考量——不开给第三方（当然也包括了微信），只有 Safari 和系统级 WebKit 进程有 JIT 权限。</p>
+<p>安卓上的微信没这问题，因为安卓微信的底层是 V8，默认 JIT 是支持的。</p>
+<p>这样就解释了为什么远古时期，iOS版本的微信小游戏的性能远不如安卓。</p>
+<p>又由于微信小游戏本身是跨平台的，这也因此就导致了微信小游戏在彼时难以重度化。</p>
+<h2 id="破局：高性能模式"><a href="#破局：高性能模式" class="headerlink" title="破局：高性能模式"></a>破局：高性能模式</h2><blockquote>
+<p>吉德林法则：把难题清清楚楚地写出来，便已经解决了一半。</p>
+</blockquote>
+<p>微信进程肯定不算系统 WebKit、拿不到 JIT，那也好办，就让微信在启动小游戏的时候，将其跑到一个新拉起的独立系统 WebKit 里，微信基础库 2.23.1 开始，高性能模式应运而生。</p>
+<p>由于游戏逻辑和渲染都跑在一个独立的 WebContent 进程中。因为是进程级的 WebKit，系统把它视为系统 WebKit 进程，因此 JIT 通了。</p>
+<p>很好用，性能很不错，能力启用和项目适配的方法也很简单，技术上颇为遥遥领先了一阵。</p>
+<p>当然，友商们也很快跟进这个技术，配置方法也惊人的一致，祝贺他们。</p>
+<p>性能的提升催生了游戏的重度化——随着游戏越来越重，问题自然也滚滚而来。</p>
+<p>由于系统 WebContent 进程完全由苹果控制，在这个进程内，开发商或者平台都完全插不进手。</p>
+<p>因此它也就带来了两个主要问题：</p>
+<ol>
+<li><p>内存更敏感，因此容易OOM导致crash；</p>
+</li>
+<li><p>WebGL2 的限制；</p>
+</li>
+</ol>
+<p>好消息：系统 WebContent 进程毕竟由微信派生，平台还是可以稍微插手的；</p>
+<h2 id="高性能-模式：不只是内存的优化"><a href="#高性能-模式：不只是内存的优化" class="headerlink" title="高性能+模式：不只是内存的优化"></a>高性能+模式：不只是内存的优化</h2><p>WebContent 进程的内存限制很严格，我们通常建议开发者将这个进程的内存占用限制在 1.2G 以内，当然越低越好。</p>
+<p>但是很难的啦，一个进程既要运行基础库，还得运行游戏逻辑，还要编译 wasm，还要做JIT，还要负责渲染，你跺你也麻。</p>
+<p>但是话说回来：渲染通常与业务逻辑是分离的，所以理论上来说，我们可以把渲染的逻辑挪回微信进程！</p>
+<p>这样一来，显存就可以挪回微信进程。原本针对一个进程的内存限制，现在分担在微信和WebContent两个进程上。</p>
+<p>并且，由于渲染挪回微信进程，而微信内的相关逻辑当然可以由我们自定义。这样一来，WebGL2 的限制也可以顺手解决。</p>
+<p>好用，推荐用。</p>
+<p><img src="compare.png" alt="compare"></p>
+<h1 id="需要注意的点"><a href="#需要注意的点" class="headerlink" title="需要注意的点"></a>需要注意的点</h1><h2 id="高性能-高性能-模式的内存观测"><a href="#高性能-高性能-模式的内存观测" class="headerlink" title="高性能/高性能+ 模式的内存观测"></a>高性能/高性能+ 模式的内存观测</h2><p>如果你的游戏开启了高性能/高性能+ 的模式，你大概率会发现后台上报的小游戏内存占用值很低，但与此同时游戏的内存异常退出概率还挺高的？</p>
+<p>因为高性能/高性能+ 的模式下，主要的内存瓶颈在WebContent 进程。而现网运行时， WebContent 进程的内存占用无法被直接观测到。</p>
+<p>所以没错，此时后台上报的小游戏内存占用值是不准的，它只能上报微信进程内的内存占用。</p>
+<p>这里划重点，要考的：</p>
+<p><strong>高性能/高性能+ 模式的内存观测，你需要通过xcode、perfdog等工具，定位 WebContent 进程，而非微信进程。</strong></p>
+<p><img src="perfdog.png" alt="perfdog"></p>
+<p><em>顺带一提，WebContent 进程可能有多个，找内存占用最大的那个。</em></p>
+<h2 id="WASM编译内存的占用"><a href="#WASM编译内存的占用" class="headerlink" title="WASM编译内存的占用"></a>WASM编译内存的占用</h2><p>广义来说是WASM环境的游戏引擎，狭义来说，瞄准的就是 Unity 和 团结。</p>
+<p>简单来说：</p>
+<p>高性能/高性能+模式下的 WASM 编译内存是一个很头大的问题。由于 WebContent 进程完全由苹果控制，因此无论是平台还是开发者，都无法收集到 WASM 编译内存占用的详细信息。</p>
+<p>但是总体来说，WASM 编译的内存占用主要分为瞬时的内存尖峰和持续性的内存占用。</p>
+<p>对 OOM 影响最大的，还是瞬时的内存尖峰。当 WASM 被加载后将开始进行编译，此时会出现一个瞬时的尖峰。当 WASM 太大，尖峰将会非常高，很容易导致 OOM。</p>
+<p>顺带一提，iOS 18.3 系统及之后，WASM 的编译的瞬间内存占用高了不少，如果不进行 WASM 分包，则大概率一进入游戏就会 OOM 闪退。</p>
+<p>这也意味着 WASM 分包对 Unity 或者 团结的小游戏开发来说，已经变成了一个必须的流程。</p>
+<p>再来划一个重点：</p>
+<p><strong>因为 WASM 在 iOS 上的编译内存实时占用目前在iOS体系下不好量化，因此不要迷信把所有逻辑都编到WASM中。很多时候解释性脚本（例如HybridCLR、Lua）是必要的。</strong></p>
+<h2 id="XHR：高性能-模式的阿喀琉斯之踵"><a href="#XHR：高性能-模式的阿喀琉斯之踵" class="headerlink" title="XHR：高性能+ 模式的阿喀琉斯之踵"></a>XHR：高性能+ 模式的阿喀琉斯之踵</h2><p>在某些时候，你可能会发现高性能+模式比高性能模式更卡顿，运行也更烫。</p>
+<p>这倒不是错觉，因为高性能+模式下的渲染逻辑挪回微信进程，因此小游戏在高性能+模式下，多了一份 WebContent 和微信进程进行通信的开销。</p>
+<p>这个开销可以通过 XHR 请求的形式来进行观测——在打开开发调试开关后，点击左上角的fps帧率面板，可以切换到 XHR 请求次数和带宽查看面板，可以查看 XHR 请求次数和带宽开销。<br><img src="XHR.png" alt="XHR"></p>
+<p>在高性能+模式下，建议将 XHR 次数控制在5以下，完美情况下，这个数字应该被控制在 1 ；而 XHR 带宽开销则建议控制在 500kb 以下。</p>
+<p>如果你观察到你的游戏在高性能+模式下发烫、卡顿，在高性能模式下则无这个情况，那大概率问题就在 XHR 请求次数和带宽开销上。</p>
+<p>尝试优化你的渲染流程，减少 XHR 请求次数和带宽开销。</p>
+<h2 id="锁屏或切到后台，再切回小游戏，提示OOM"><a href="#锁屏或切到后台，再切回小游戏，提示OOM" class="headerlink" title="锁屏或切到后台，再切回小游戏，提示OOM"></a>锁屏或切到后台，再切回小游戏，提示OOM</h2><p>这是开发者常见的疑惑，但是这个现象很正常。“很正常”的意思就是：不奇怪。</p>
+<p>更明确一些的意思就是：一个系统 WebKit 进程在iOS系统的眼里，本质上就是一个网页。</p>
+<p>当它进入被判定为后台进程，那么 iOS 对它的忍受程度会降低，因此 OOM的阈值会低一些。</p>
+<p>所以，很正常，无论是开发商还是平台，都没办法解决这个问题。</p>
+<h1 id="懒人结论"><a href="#懒人结论" class="headerlink" title="懒人结论"></a>懒人结论</h1><h2 id="我是否应该放弃普通模式？"><a href="#我是否应该放弃普通模式？" class="headerlink" title="我是否应该放弃普通模式？"></a>我是否应该放弃普通模式？</h2><p>只有你确定你的游戏是休闲游戏，那么建议考虑使用普通模式。</p>
+<p>否则只要满足以下的任意一个条件，则建议直接放弃普通模式：</p>
+<ol>
+<li>你的游戏包含大量计算，例如海量割草、复杂物理模拟等；</li>
+<li>你的游戏对帧率、丝滑程度要求比较高；</li>
+<li>你的引擎是 Unity 或者 团结， 并且你的游戏不是超休闲游戏（比休闲游戏还轻度的游戏）；</li>
+</ol>
+<h2 id="我应该使用高性能还是高性能-模式？"><a href="#我应该使用高性能还是高性能-模式？" class="headerlink" title="我应该使用高性能还是高性能+模式？"></a>我应该使用高性能还是高性能+模式？</h2><p>满足以下条件时，建议使用高性能+模式：</p>
+<ol>
+<li>你的游戏需要较大显存（说人话：贴图、模型等资产占比大）；</li>
+<li>你的游戏有很酷炫的视觉效果（使用了WebGL2的特性）；</li>
+<li>你的游戏的内存压力比较大（例如开启高性能模式后，后台观测到内存异常退出次数明显变高）；</li>
+<li>开启高性能+模式后， XHR 请求次数和带宽开销符合标准；</li>
+</ol>
+<h2 id="我选择了普通模式后，应该注意什么？"><a href="#我选择了普通模式后，应该注意什么？" class="headerlink" title="我选择了普通模式后，应该注意什么？"></a>我选择了普通模式后，应该注意什么？</h2><ol>
+<li>你应该格外关注帧率和卡顿率；</li>
+<li>你应该关注玩家反馈的发热或者功耗问题；</li>
+</ol>
+<h2 id="我使用了高性能模式后，应该注意什么？"><a href="#我使用了高性能模式后，应该注意什么？" class="headerlink" title="我使用了高性能模式后，应该注意什么？"></a>我使用了高性能模式后，应该注意什么？</h2><ol>
+<li>你应该格外关注后台上报的内存异常退出率；</li>
+<li>如果是Unity 或者 团结引擎的小游戏，你要格外关注 WASM 包的大小，务必确保走分包流程；</li>
+<li>绝对要格外关注内存的占用情况；</li>
+<li>要关注你的项目中是否有高级渲染特性的需求；</li>
+</ol>
+<h2 id="我选择了高性能模式-后，应该注意什么？"><a href="#我选择了高性能模式-后，应该注意什么？" class="headerlink" title="我选择了高性能模式+后，应该注意什么？"></a>我选择了高性能模式+后，应该注意什么？</h2><ol>
+<li>确保你的贴图、模型等资产是被放到显存中的（例如Unity小游戏 的贴图，需要确保 isReadable 为 false）；</li>
+<li>时刻关注你的 XHR 请求次数和带宽开销；</li>
+<li>关注卡顿率和帧率，如果不达预期并且切回高性能模式后变得丝滑，则大概率是 XHR 的问题；</li>
+<li>也要关注 WASM 包的大小，务必确保走分包流程；</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>I am so cute, please give me money...</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="Zuo Junbo WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="Zuo Junbo Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Unity/" rel="tag"># Unity</a>
+          
+            <a href="/tags/微信小游戏/" rel="tag"># 微信小游戏</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2025/05/12/an-interesting-performance-measurement-for-wechat-mini-games/" rel="next" title="微信小游戏中函数开销评估的一种高效方法">
+                <i class="fa fa-chevron-left"></i> 微信小游戏中函数开销评估的一种高效方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zuo Junbo</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">56</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.codercorner.com/blog/" title="http://www.codercorner.com/blog/" rel="noopener" target="_blank">Coder Corner(Physics Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://coconutlizard.co.uk/new/" title="https://coconutlizard.co.uk/new/" rel="noopener" target="_blank">CoconutLizard(UE4 Related)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kunzhou.net/" title="http://kunzhou.net/" rel="noopener" target="_blank">Kun Zhou</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.liyiwei.org/" title="https://www.liyiwei.org/" rel="noopener" target="_blank">Li-Yi Wei</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kesen.realtimerendering.com/" title="http://kesen.realtimerendering.com/" rel="noopener" target="_blank">Ke-sen Huang(Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://rockhamstercode.tumblr.com/" title="https://rockhamstercode.tumblr.com/" rel="noopener" target="_blank">Animation Tips&Tricks</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.selfshadow.com/" title="https://blog.selfshadow.com/" rel="noopener" target="_blank">Self Shadow(Computer Graphics)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ambrosiussen.com/" title="http://ambrosiussen.com/" rel="noopener" target="_blank">Paul Ambrosiussen(Houdini)</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lolengine.net/wiki" title="http://lolengine.net/wiki" rel="noopener" target="_blank">LOL Engine</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.iquilezles.org/index.html" title="https://www.iquilezles.org/index.html" rel="noopener" target="_blank">Inigo Quilez</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://theorangeduck.com/" title="https://theorangeduck.com/" rel="noopener" target="_blank">Daniel Holden(Character Animation)</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#历史的进程"><span class="nav-number">2.</span> <span class="nav-text">历史的进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#普通模式的痛"><span class="nav-number">2.1.</span> <span class="nav-text">普通模式的痛</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#破局：高性能模式"><span class="nav-number">2.2.</span> <span class="nav-text">破局：高性能模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高性能-模式：不只是内存的优化"><span class="nav-number">2.3.</span> <span class="nav-text">高性能+模式：不只是内存的优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#需要注意的点"><span class="nav-number">3.</span> <span class="nav-text">需要注意的点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#高性能-高性能-模式的内存观测"><span class="nav-number">3.1.</span> <span class="nav-text">高性能/高性能+ 模式的内存观测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WASM编译内存的占用"><span class="nav-number">3.2.</span> <span class="nav-text">WASM编译内存的占用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XHR：高性能-模式的阿喀琉斯之踵"><span class="nav-number">3.3.</span> <span class="nav-text">XHR：高性能+ 模式的阿喀琉斯之踵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁屏或切到后台，再切回小游戏，提示OOM"><span class="nav-number">3.4.</span> <span class="nav-text">锁屏或切到后台，再切回小游戏，提示OOM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#懒人结论"><span class="nav-number">4.</span> <span class="nav-text">懒人结论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#我是否应该放弃普通模式？"><span class="nav-number">4.1.</span> <span class="nav-text">我是否应该放弃普通模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我应该使用高性能还是高性能-模式？"><span class="nav-number">4.2.</span> <span class="nav-text">我应该使用高性能还是高性能+模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我选择了普通模式后，应该注意什么？"><span class="nav-number">4.3.</span> <span class="nav-text">我选择了普通模式后，应该注意什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我使用了高性能模式后，应该注意什么？"><span class="nav-number">4.4.</span> <span class="nav-text">我使用了高性能模式后，应该注意什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我选择了高性能模式-后，应该注意什么？"><span class="nav-number">4.5.</span> <span class="nav-text">我选择了高性能模式+后，应该注意什么？</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zuo Junbo</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
